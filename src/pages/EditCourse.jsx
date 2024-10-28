@@ -1,6 +1,6 @@
 // src/pages/EditCourse.js
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useTheme } from '../context/ThemeContext'; // Import theme context
@@ -142,6 +142,11 @@ const EditCourse = () => {
             Update Course
           </button>
         </form>
+        <Link 
+          to={`/courses/${id}/view`} 
+          className={`inline-block mt-4 px-4 py-2 rounded shadow-md font-semibold transition-transform transform ${isDarkMode ? 'bg-gray-600 hover:bg-gray-700 text-white' : 'bg-blue-500 hover:bg-blue-600 text-white'}`}>
+          Back to Course
+        </Link>
         <ToastContainer />
       </div>
     </div>

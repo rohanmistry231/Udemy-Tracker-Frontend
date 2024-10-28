@@ -44,6 +44,7 @@ const AddNotes = () => {
     <div className={`container mx-auto px-4 py-6 mt-10 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
       <div className={`shadow-md rounded-lg p-6 ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
         <h2 className="text-2xl font-bold mb-4">Add Notes for {courseName}</h2>
+        
         <form onSubmit={handleAddNote} className="space-y-4">
           <textarea
             value={question}
@@ -57,12 +58,22 @@ const AddNotes = () => {
             className={`border p-2 w-full h-24 ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
             placeholder="Enter your answer..."
           />
-          <button
-            type="submit"
-            className={`bg-green-500 text-white p-2 rounded hover:bg-green-600 ${isDarkMode ? 'hover:bg-green-400' : 'hover:bg-green-600'}`}
-          >
-            Add Note
-          </button>
+
+          {/* Button Container with Flexbox */}
+          <div className="flex space-x-2">
+            <button
+              type="submit"
+              className={`bg-green-500 text-white p-2 rounded hover:bg-green-600 ${isDarkMode ? 'hover:bg-green-400' : 'hover:bg-green-600'}`}
+            >
+              Add Note
+            </button>
+            <button
+              onClick={() => navigate('/courses')} // Adjust the path as necessary
+              className={`bg-blue-500 text-white p-2 rounded hover:bg-blue-600 ${isDarkMode ? 'hover:bg-blue-400' : 'hover:bg-blue-600'}`}
+            >
+              Back to Courses
+            </button>
+          </div>
         </form>
       </div>
     </div>

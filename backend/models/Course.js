@@ -14,15 +14,15 @@ const courseSchema = new mongoose.Schema({
   category: { type: String, required: true },
   categoryPriority: { 
     type: String, 
-    enum: ['High priority', 'Medium priority', 'Low priority'], 
+    enum: ['High priority', 'Medium priority', 'Low priority','Parallel Priority'], 
     default: 'Medium priority' 
   },
   subCategory: { type: String },
   subSubCategory: { type: String },
   importantStatus: { 
     type: String, 
-    enum: ['Important', 'Normal'], 
-    default: 'Normal' 
+    enum: ['Important', 'Very Important', 'Extra', 'Not Important'], 
+    default: 'Important' 
   },
   status: { 
     type: String, 

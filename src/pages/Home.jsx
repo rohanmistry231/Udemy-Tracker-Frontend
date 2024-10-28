@@ -1,6 +1,6 @@
 // src/pages/HomePage.js
 import React, { useEffect, useState } from 'react';
-import { Bar } from 'react-chartjs-2';
+import { Bar, Pie } from 'react-chartjs-2';
 import { useTheme } from '../context/ThemeContext';
 import axios from 'axios'; // For fetching backend data
 
@@ -26,6 +26,8 @@ const Home = () => {
   const [totalHours, setTotalHours] = useState(0);
   const [importantCourses, setImportantCourses] = useState([]);
   const [recentNotes, setRecentNotes] = useState([]);
+  const [categories, setCategories] = useState({});
+  const [subCategories, setSubCategories] = useState({});
 
   // Fetch data from backend
   useEffect(() => {
@@ -47,9 +49,23 @@ const Home = () => {
           .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
           .slice(0, 5);
         setRecentNotes(notes);
+
+        // Group courses by category and subcategory
+        const categoryCounts = groupBy(data, 'category');
+        const subCategoryCounts = groupBy(data, 'subCategory');
+        setCategories(categoryCounts);
+        setSubCategories(subCategoryCounts);
       })
       .catch(error => console.error('Error fetching courses:', error));
   }, []);
+
+  // Utility: Group data by key (category or subcategory)
+  const groupBy = (array, key) => {
+    return array.reduce((acc, item) => {
+      acc[item[key]] = (acc[item[key]] || 0) + 1;
+      return acc;
+    }, {});
+  };
 
   // Prepare data for course status chart
   const statusCounts = {
@@ -66,6 +82,17 @@ const Home = () => {
         data: Object.values(statusCounts),
         backgroundColor: ['#FF6384', '#36A2EB', '#4CAF50'],
         borderWidth: 1,
+      },
+    ],
+  };
+
+  const categoryData = {
+    labels: Object.keys(categories),
+    datasets: [
+      {
+        label: 'Courses per Category',
+        data: Object.values(categories),
+        backgroundColor: ['#FFCE56', '#66BB6A', '#42A5F5'],
       },
     ],
   };
@@ -100,6 +127,12 @@ const Home = () => {
           <h2 className="text-lg font-medium mb-4">Course Status Overview</h2>
           <div className="h-64">
             <Bar data={statusData} />
+          </div>
+        </div>
+        <div className={`p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+          <h2 className="text-lg font-medium mb-4">Courses by Category</h2>
+          <div className="h-64">
+            <Pie data={categoryData} />
           </div>
         </div>
       </div>

@@ -43,7 +43,9 @@ const ViewNotes = () => {
             <p>No notes available for this course.</p>
           )}
         </ul>
-        <Link to="/courses" className="text-blue-500 mb-4 inline-block mt-4">
+        <Link 
+          to="/courses" 
+          className={`inline-block mt-4 px-4 py-2 rounded-lg shadow-lg transition-transform transform font-semibold ${isDarkMode ? 'bg-gray-600 hover:bg-gray-700 text-white' : 'bg-blue-500 hover:bg-blue-600 text-white'}`}>
           Back to Courses
         </Link>
       </div>
