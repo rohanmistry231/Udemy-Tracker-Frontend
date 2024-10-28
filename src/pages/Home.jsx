@@ -1,8 +1,7 @@
-// src/pages/HomePage.js
 import React, { useEffect, useState } from 'react';
 import { Bar, Pie } from 'react-chartjs-2';
 import { useTheme } from '../context/ThemeContext';
-import axios from 'axios'; // For fetching backend data
+import axios from 'axios';
 
 import {
   Chart as ChartJS,
@@ -29,28 +28,23 @@ const Home = () => {
   const [categories, setCategories] = useState({});
   const [subCategories, setSubCategories] = useState({});
 
-  // Fetch data from backend
   useEffect(() => {
-    axios.get('http://localhost:5000/courses/') // Adjust endpoint if needed
+    axios.get('http://localhost:5000/courses/')
       .then((response) => {
         const data = response.data;
         setCourses(data);
 
-        // Calculate total learning hours
         const hours = data.reduce((acc, course) => acc + course.durationInHours, 0);
         setTotalHours(hours);
 
-        // Filter important courses
         const important = data.filter(course => course.importantStatus === 'Important');
         setImportantCourses(important);
 
-        // Extract recent notes (sorted by date)
         const notes = data.flatMap(course => course.notes)
           .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
           .slice(0, 5);
         setRecentNotes(notes);
 
-        // Group courses by category and subcategory
         const categoryCounts = groupBy(data, 'category');
         const subCategoryCounts = groupBy(data, 'subCategory');
         setCategories(categoryCounts);
@@ -59,7 +53,6 @@ const Home = () => {
       .catch(error => console.error('Error fetching courses:', error));
   }, []);
 
-  // Utility: Group data by key (category or subcategory)
   const groupBy = (array, key) => {
     return array.reduce((acc, item) => {
       acc[item[key]] = (acc[item[key]] || 0) + 1;
@@ -67,7 +60,6 @@ const Home = () => {
     }, {});
   };
 
-  // Prepare data for course status chart
   const statusCounts = {
     'Not Started Yet': courses.filter(c => c.status === 'Not Started Yet').length,
     'In Progress': courses.filter(c => c.status === 'In Progress').length,
@@ -97,68 +89,82 @@ const Home = () => {
     ],
   };
 
+  const categoryOptions = {
+    plugins: {
+      legend: {
+        position: 'right',
+        align: 'center',
+        labels: {
+          boxWidth: 10,
+          boxHeight: 10,
+        },
+      },
+    },
+    maintainAspectRatio: false,
+  };
+
   return (
     <div
-      className={`min-h-screen p-6 transition-colors duration-300 ${
+      className={`min-h-screen flex flex-col p-6 transition-colors duration-300 ${
         isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'
       }`}
     >
-      <h1 className="text-2xl font-bold text-center mb-6">Course Dashboard</h1>
+      <div className="flex-grow">
+        <h1 className="text-2xl font-bold text-center mb-6">Course Dashboard</h1>
 
-      {/* Overview Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className={`p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
-          <h2 className="text-lg font-medium">Total Courses</h2>
-          <p className="text-3xl font-semibold mt-2">{courses.length}</p>
-        </div>
-        <div className={`p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
-          <h2 className="text-lg font-medium">Total Learning Hours</h2>
-          <p className="text-3xl font-semibold mt-2">{totalHours} hrs</p>
-        </div>
-        <div className={`p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
-          <h2 className="text-lg font-medium">Important Courses</h2>
-          <p className="text-3xl font-semibold mt-2">{importantCourses.length}</p>
-        </div>
-      </div>
-
-      {/* Charts Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-        <div className={`p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
-          <h2 className="text-lg font-medium mb-4">Course Status Overview</h2>
-          <div className="h-64">
-            <Bar data={statusData} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className={`p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+            <h2 className="text-lg font-medium">Total Courses</h2>
+            <p className="text-3xl font-semibold mt-2">{courses.length}</p>
+          </div>
+          <div className={`p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+            <h2 className="text-lg font-medium">Total Learning Hours</h2>
+            <p className="text-3xl font-semibold mt-2">{totalHours} hrs</p>
+          </div>
+          <div className={`p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+            <h2 className="text-lg font-medium">Important Courses</h2>
+            <p className="text-3xl font-semibold mt-2">{importantCourses.length}</p>
           </div>
         </div>
-        <div className={`p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
-          <h2 className="text-lg font-medium mb-4">Courses by Category</h2>
-          <div className="h-64">
-            <Pie data={categoryData} />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+          <div className={`p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+            <h2 className="text-lg font-medium mb-4">Course Status Overview</h2>
+            <div className="h-64">
+              <Bar data={statusData} />
+            </div>
+          </div>
+          <div className={`p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+            <h2 className="text-lg font-medium mb-4">Courses by Category</h2>
+            <div className="h-64 flex">
+              <div className="w-2/3">
+                <Pie data={categoryData} options={categoryOptions} />
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Important Courses List */}
-      <div className={`mt-8 p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
-        <h2 className="text-lg font-medium mb-4">Important Courses</h2>
-        <ul className="list-disc list-inside">
-          {importantCourses.map(course => (
-            <li key={course.no}>{course.name}</li>
-          ))}
-        </ul>
-      </div>
+        <div className={`mt-8 p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+          <h2 className="text-lg font-medium mb-4">Important Courses</h2>
+          <ul className="list-disc list-inside">
+            {importantCourses.map(course => (
+              <li key={course.no}>{course.name}</li>
+            ))}
+          </ul>
+        </div>
 
-      {/* Recent Notes Section */}
-      <div className={`mt-8 p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
-        <h2 className="text-lg font-medium mb-4">Recent Notes</h2>
-        <ul className="space-y-2">
-          {recentNotes.map((note, index) => (
-            <li key={index}>
-              <p className="font-semibold">{note.question}</p>
-              <p className="text-sm">{note.answer}</p>
-              <p className="text-xs text-gray-400">{new Date(note.createdAt).toLocaleString()}</p>
-            </li>
-          ))}
-        </ul>
+        <div className={`mt-8 p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+          <h2 className="text-lg font-medium mb-4">Recent Notes</h2>
+          <ul className="space-y-2">
+            {recentNotes.map((note, index) => (
+              <li key={index}>
+                <p className="font-semibold">{note.question}</p>
+                <p className="text-sm">{note.answer}</p>
+                <p className="text-xs text-gray-400">{new Date(note.createdAt).toLocaleString()}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
