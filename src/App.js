@@ -10,6 +10,7 @@ import ViewCourse from "./pages/ViewCourse"; // Import the AddCourse page
 import AddNotes from "./pages/AddNotes"; // Import the AddCourse page
 import ViewNotes from "./pages/ViewNotes"; // Import the AddCourse page
 import { ThemeProvider, useTheme } from "./context/ThemeContext"; // Import ThemeContext
+import Home from "./pages/Home";
 
 function App() {
   const { isDarkMode } = useTheme(); // Get isDarkMode from ThemeContext
@@ -30,6 +31,7 @@ function App() {
         <Navbar />
         <main className="flex-grow">
           <Routes>
+            <Route path="/" element={<Home />} />
             <Route path="/courses" element={<Courses courses={courses} />} />
             <Route
               path="/add-course"
