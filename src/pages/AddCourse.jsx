@@ -1,14 +1,14 @@
 // src/pages/AddCourse.js
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Import styles for toast
+import 'react-toastify/dist/ReactToastify.css';
 
 const AddCourse = ({ onAdd }) => {
   const [courseData, setCourseData] = useState({
-    no: 0, // Start from 0 or adjust as needed
+    no: '', // Make it blank and editable
     name: '',
     category: '',
-    categoryPriority: 'Medium priority', // Default value
+    categoryPriority: 'Medium priority',
     subCategory: '',
     subSubCategory: '',
     importantStatus: 'Normal',
@@ -38,7 +38,6 @@ const AddCourse = ({ onAdd }) => {
     'Version Control',
   ];
 
-  // Define priority for each category
   const categoryPriorities = {
     'Data Science': 'High priority',
     'Database': 'High priority',
@@ -250,24 +249,6 @@ const AddCourse = ({ onAdd }) => {
     ],
   };
 
-  useEffect(() => {
-    const fetchCoursesCount = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/courses'); // Adjust this URL if needed
-        const courses = await response.json();
-        const courseCount = courses.length;
-        setCourseData((prevData) => ({
-          ...prevData,
-          no: courseCount + 1, // Automatically set to the next course number
-        }));
-      } catch (error) {
-        console.error('Error fetching courses count:', error);
-      }
-    };
-
-    fetchCoursesCount(); // Fetch the current number of courses when component mounts
-  }, []);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -324,7 +305,7 @@ const AddCourse = ({ onAdd }) => {
 
         // Reset form
         setCourseData({
-          no: 0, // Reset to default or adjust
+          no: '', // Reset to default or adjust
           name: '',
           category: '',
           categoryPriority: 'Medium priority', // Reset to default value
@@ -357,8 +338,8 @@ const AddCourse = ({ onAdd }) => {
             id="no"
             name="no"
             value={courseData.no}
-            readOnly // Make the input read-only
-            className="border p-2 rounded w-full bg-gray-200" // Gray background to indicate it's read-only
+            onChange={handleChange} // Now editable
+            className="border p-2 rounded w-full"
           />
         </div>
         <div className="mb-4">
