@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Bar, Pie } from 'react-chartjs-2';
+import { Bar, Pie, Line } from 'react-chartjs-2';
 import { useTheme } from '../context/ThemeContext';
 import axios from 'axios';
 import { Link } from 'react-router-dom'; // Import Link from react-router-dom
@@ -26,6 +26,8 @@ const Home = () => {
   const [totalHours, setTotalHours] = useState(0);
   const [importantCourses, setImportantCourses] = useState([]);
   const [categories, setCategories] = useState({});
+  const [skills, setSkills] = useState({});
+  const [completionTrend, setCompletionTrend] = useState([]);
 
   useEffect(() => {
     axios.get('http://localhost:5000/courses/')
@@ -33,6 +35,7 @@ const Home = () => {
         const data = response.data;
         setCourses(data);
 
+        // Calculate total hours and important courses
         const hours = data.reduce((acc, course) => acc + course.durationInHours, 0);
         setTotalHours(hours);
 
@@ -41,6 +44,13 @@ const Home = () => {
 
         const categoryCounts = groupBy(data, 'category');
         setCategories(categoryCounts);
+
+        const skillCounts = groupBy(data, 'skills'); // Assuming skills are stored in an array
+        setSkills(skillCounts);
+
+        // Set completion trend over the past months
+        const trendData = calculateCompletionTrend(data);
+        setCompletionTrend(trendData);
       })
       .catch(error => console.error('Error fetching courses:', error));
   }, []);
@@ -50,6 +60,16 @@ const Home = () => {
       acc[item[key]] = (acc[item[key]] || 0) + 1;
       return acc;
     }, {});
+  };
+
+  const calculateCompletionTrend = (courses) => {
+    // Assuming courses have a completion date to calculate monthly trends
+    const monthTrend = {};
+    courses.forEach(course => {
+      const month = new Date(course.completionDate).toLocaleString('default', { month: 'long', year: 'numeric' });
+      monthTrend[month] = (monthTrend[month] || 0) + (course.status === 'Completed' ? 1 : 0);
+    });
+    return monthTrend;
   };
 
   const statusCounts = {
@@ -77,6 +97,30 @@ const Home = () => {
         label: 'Courses per Category',
         data: Object.values(categories),
         backgroundColor: ['#FFCE56', '#66BB6A', '#42A5F5'],
+      },
+    ],
+  };
+
+  const skillsData = {
+    labels: Object.keys(skills),
+    datasets: [
+      {
+        label: 'Skills Progress',
+        data: Object.values(skills),
+        backgroundColor: '#FFA500',
+      },
+    ],
+  };
+
+  const completionTrendData = {
+    labels: Object.keys(completionTrend),
+    datasets: [
+      {
+        label: 'Completion Trend',
+        data: Object.values(completionTrend),
+        fill: false,
+        backgroundColor: '#4CAF50',
+        borderColor: '#4CAF50',
       },
     ],
   };
@@ -134,6 +178,21 @@ const Home = () => {
               <div className="w-2/3">
                 <Pie data={categoryData} options={categoryOptions} />
               </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+          <div className={`p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+            <h2 className="text-lg font-medium mb-4">Skills Progress</h2>
+            <div className="h-64">
+              <Bar data={skillsData} />
+            </div>
+          </div>
+          <div className={`p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+            <h2 className="text-lg font-medium mb-4">Completion Trend Over Time</h2>
+            <div className="h-64">
+              <Line data={completionTrendData} />
             </div>
           </div>
         </div>

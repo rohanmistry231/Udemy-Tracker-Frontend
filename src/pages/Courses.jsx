@@ -1,4 +1,3 @@
-// src/pages/Courses.js
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext"; // Import theme context
@@ -8,8 +7,9 @@ const Courses = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState(""); // Filter by course status
   const [importantFilter, setImportantFilter] = useState(""); // Filter by important status
-  const [durationFilter, setDurationFilter] = useState(""); // Filter by duration
-  const [priorityFilter, setPriorityFilter] = useState(""); // Filter by priority
+  const [sortOrder, setSortOrder] = useState(""); // Sorting order
+  const [currentPage, setCurrentPage] = useState(1); // Current page state
+  const coursesPerPage = 6; // Number of courses to display per page
 
   const navigate = useNavigate();
   const { theme } = useTheme(); // Use theme context
@@ -30,24 +30,22 @@ const Courses = () => {
     fetchCourses();
   }, []);
 
-  // Filter courses based on search term and selected filters
-  const filteredCourses = courses.filter(
-    (course) =>
-      course.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (statusFilter === "" || course.status === statusFilter) &&
-      (importantFilter === "" || course.importantStatus === importantFilter) &&
-      (durationFilter === "" ||
-        (durationFilter === "short"
-          ? course.durationInHours < 10
-          : durationFilter === "medium"
-          ? course.durationInHours >= 10 && course.durationInHours <= 30
-          : durationFilter === "long"
-          ? course.durationInHours > 30 && course.durationInHours <= 50
-          : durationFilter === "extraLong"
-          ? course.durationInHours > 50
-          : true)) &&
-      (priorityFilter === "" || course.categoryPriority === priorityFilter) // Include priority filter
-  );
+  // Filter and sort courses based on search term and selected filters
+  const filteredCourses = courses
+    .filter(
+      (course) =>
+        course.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        (statusFilter === "" || course.status === statusFilter) &&
+        (importantFilter === "" || course.importantStatus === importantFilter)
+    )
+    .sort((a, b) => {
+      if (sortOrder === "lowToHigh") {
+        return a.durationInHours - b.durationInHours; // Sort from low to high
+      } else if (sortOrder === "highToLow") {
+        return b.durationInHours - a.durationInHours; // Sort from high to low
+      }
+      return 0; // No sorting
+    });
 
   // Handle course deletion
   const handleDelete = async (id) => {
@@ -63,6 +61,22 @@ const Courses = () => {
         console.error("Error deleting course:", error);
       }
     }
+  };
+
+  // Calculate the index of the first course on the current page
+  const indexOfLastCourse = currentPage * coursesPerPage;
+  const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;
+
+  // Get current courses
+  const currentCourses = filteredCourses.slice(indexOfFirstCourse, indexOfLastCourse);
+
+  // Calculate total pages
+  const totalPages = Math.ceil(filteredCourses.length / coursesPerPage);
+
+  // Function to handle page change and scroll to top
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    window.scrollTo(0, 0); // Scroll to the top of the page
   };
 
   return (
@@ -118,38 +132,19 @@ const Courses = () => {
           <option value="Very Important">Very Important</option>
         </select>
 
-        {/* Duration Filter */}
+        {/* Sort Order Filter */}
         <select
           className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
             isDarkMode
               ? "bg-gray-800 text-white border-gray-700"
               : "bg-white text-black border-gray-300"
           }`}
-          value={durationFilter}
-          onChange={(e) => setDurationFilter(e.target.value)}
+          value={sortOrder}
+          onChange={(e) => setSortOrder(e.target.value)}
         >
-          <option value="">All Durations</option>
-          <option value="short">Less than 10 hrs</option>
-          <option value="medium">10-30 hrs</option>
-          <option value="long">30-50 hrs</option>
-          <option value="extraLong">More than 50 hrs</option>
-        </select>
-
-        {/* Priority Filter */}
-        <select
-          className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
-            isDarkMode
-              ? "bg-gray-800 text-white border-gray-700"
-              : "bg-white text-black border-gray-300"
-          }`}
-          value={priorityFilter}
-          onChange={(e) => setPriorityFilter(e.target.value)}
-        >
-          <option value="">All Priorities</option>
-          <option value="High priority">High priority</option>
-          <option value="Medium priority">Medium priority</option>
-          <option value="Low priority">Low priority</option>
-          <option value="Parallel priority">Parallel priority</option>
+          <option value="">Sort by Duration</option>
+          <option value="lowToHigh">Low to High</option>
+          <option value="highToLow">High to Low</option>
         </select>
 
         <Link to="/add-course" className="w-full sm:w-auto">
@@ -173,7 +168,7 @@ const Courses = () => {
         Courses List
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredCourses.map((course) => (
+        {currentCourses.map((course) => (
           <div
             key={course._id}
             onClick={() => navigate(`/courses/${course._id}/view`)} // Make the card clickable
@@ -227,7 +222,7 @@ const Courses = () => {
                 View Notes
               </button>
               <button
-              onClick={(e) => {
+                onClick={(e) => {
                   e.stopPropagation(); // Prevent card click from triggering
                   navigate(`/courses/${course._id}/add-notes`);
                 }}
@@ -242,24 +237,11 @@ const Courses = () => {
               <button
                 onClick={(e) => {
                   e.stopPropagation(); // Prevent card click from triggering
-                  navigate(`/courses/${course._id}/edit`);
-                }}
-                className={`p-2 rounded ${
-                  isDarkMode
-                    ? "bg-blue-700 hover:bg-blue-800"
-                    : "bg-blue-500 hover:bg-blue-600"
-                } text-white`}
-              >
-                Update Course
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent card click from triggering
                   handleDelete(course._id);
                 }}
                 className={`p-2 rounded ${
                   isDarkMode
-                    ? "bg-red-600 hover:bg-red-700"
+                    ? "bg-red-700 hover:bg-red-800"
                     : "bg-red-500 hover:bg-red-600"
                 } text-white`}
               >
@@ -268,6 +250,27 @@ const Courses = () => {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Pagination Controls */}
+      <div className="flex justify-between items-center mt-6">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className={`p-2 rounded ${isDarkMode ? "bg-gray-700" : "bg-gray-300"}`}
+        >
+          Previous
+        </button>
+        <span className={`${isDarkMode ? "text-white" : "text-black"}`}>
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className={`p-2 rounded ${isDarkMode ? "bg-gray-700" : "bg-gray-300"}`}
+        >
+          Next
+        </button>
       </div>
     </div>
   );
