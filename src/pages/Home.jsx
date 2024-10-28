@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Bar, Pie } from 'react-chartjs-2';
 import { useTheme } from '../context/ThemeContext';
 import axios from 'axios';
+import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 
 import {
   Chart as ChartJS,
@@ -24,9 +25,7 @@ const Home = () => {
   const [courses, setCourses] = useState([]);
   const [totalHours, setTotalHours] = useState(0);
   const [importantCourses, setImportantCourses] = useState([]);
-  const [recentNotes, setRecentNotes] = useState([]);
   const [categories, setCategories] = useState({});
-  const [subCategories, setSubCategories] = useState({});
 
   useEffect(() => {
     axios.get('http://localhost:5000/courses/')
@@ -40,15 +39,8 @@ const Home = () => {
         const important = data.filter(course => course.importantStatus === 'Important');
         setImportantCourses(important);
 
-        const notes = data.flatMap(course => course.notes)
-          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-          .slice(0, 5);
-        setRecentNotes(notes);
-
         const categoryCounts = groupBy(data, 'category');
-        const subCategoryCounts = groupBy(data, 'subCategory');
         setCategories(categoryCounts);
-        setSubCategories(subCategoryCounts);
       })
       .catch(error => console.error('Error fetching courses:', error));
   }, []);
@@ -113,10 +105,12 @@ const Home = () => {
         <h1 className="text-2xl font-bold text-center mb-6">Course Dashboard</h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className={`p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+          {/* Total Courses Card */}
+          <Link to="/courses" className={`p-4 rounded-md shadow-md cursor-pointer ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
             <h2 className="text-lg font-medium">Total Courses</h2>
             <p className="text-3xl font-semibold mt-2">{courses.length}</p>
-          </div>
+          </Link>
+
           <div className={`p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
             <h2 className="text-lg font-medium">Total Learning Hours</h2>
             <p className="text-3xl font-semibold mt-2">{totalHours} hrs</p>
@@ -142,28 +136,6 @@ const Home = () => {
               </div>
             </div>
           </div>
-        </div>
-
-        <div className={`mt-8 p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
-          <h2 className="text-lg font-medium mb-4">Important Courses</h2>
-          <ul className="list-disc list-inside">
-            {importantCourses.map(course => (
-              <li key={course.no}>{course.name}</li>
-            ))}
-          </ul>
-        </div>
-
-        <div className={`mt-8 p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
-          <h2 className="text-lg font-medium mb-4">Recent Notes</h2>
-          <ul className="space-y-2">
-            {recentNotes.map((note, index) => (
-              <li key={index}>
-                <p className="font-semibold">{note.question}</p>
-                <p className="text-sm">{note.answer}</p>
-                <p className="text-xs text-gray-400">{new Date(note.createdAt).toLocaleString()}</p>
-              </li>
-            ))}
-          </ul>
         </div>
       </div>
     </div>

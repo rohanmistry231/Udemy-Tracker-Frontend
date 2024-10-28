@@ -9,6 +9,7 @@ const Courses = () => {
   const [statusFilter, setStatusFilter] = useState(""); // Filter by course status
   const [importantFilter, setImportantFilter] = useState(""); // Filter by important status
   const [durationFilter, setDurationFilter] = useState(""); // Filter by duration
+  const [priorityFilter, setPriorityFilter] = useState(""); // Filter by priority
 
   const navigate = useNavigate();
   const { theme } = useTheme(); // Use theme context
@@ -44,7 +45,8 @@ const Courses = () => {
           ? course.durationInHours > 30 && course.durationInHours <= 50
           : durationFilter === "extraLong"
           ? course.durationInHours > 50
-          : true))
+          : true)) &&
+      (priorityFilter === "" || course.categoryPriority === priorityFilter) // Include priority filter
   );
 
   // Handle course deletion
@@ -117,7 +119,6 @@ const Courses = () => {
         </select>
 
         {/* Duration Filter */}
-        {/* Duration Filter */}
         <select
           className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
             isDarkMode
@@ -132,6 +133,23 @@ const Courses = () => {
           <option value="medium">10-30 hrs</option>
           <option value="long">30-50 hrs</option>
           <option value="extraLong">More than 50 hrs</option>
+        </select>
+
+        {/* Priority Filter */}
+        <select
+          className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
+            isDarkMode
+              ? "bg-gray-800 text-white border-gray-700"
+              : "bg-white text-black border-gray-300"
+          }`}
+          value={priorityFilter}
+          onChange={(e) => setPriorityFilter(e.target.value)}
+        >
+          <option value="">All Priorities</option>
+          <option value="High priority">High priority</option>
+          <option value="Medium priority">Medium priority</option>
+          <option value="Low priority">Low priority</option>
+          <option value="Parallel priority">Parallel priority</option>
         </select>
 
         <Link to="/add-course" className="w-full sm:w-auto">
@@ -158,7 +176,8 @@ const Courses = () => {
         {filteredCourses.map((course) => (
           <div
             key={course._id}
-            className={`shadow-md rounded-lg p-4 ${
+            onClick={() => navigate(`/courses/${course._id}/view`)} // Make the card clickable
+            className={`shadow-md rounded-lg p-4 cursor-pointer ${
               isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
             }`}
           >
@@ -184,20 +203,21 @@ const Courses = () => {
             >
               Duration: {course.durationInHours} hrs
             </p>
+            <p
+              className={`text-gray-600 ${
+                isDarkMode ? "text-gray-400" : "text-gray-600"
+              }`}
+            >
+              Priority: {course.categoryPriority}
+            </p>
 
             <div className="flex flex-wrap gap-2 mt-4">
+              {/* Remove View Course button */}
               <button
-                onClick={() => navigate(`/courses/${course._id}/view`)}
-                className={`p-2 rounded ${
-                  isDarkMode
-                    ? "bg-green-700 hover:bg-green-800"
-                    : "bg-green-500 hover:bg-green-600"
-                } text-white`}
-              >
-                View Course
-              </button>
-              <button
-                onClick={() => navigate(`/courses/${course._id}/notes`)}
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent card click from triggering
+                  navigate(`/courses/${course._id}/notes`);
+                }}
                 className={`p-2 rounded ${
                   isDarkMode
                     ? "bg-purple-700 hover:bg-purple-800"
@@ -207,7 +227,10 @@ const Courses = () => {
                 View Notes
               </button>
               <button
-                onClick={() => navigate(`/courses/${course._id}/add-notes`)}
+              onClick={(e) => {
+                  e.stopPropagation(); // Prevent card click from triggering
+                  navigate(`/courses/${course._id}/add-notes`);
+                }}
                 className={`p-2 rounded ${
                   isDarkMode
                     ? "bg-yellow-700 hover:bg-yellow-800"
@@ -217,7 +240,10 @@ const Courses = () => {
                 Add Notes
               </button>
               <button
-                onClick={() => navigate(`/courses/${course._id}/edit`)}
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent card click from triggering
+                  navigate(`/courses/${course._id}/edit`);
+                }}
                 className={`p-2 rounded ${
                   isDarkMode
                     ? "bg-blue-700 hover:bg-blue-800"
@@ -227,10 +253,13 @@ const Courses = () => {
                 Update Course
               </button>
               <button
-                onClick={() => handleDelete(course._id)}
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent card click from triggering
+                  handleDelete(course._id);
+                }}
                 className={`p-2 rounded ${
                   isDarkMode
-                    ? "bg-red-700 hover:bg-red-800"
+                    ? "bg-red-600 hover:bg-red-700"
                     : "bg-red-500 hover:bg-red-600"
                 } text-white`}
               >

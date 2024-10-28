@@ -73,9 +73,8 @@ const EditCourse = () => {
             name="no"
             value={course.no}
             onChange={handleChange}
-            className="border p-2 w-full bg-gray-100 cursor-not-allowed"
+            className={`border p-2 w-full ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
             placeholder="Course Number"
-            readOnly
           />
           <input
             type="text"
