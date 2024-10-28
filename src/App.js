@@ -1,25 +1,56 @@
-import logo from './logo.svg';
-import './App.css';
+// src/App.js
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import Courses from "./pages/Courses";
+import AddCourse from "./pages/AddCourse"; // Import the AddCourse page
+import EditCourse from "./pages/EditCourse"; // Import the AddCourse page
+import ViewCourse from "./pages/ViewCourse"; // Import the AddCourse page
+import AddNotes from "./pages/AddNotes"; // Import the AddCourse page
+import ViewNotes from "./pages/ViewNotes"; // Import the AddCourse page
+import { ThemeProvider, useTheme } from "./context/ThemeContext"; // Import ThemeContext
 
 function App() {
+  const { isDarkMode } = useTheme(); // Get isDarkMode from ThemeContext
+  const [courses, setCourses] = useState([]); // State to store courses
+
+  // Define the onAdd function to add a new course
+  const handleAddCourse = (newCourse) => {
+    setCourses((prevCourses) => [...prevCourses, newCourse]);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div
+        className={`flex flex-col min-h-screen ${
+          isDarkMode ? "dark" : "light"
+        }`}
+      >
+        <Navbar />
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/courses" element={<Courses courses={courses} />} />
+            <Route
+              path="/add-course"
+              element={<AddCourse onAdd={handleAddCourse} />} // Pass handleAddCourse as prop
+            />
+            <Route path="/courses/:id/view" element={<ViewCourse />} />
+            <Route path="/courses/:id/edit" element={<EditCourse />} />
+            <Route path="/courses/:id/add-notes" element={<AddNotes />} />
+            <Route path="/courses/:id/notes" element={<ViewNotes />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </Router>
   );
 }
 
-export default App;
+const MainApp = () => (
+  <ThemeProvider>
+    <App />
+  </ThemeProvider>
+);
+
+export default MainApp;
