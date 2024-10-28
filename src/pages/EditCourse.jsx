@@ -1,10 +1,15 @@
 // src/pages/EditCourse.js
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useTheme } from '../context/ThemeContext'; // Import theme context
 
 const EditCourse = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { theme } = useTheme(); // Use theme context
+  const isDarkMode = theme === 'dark'; // Check if dark mode is enabled
   const [course, setCourse] = useState({
     no: '',
     name: '',
@@ -27,6 +32,7 @@ const EditCourse = () => {
         setCourse(data);
       } catch (error) {
         console.error('Error fetching course:', error);
+        toast.error('Error fetching course data');
       }
     };
     fetchCourse();
@@ -49,87 +55,95 @@ const EditCourse = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(course),
       });
+      toast.success('Course updated successfully!');
       navigate(`/courses/${id}/view`); // Redirect to updated course view
     } catch (error) {
       console.error('Error updating course:', error);
+      toast.error('Error updating course data');
     }
   };
 
   return (
-    <div className="container mx-auto px-4 py-6 mt-8">
-      <h2 className="text-3xl font-bold mb-4">Edit Course</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="number"
-          name="no"
-          value={course.no}
-          onChange={handleChange}
-          className="border p-2 w-full"
-          placeholder="Course Number"
-        />
-        <input
-          type="text"
-          name="name"
-          value={course.name}
-          onChange={handleChange}
-          className="border p-2 w-full"
-          placeholder="Course Name"
-        />
-        <input
-          type="text"
-          name="category"
-          value={course.category}
-          onChange={handleChange}
-          className="border p-2 w-full"
-          placeholder="Category"
-        />
-        <select
-          name="categoryPriority"
-          value={course.categoryPriority}
-          onChange={handleChange}
-          className="border p-2 w-full"
-        >
-          <option value="High priority">High priority</option>
-          <option value="Medium priority">Medium priority</option>
-          <option value="Low priority">Low priority</option>
-        </select>
-        <input
-          type="text"
-          name="subCategory"
-          value={course.subCategory}
-          onChange={handleChange}
-          className="border p-2 w-full"
-          placeholder="Sub-Category"
-        />
-        <input
-          type="text"
-          name="subSubCategory"
-          value={course.subSubCategory}
-          onChange={handleChange}
-          className="border p-2 w-full"
-          placeholder="Sub-Sub-Category"
-        />
-        <select
-          name="importantStatus"
-          value={course.importantStatus}
-          onChange={handleChange}
-          className="border p-2 w-full"
-        >
-          <option value="Important">Important</option>
-          <option value="Normal">Normal</option>
-        </select>
-        <input
-          type="text"
-          name="subLearningSkillsSet"
-          value={course.subLearningSkillsSet.join(',')}
-          onChange={handleSkillsChange}
-          className="border p-2 w-full"
-          placeholder="Sub Learning Skills Set (comma-separated)"
-        />
-        <button type="submit" className="bg-blue-500 text-white p-2 rounded">
-          Update Course
-        </button>
-      </form>
+    <div className={`container mx-auto px-4 py-6 mt-8 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
+      <div className={`shadow-md rounded-lg p-6 ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
+        <h2 className="text-3xl font-bold mb-4">Edit Course</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="number"
+            name="no"
+            value={course.no}
+            onChange={handleChange}
+            className="border p-2 w-full bg-gray-100 cursor-not-allowed"
+            placeholder="Course Number"
+            readOnly
+          />
+          <input
+            type="text"
+            name="name"
+            value={course.name}
+            onChange={handleChange}
+            className={`border p-2 w-full ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
+            placeholder="Course Name"
+            required
+          />
+          <input
+            type="text"
+            name="category"
+            value={course.category}
+            onChange={handleChange}
+            className={`border p-2 w-full ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
+            placeholder="Category"
+            required
+          />
+          <select
+            name="categoryPriority"
+            value={course.categoryPriority}
+            onChange={handleChange}
+            className={`border p-2 w-full ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
+          >
+            <option value="High priority">High priority</option>
+            <option value="Medium priority">Medium priority</option>
+            <option value="Low priority">Low priority</option>
+          </select>
+          <input
+            type="text"
+            name="subCategory"
+            value={course.subCategory}
+            onChange={handleChange}
+            className={`border p-2 w-full ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
+            placeholder="Sub-Category"
+          />
+          <input
+            type="text"
+            name="subSubCategory"
+            value={course.subSubCategory}
+            onChange={handleChange}
+            className={`border p-2 w-full ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
+            placeholder="Sub-Sub-Category"
+          />
+          <select
+            name="importantStatus"
+            value={course.importantStatus}
+            onChange={handleChange}
+            className={`border p-2 w-full ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
+          >
+            <option value="Important">Important</option>
+            <option value="Normal">Normal</option>
+          </select>
+          <input
+            type="text"
+            name="subLearningSkillsSet"
+            value={course.subLearningSkillsSet.join(',')}
+            onChange={handleSkillsChange}
+            className={`border p-2 w-full ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
+            placeholder="Sub Learning Skills Set (comma-separated)"
+          />
+          <button type="submit" className={`bg-blue-500 text-white p-2 rounded ${isDarkMode ? 'hover:bg-blue-600' : 'hover:bg-blue-400'}`}>
+            Update Course
+          </button>
+        </form>
+        <ToastContainer />
+      </div>
     </div>
   );
 };

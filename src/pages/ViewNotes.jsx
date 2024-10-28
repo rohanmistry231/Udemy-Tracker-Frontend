@@ -1,9 +1,12 @@
 // src/pages/ViewNotes.js
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext'; // Import theme context
 
 const ViewNotes = () => {
   const { id } = useParams(); // Get course ID from URL
+  const { theme } = useTheme(); // Use theme context
+  const isDarkMode = theme === 'dark'; // Check if dark mode is enabled
   const [notes, setNotes] = useState([]);
 
   // Fetch notes for the specific course
@@ -25,23 +28,25 @@ const ViewNotes = () => {
   }, [id]);
 
   return (
-    <div className="container mx-auto px-4 py-6 mt-10">
-      <h2 className="text-2xl mb-4">Notes</h2>
-      <ul className="space-y-4">
-        {notes.length > 0 ? (
-          notes.map((note, index) => (
-            <li key={index} className="border-b py-4">
-              <h3 className="font-bold text-lg">{note.question}</h3>
-              <p className="text-gray-600">{note.answer}</p>
-            </li>
-          ))
-        ) : (
-          <p>No notes available for this course.</p>
-        )}
-      </ul>
-      <Link to="/courses" className="text-blue-500 mb-4 inline-block mt-4">
-        Back to Courses
-      </Link>
+    <div className={`container mx-auto px-4 py-6 mt-10 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
+      <div className={`shadow-md rounded-lg p-6 ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
+        <h2 className="text-2xl mb-4">Notes</h2>
+        <ul className="space-y-4">
+          {notes.length > 0 ? (
+            notes.map((note, index) => (
+              <li key={index} className={`border-b py-4 ${isDarkMode ? 'border-gray-700' : 'border-gray-300'}`}>
+                <h3 className="font-bold text-lg">{note.question}</h3>
+                <p className="text-gray-600">{note.answer}</p>
+              </li>
+            ))
+          ) : (
+            <p>No notes available for this course.</p>
+          )}
+        </ul>
+        <Link to="/courses" className="text-blue-500 mb-4 inline-block mt-4">
+          Back to Courses
+        </Link>
+      </div>
     </div>
   );
 };

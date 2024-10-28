@@ -1,10 +1,13 @@
 // src/pages/AddNotes.js
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext'; // Import theme context
 
 const AddNotes = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { theme } = useTheme(); // Use theme context
+  const isDarkMode = theme === 'dark'; // Check if dark mode is enabled
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
   const [courseName, setCourseName] = useState('');
@@ -38,29 +41,30 @@ const AddNotes = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-6 mt-10">
-      <h2 className="text-2xl font-bold mb-4">Add Notes for {courseName}</h2>
-      <form onSubmit={handleAddNote} className="space-y-4">
-        <textarea
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          className="border p-2 w-full h-24"
-          placeholder="Enter your question..."
-        />
-        <textarea
-          value={answer}
-          onChange={(e) => setAnswer(e.target.value)}
-          className="border p-2 w-full h-24"
-          placeholder="Enter your answer..."
-        />
-
-        <button
-          type="submit"
-          className="bg-green-500 text-white p-2 rounded hover:bg-green-600"
-        >
-          Add Note
-        </button>
-      </form>
+    <div className={`container mx-auto px-4 py-6 mt-10 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
+      <div className={`shadow-md rounded-lg p-6 ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
+        <h2 className="text-2xl font-bold mb-4">Add Notes for {courseName}</h2>
+        <form onSubmit={handleAddNote} className="space-y-4">
+          <textarea
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            className={`border p-2 w-full h-24 ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
+            placeholder="Enter your question..."
+          />
+          <textarea
+            value={answer}
+            onChange={(e) => setAnswer(e.target.value)}
+            className={`border p-2 w-full h-24 ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
+            placeholder="Enter your answer..."
+          />
+          <button
+            type="submit"
+            className={`bg-green-500 text-white p-2 rounded hover:bg-green-600 ${isDarkMode ? 'hover:bg-green-400' : 'hover:bg-green-600'}`}
+          >
+            Add Note
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
