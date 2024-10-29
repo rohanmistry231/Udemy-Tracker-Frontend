@@ -10,7 +10,7 @@ const Footer = () => {
     <footer
       className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} text-${
         isDarkMode ? 'white' : 'gray-800'
-      } py-6 shadow-[0_4px_8px_0px_rgba(0,0,0,0.1)]`}
+      } py-4 shadow-[0_4px_8px_0px_rgba(0,0,0,0.4)]`}
     >
       <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center">
         {/* Left: Brand and Copyright */}

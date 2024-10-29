@@ -129,6 +129,16 @@ const ViewCourse = () => {
             Edit Course
           </Link>
           <Link
+            to={`/courses/${course._id}/add-notes`} // Adjust the path to point to AddNotes page
+            className={`p-2 rounded ${
+              isDarkMode
+                ? 'bg-green-600 hover:bg-green-700'
+                : 'bg-green-500 hover:bg-green-600'
+            } text-white transition`}
+          >
+            Add Notes
+          </Link>
+          <Link
             to="/courses"
             className={`p-2 rounded ${
               isDarkMode

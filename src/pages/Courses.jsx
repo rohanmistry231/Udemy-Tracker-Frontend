@@ -9,6 +9,8 @@ const Courses = () => {
   const [importantFilter, setImportantFilter] = useState(""); // Filter by important status
   const [sortOrder, setSortOrder] = useState(""); // Sorting order
   const [currentPage, setCurrentPage] = useState(1); // Current page state
+  const [categoryFilter, setCategoryFilter] = useState(""); // Filter by category
+  const [subCategoryFilter, setSubCategoryFilter] = useState(""); // Filter by sub-category
   const coursesPerPage = 12; // Number of courses to display per page
 
   const navigate = useNavigate();
@@ -30,13 +32,26 @@ const Courses = () => {
     fetchCourses();
   }, []);
 
+  // Filtered list of sub-categories based on selected category
+  const getSubCategories = () => {
+    const selectedCategoryCourses = courses.filter(
+      (course) => course.category === categoryFilter
+    );
+    const subCategories = selectedCategoryCourses.map(
+      (course) => course.subCategory
+    );
+    return [...new Set(subCategories)];
+  };
+
   // Filter and sort courses based on search term and selected filters
   const filteredCourses = courses
     .filter(
       (course) =>
         course.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
         (statusFilter === "" || course.status === statusFilter) &&
-        (importantFilter === "" || course.importantStatus === importantFilter)
+        (importantFilter === "" || course.importantStatus === importantFilter) &&
+        (categoryFilter === "" || course.category === categoryFilter) &&
+        (subCategoryFilter === "" || course.subCategory === subCategoryFilter)
     )
     .sort((a, b) => {
       if (sortOrder === "lowToHigh") {
@@ -81,12 +96,20 @@ const Courses = () => {
 
   return (
     <div
-      className={`container mx-auto px-4 py-6 mt-10 ${
+      className={`container mx-auto px-4 py-6 mt-12 ${
         isDarkMode ? "bg-gray-900" : "bg-white"
       }`}
     >
+      <h2
+        className={`text-3xl font-semibold mb-6 text-center ${
+          isDarkMode ? "text-white" : "text-gray-800"
+        }`}
+      >
+        📚 Courses List 📚
+      </h2>
+
       {/* Search and Filters */}
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-4 space-y-4 sm:space-y-0">
         <input
           type="text"
           placeholder="Search courses..."
@@ -98,6 +121,50 @@ const Courses = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
+
+        {/* Category Filter */}
+        <select
+          className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
+            isDarkMode
+              ? "bg-gray-800 text-white border-gray-700"
+              : "bg-white text-black border-gray-300"
+          }`}
+          value={categoryFilter}
+          onChange={(e) => {
+            setCategoryFilter(e.target.value);
+            setSubCategoryFilter(""); // Reset sub-category when category changes
+          }}
+        >
+          <option value="">All Categories</option>
+          {/* Generate unique category options */}
+          {[...new Set(courses.map((course) => course.category))].map(
+            (category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            )
+          )}
+        </select>
+
+        {/* Sub-category Filter */}
+        <select
+          className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
+            isDarkMode
+              ? "bg-gray-800 text-white border-gray-700"
+              : "bg-white text-black border-gray-300"
+          }`}
+          value={subCategoryFilter}
+          onChange={(e) => setSubCategoryFilter(e.target.value)}
+          disabled={!categoryFilter} // Disable if no category is selected
+        >
+          <option value="">All Sub-categories</option>
+          {/* Render sub-categories based on selected category */}
+          {getSubCategories().map((subCategory) => (
+            <option key={subCategory} value={subCategory}>
+              {subCategory}
+            </option>
+          ))}
+        </select>
 
         {/* Status Filter */}
         <select
@@ -162,12 +229,7 @@ const Courses = () => {
       </div>
 
       {/* Courses List */}
-      <h2
-        className={`text-2xl mb-4 ${isDarkMode ? "text-white" : "text-black"}`}
-      >
-        Courses List
-      </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
         {currentCourses.map((course) => (
           <div
             key={course._id}
@@ -183,6 +245,13 @@ const Courses = () => {
               }`}
             >
               Category: {course.category}
+            </p>
+            <p
+              className={`text-gray-600 ${
+                isDarkMode ? "text-gray-400" : "text-gray-600"
+              }`}
+            >
+              Sub-category: {course.subCategory}
             </p>
             <p
               className={`text-gray-600 ${
@@ -207,7 +276,6 @@ const Courses = () => {
             </p>
 
             <div className="flex flex-wrap gap-2 mt-4">
-              {/* Remove View Course button */}
               <button
                 onClick={(e) => {
                   e.stopPropagation(); // Prevent card click from triggering

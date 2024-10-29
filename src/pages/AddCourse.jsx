@@ -263,7 +263,7 @@ const AddCourse = ({ onAdd }) => {
 
   const handleCategoryChange = (e) => {
     const selectedCategory = e.target.value;
-    const priority = categoryPriorities[selectedCategory] || 'Medium priority'; // Get priority from mapping
+    const priority = categoryPriorities[selectedCategory]; // Get priority from mapping
 
     setCourseData((prevData) => ({
       ...prevData,
@@ -308,11 +308,11 @@ const AddCourse = ({ onAdd }) => {
           no: '', // Reset to default or adjust
           name: '',
           category: '',
-          categoryPriority: 'Medium priority', // Reset to default value
+          categoryPriority: '', // Reset to default value
           subCategory: '',
           subSubCategory: '',
-          importantStatus: 'Normal',
-          status: 'Not Started Yet',
+          importantStatus: '',
+          status: '',
           durationInHours: '',
           subLearningSkillsSet: [],
           learningSkillsSet: '',
