@@ -1,7 +1,7 @@
 // src/pages/ViewCourse.js
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useTheme } from '../context/ThemeContext'; // Import theme context
+import { useTheme } from '../context/ThemeContext';
 
 const ViewCourse = () => {
   const { id } = useParams(); // Get course ID from URL params
@@ -9,6 +9,7 @@ const ViewCourse = () => {
   const isDarkMode = theme === 'dark'; // Determine if dark mode is active
   const [course, setCourse] = useState(null);
 
+  // Fetch course details on component mount
   useEffect(() => {
     const fetchCourse = async () => {
       try {
@@ -21,6 +22,29 @@ const ViewCourse = () => {
     };
     fetchCourse();
   }, [id]);
+
+  // Handle deleting a note with confirmation
+  const handleDeleteNote = async (noteId) => {
+    const confirmed = window.confirm('Are you sure you want to delete this note?');
+    if (!confirmed) return; // If user cancels, do nothing
+
+    try {
+      const response = await fetch(`http://localhost:5000/courses/${id}/notes/${noteId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setCourse((prevCourse) => ({
+          ...prevCourse,
+          notes: prevCourse.notes.filter((note) => note._id !== noteId),
+        }));
+      } else {
+        console.error('Failed to delete note');
+      }
+    } catch (error) {
+      console.error('Error deleting note:', error);
+    }
+  };
 
   if (!course) return <p>Loading course details...</p>;
 
@@ -61,13 +85,30 @@ const ViewCourse = () => {
           <h3 className="text-2xl font-bold mb-4">Notes</h3>
           {course.notes.length > 0 ? (
             <ul className="space-y-4">
-              {course.notes.map((note, index) => (
-                <li key={index} className={`border p-4 rounded shadow ${isDarkMode ? 'bg-gray-600' : 'bg-gray-50'}`}>
-                  <p><strong>Q:</strong> {note.question}</p>
-                  <p><strong>A:</strong> {note.answer}</p>
-                  <p className="text-sm text-gray-500">
-                    Added on: {new Date(note.createdAt).toLocaleString()}
-                  </p>
+              {course.notes.map((note) => (
+                <li
+                  key={note._id}
+                  className={`border p-4 rounded shadow flex items-center justify-between ${
+                    isDarkMode ? 'bg-gray-600' : 'bg-gray-50'
+                  }`}
+                >
+                  <div>
+                    <p><strong>Q:</strong> {note.question}</p>
+                    <p><strong>A:</strong> {note.answer}</p>
+                    <p className="text-sm text-gray-500">
+                      Added on: {new Date(note.createdAt).toLocaleString()}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => handleDeleteNote(note._id)}
+                    className={`ml-4 px-4 py-2 rounded ${
+                      isDarkMode
+                        ? 'bg-red-600 hover:bg-red-700'
+                        : 'bg-red-500 hover:bg-red-600'
+                    } text-white transition`}
+                  >
+                    Delete
+                  </button>
                 </li>
               ))}
             </ul>
@@ -77,10 +118,24 @@ const ViewCourse = () => {
         </div>
 
         <div className="mt-8 flex gap-4">
-          <Link to={`/edit-course/${id}`} className={`p-2 rounded ${isDarkMode ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'} text-white transition`}>
+          <Link
+            to={`/courses/${course._id}/edit`}
+            className={`p-2 rounded ${
+              isDarkMode
+                ? 'bg-blue-600 hover:bg-blue-700'
+                : 'bg-blue-500 hover:bg-blue-600'
+            } text-white transition`}
+          >
             Edit Course
           </Link>
-          <Link to="/courses" className={`p-2 rounded ${isDarkMode ? 'bg-gray-600 hover:bg-gray-700' : 'bg-gray-500 hover:bg-gray-600'} text-white transition`}>
+          <Link
+            to="/courses"
+            className={`p-2 rounded ${
+              isDarkMode
+                ? 'bg-gray-600 hover:bg-gray-700'
+                : 'bg-gray-500 hover:bg-gray-600'
+            } text-white transition`}
+          >
             Back to Courses
           </Link>
         </div>
