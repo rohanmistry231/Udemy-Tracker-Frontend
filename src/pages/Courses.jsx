@@ -9,7 +9,7 @@ const Courses = () => {
   const [importantFilter, setImportantFilter] = useState(""); // Filter by important status
   const [sortOrder, setSortOrder] = useState(""); // Sorting order
   const [currentPage, setCurrentPage] = useState(1); // Current page state
-  const coursesPerPage = 6; // Number of courses to display per page
+  const coursesPerPage = 12; // Number of courses to display per page
 
   const navigate = useNavigate();
   const { theme } = useTheme(); // Use theme context
@@ -208,6 +208,19 @@ const Courses = () => {
 
             <div className="flex flex-wrap gap-2 mt-4">
               {/* Remove View Course button */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent card click from triggering
+                  navigate(`/courses/${course._id}/edit`);
+                }}
+                className={`p-2 rounded ${
+                  isDarkMode
+                    ? "bg-blue-700 hover:bg-blue-800"
+                    : "bg-blue-500 hover:bg-blue-600"
+                } text-white`}
+              >
+                Update Course
+              </button>
               <button
                 onClick={(e) => {
                   e.stopPropagation(); // Prevent card click from triggering
