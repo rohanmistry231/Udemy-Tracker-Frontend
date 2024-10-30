@@ -2,8 +2,11 @@
 import React, { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useTheme } from '../context/ThemeContext'; // Import theme context
 
 const AddCourse = ({ onAdd }) => {
+  const { theme } = useTheme(); // Use theme context
+  const isDarkMode = theme === 'dark'; // Check if dark mode is enabled
   const [courseData, setCourseData] = useState({
     no: '', // Make it blank and editable
     name: '',
@@ -11,7 +14,7 @@ const AddCourse = ({ onAdd }) => {
     categoryPriority: 'Medium priority',
     subCategory: '',
     subSubCategory: '',
-    importantStatus: 'Normal',
+    importantStatus: 'Important',
     status: 'Not Started Yet',
     durationInHours: '',
     subLearningSkillsSet: [],
@@ -76,7 +79,7 @@ const AddCourse = ({ onAdd }) => {
       'Web App',
       'Mathematics',
     ],
-    Database: [
+    'Database': [
       'DBMS',
       'MySQL',
       'NoSQL',
@@ -116,7 +119,7 @@ const AddCourse = ({ onAdd }) => {
       'Wordpress',
       'UIUX',
     ],
-    Business: [
+    'Business': [
       'Business Strategy',
       'Communication',
       'Consultant',
@@ -137,7 +140,7 @@ const AddCourse = ({ onAdd }) => {
       'Trading',
       'No Code Development',
     ],
-    Filmmaking: [
+    'Filmmaking': [
       'Photography & Video',
       'Budgeting',
       'After Effects',
@@ -156,7 +159,7 @@ const AddCourse = ({ onAdd }) => {
       'Blender',
       'After Effects',
     ],
-    Marketing: [
+    'Marketing': [
       'Content Marketing',
       'Digital Marketing',
       'Test',
@@ -168,14 +171,14 @@ const AddCourse = ({ onAdd }) => {
       'Microsoft',
       'Other Office Productivity',
     ],
-    Music: [
+    'Music': [
       'Drum',
       'Audio Production',
       'Song Writing',
       'Piano',
       'Guitar',
     ],
-    Cloud: [
+    'Cloud': [
       'AWS',
       'Azure',
       'Cloud',
@@ -189,7 +192,7 @@ const AddCourse = ({ onAdd }) => {
       'Microservices',
       'Data Build Tool',
     ],
-    DevOps: [
+    'DevOps': [
       'Ansible',
       'Azure',
       'DevOps',
@@ -213,7 +216,7 @@ const AddCourse = ({ onAdd }) => {
       'Eye',
       'Yoga',
     ],
-    Language: [
+    'Language': [
       'English',
       'Test',
       'German',
@@ -251,7 +254,6 @@ const AddCourse = ({ onAdd }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     setCourseData((prevData) => ({
       ...prevData,
       [name]: 
@@ -264,7 +266,6 @@ const AddCourse = ({ onAdd }) => {
   const handleCategoryChange = (e) => {
     const selectedCategory = e.target.value;
     const priority = categoryPriorities[selectedCategory]; // Get priority from mapping
-
     setCourseData((prevData) => ({
       ...prevData,
       category: selectedCategory,
@@ -328,9 +329,9 @@ const AddCourse = ({ onAdd }) => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-6">
+    <div className={`container mx-auto px-4 py-6 ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
       <h2 className="text-2xl mb-4">Add New Course</h2>
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md">
+      <form onSubmit={handleSubmit} className={`p-6 rounded shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
         <div className="mb-4">
           <label className="block mb-2" htmlFor="no">Course No:</label>
           <input
@@ -339,7 +340,7 @@ const AddCourse = ({ onAdd }) => {
             name="no"
             value={courseData.no}
             onChange={handleChange} // Now editable
-            className="border p-2 rounded w-full"
+            className={`border p-2 rounded w-full ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
           />
         </div>
         <div className="mb-4">
@@ -351,7 +352,7 @@ const AddCourse = ({ onAdd }) => {
             value={courseData.name}
             onChange={handleChange}
             required
-            className="border p-2 rounded w-full"
+            className={`border p-2 rounded w-full ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
           />
         </div>
         <div className="mb-4">
@@ -362,7 +363,7 @@ const AddCourse = ({ onAdd }) => {
             value={courseData.category}
             onChange={handleCategoryChange}
             required
-            className="border p-2 rounded w-full"
+            className={`border p-2 rounded w-full ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
           >
             <option value="">Select a category</option>
             {categories.map((category) => (
@@ -378,7 +379,7 @@ const AddCourse = ({ onAdd }) => {
             value={courseData.subCategory}
             onChange={handleChange}
             required
-            className="border p-2 rounded w-full"
+            className={`border p-2 rounded w-full ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
           >
             <option value="">Select a sub category</option>
             {courseData.category && subCategories[courseData.category]?.map((sub) => (
@@ -394,7 +395,7 @@ const AddCourse = ({ onAdd }) => {
             name="subSubCategory"
             value={courseData.subSubCategory}
             onChange={handleChange}
-            className="border p-2 rounded w-full"
+            className={`border p-2 rounded w-full ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
           />
         </div>
         <div className="mb-4">
@@ -404,7 +405,7 @@ const AddCourse = ({ onAdd }) => {
             name="categoryPriority"
             value={courseData.categoryPriority}
             onChange={handleChange}
-            className="border p-2 rounded w-full"
+            className={`border p-2 rounded w-full ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
           >
             <option value="High priority">High priority</option>
             <option value="Medium priority">Medium priority</option>
@@ -419,7 +420,7 @@ const AddCourse = ({ onAdd }) => {
             name="importantStatus"
             value={courseData.importantStatus}
             onChange={handleChange}
-            className="border p-2 rounded w-full"
+            className={`border p-2 rounded w-full ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
           >
             <option value="Very Important">Very Important</option>
             <option value="Important">Important</option>
@@ -434,7 +435,7 @@ const AddCourse = ({ onAdd }) => {
             name="status"
             value={courseData.status}
             onChange={handleChange}
-            className="border p-2 rounded w-full"
+            className={`border p-2 rounded w-full ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
           >
             <option value="Not Started Yet">Not Started Yet</option>
             <option value="In Progress">In Progress</option>
@@ -449,7 +450,7 @@ const AddCourse = ({ onAdd }) => {
             name="durationInHours"
             value={courseData.durationInHours}
             onChange={handleChange}
-            className="border p-2 rounded w-full"
+            className={`border p-2 rounded w-full ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
           />
         </div>
         <div className="mb-4">
@@ -460,7 +461,7 @@ const AddCourse = ({ onAdd }) => {
             name="subLearningSkillsSet"
             value={courseData.subLearningSkillsSet.join(', ')} // Display as comma-separated
             onChange={handleChange}
-            className="border p-2 rounded w-full"
+            className={`border p-2 rounded w-full ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
           />
         </div>
         <div className="mb-4">
@@ -471,7 +472,7 @@ const AddCourse = ({ onAdd }) => {
             name="learningSkillsSet"
             value={courseData.learningSkillsSet}
             onChange={handleChange}
-            className="border p-2 rounded w-full"
+            className={`border p-2 rounded w-full ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
           />
         </div>
         <button type="submit" className="bg-blue-500 text-white p-2 rounded">

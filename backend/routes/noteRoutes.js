@@ -1,3 +1,4 @@
+// src/routes/notes.js
 const express = require('express');
 const Course = require('../models/Course'); // Import Course model
 
@@ -22,6 +23,24 @@ router.post('/', async (req, res) => {
   }
 });
 
+// Update an existing note in a course
+router.put('/:noteId', async (req, res) => {
+  try {
+    const course = await Course.findById(req.params.courseId);
+    if (!course) return res.status(404).json({ message: 'Course not found' });
+
+    const note = course.notes.id(req.params.noteId);
+    if (!note) return res.status(404).json({ message: 'Note not found' });
+
+    note.question = req.body.question;
+    note.answer = req.body.answer;
+    await course.save();
+    res.json({ message: 'Note updated successfully', note });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Delete a specific note from a course
 router.delete('/:noteId', async (req, res) => {
   try {
@@ -42,16 +61,26 @@ router.delete('/:noteId', async (req, res) => {
   }
 });
 
-// Get all notes for a specific course
-router.get('/', async (req, res) => {
+// Get all notes for a specific course or a specific note by ID
+router.get('/:noteId?', async (req, res) => {
   try {
-    const { courseId } = req.params;
+    const { courseId, noteId } = req.params;
 
     const course = await Course.findById(courseId).select('notes');
     if (!course) {
       return res.status(404).json({ message: 'Course not found' });
     }
 
+    // If noteId is provided, find that specific note
+    if (noteId) {
+      const note = course.notes.id(noteId);
+      if (!note) {
+        return res.status(404).json({ message: 'Note not found' });
+      }
+      return res.json(note);
+    }
+
+    // If no noteId, return all notes
     res.json(course.notes);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching notes', error: error.message });

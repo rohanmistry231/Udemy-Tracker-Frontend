@@ -3,12 +3,12 @@ import { createContext, useState, useContext, useEffect } from 'react';
 // Colors based on Udemy palette
 const themes = {
   dark: {
-    background: '#000000',
+    background: '#111827',
     color: '#be30f6',
   },
   light: {
     background: '#ffffff',
-    color: '#000000',
+    color: '#111827',
   },
 };
 
