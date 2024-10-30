@@ -239,7 +239,7 @@ const EditCourse = () => {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/courses/${id}`);
+        const response = await fetch(`https://udemy-tracker.vercel.app/courses/${id}`);
         const data = await response.json();
         setCourse(data);
       } catch (error) {
@@ -266,7 +266,7 @@ const EditCourse = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await fetch(`http://localhost:5000/courses/${id}`, {
+      await fetch(`https://udemy-tracker.vercel.app/courses/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(course),

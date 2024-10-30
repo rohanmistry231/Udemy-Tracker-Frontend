@@ -21,7 +21,7 @@ const Courses = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch("http://localhost:5000/courses");
+        const response = await fetch("https://udemy-tracker.vercel.app/courses");
         const data = await response.json();
         setCourses(data);
       } catch (error) {
@@ -66,7 +66,7 @@ const Courses = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this course?")) {
       try {
-        await fetch(`http://localhost:5000/courses/${id}`, {
+        await fetch(`https://udemy-tracker.vercel.app/courses/${id}`, {
           method: "DELETE",
         });
         setCourses((prevCourses) =>

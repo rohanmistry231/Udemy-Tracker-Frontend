@@ -15,7 +15,7 @@ const AddNotes = () => {
   useEffect(() => {
     const fetchCourseName = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/courses/${id}`);
+        const response = await fetch(`https://udemy-tracker.vercel.app/courses/${id}`);
         const data = await response.json();
         setCourseName(data.name);
       } catch (error) {
@@ -29,7 +29,7 @@ const AddNotes = () => {
   const handleAddNote = async (e) => {
     e.preventDefault();
     try {
-      await fetch(`http://localhost:5000/courses/${id}/notes`, {
+      await fetch(`https://udemy-tracker.vercel.app/courses/${id}/notes`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question, answer }), // Send both question and answer

@@ -13,7 +13,7 @@ const ViewCourse = () => {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/courses/${id}`);
+        const response = await fetch(`https://udemy-tracker.vercel.app/courses/${id}`);
         const data = await response.json();
         setCourse(data);
       } catch (error) {
@@ -29,7 +29,7 @@ const ViewCourse = () => {
     if (!confirmed) return; // If user cancels, do nothing
 
     try {
-      const response = await fetch(`http://localhost:5000/courses/${id}/notes/${noteId}`, {
+      const response = await fetch(`https://udemy-tracker.vercel.app/courses/${id}/notes/${noteId}`, {
         method: 'DELETE',
       });
 

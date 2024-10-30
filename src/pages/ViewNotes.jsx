@@ -16,7 +16,7 @@ const ViewNotes = () => {
   useEffect(() => {
     const fetchNotes = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/courses/${id}/notes`);
+        const response = await fetch(`https://udemy-tracker.vercel.app/courses/${id}/notes`);
         if (!response.ok) {
           throw new Error('Failed to fetch notes');
         }
@@ -34,7 +34,7 @@ const ViewNotes = () => {
   const handleDelete = async (noteId) => {
     if (window.confirm('Are you sure you want to delete this note?')) {
       try {
-        const response = await fetch(`http://localhost:5000/courses/${id}/notes/${noteId}`, {
+        const response = await fetch(`https://udemy-tracker.vercel.app/courses/${id}/notes/${noteId}`, {
           method: 'DELETE',
         });
         if (!response.ok) {
@@ -58,7 +58,7 @@ const ViewNotes = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:5000/courses/${id}/notes/${editingNote}`, {
+      const response = await fetch(`https://udemy-tracker.vercel.app/courses/${id}/notes/${editingNote}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

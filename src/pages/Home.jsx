@@ -30,7 +30,7 @@ const Home = () => {
   const [completionTrend, setCompletionTrend] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/courses/')
+    axios.get('https://udemy-tracker.vercel.app/courses/')
       .then((response) => {
         const data = response.data;
         setCourses(data);
