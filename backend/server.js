@@ -38,10 +38,15 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("Connection failed", err));
 
-// Routes
+// Root route
+app.get("/", (req, res) => {
+  res.send("Welcome to the API!"); // Basic response for root path
+});
+
+// API Routes
 app.use("/courses", courseRoutes);
 app.use("/courses/:courseId/notes", noteRoutes);
 
 // Start the server
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
