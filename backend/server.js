@@ -1,20 +1,35 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const cors = require("cors"); // Import CORS middleware
+const cors = require("cors");
+const helmet = require("helmet"); // Import Helmet
 const courseRoutes = require("./routes/courseRoutes");
 const noteRoutes = require("./routes/noteRoutes");
-require('dotenv').config();
+require("dotenv").config();
 
 const app = express();
 
-// CORS configuration to allow all origins temporarily (Development Mode)
-app.use(cors({
-  origin: "*", // Replace with specific domain(s) in production: ['http://localhost:3000', 'https://your-frontend.com']
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-}));
+// Configure Helmet to allow Vercel live script
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        "default-src": ["'self'"],
+        "script-src": ["'self'", "'unsafe-inline'", "https://vercel.live"],
+        "connect-src": ["'self'", "https://vercel.live"],
+      },
+    },
+  })
+);
 
-// Middleware to parse incoming requests
+// CORS configuration
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
 app.use(express.json());
 
 // Connect to MongoDB
@@ -28,5 +43,5 @@ app.use("/courses", courseRoutes);
 app.use("/courses/:courseId/notes", noteRoutes);
 
 // Start the server
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
