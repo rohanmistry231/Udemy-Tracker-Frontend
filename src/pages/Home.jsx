@@ -21,8 +21,8 @@ const Home = () => {
   const [courses, setCourses] = useState([]);
   const [totalHours, setTotalHours] = useState(0);
   const [importantCourses, setImportantCourses] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [selectedSubCategory, setSelectedSubCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedSubCategory, setSelectedSubCategory] = useState('');
 
   useEffect(() => {
     axios.get('https://udemy-tracker.vercel.app/courses/')
@@ -93,6 +93,12 @@ const Home = () => {
     maintainAspectRatio: false,
   };
 
+  // Extract unique categories and sub-categories
+  const categories = [...new Set(courses.map(course => course.category))];
+  const subCategories = [...new Set(getFilteredData('category', selectedCategory).map(course => course.subCategory))];
+
+  const selectClassName = `p-2 rounded-md shadow-md ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`;
+
   return (
     <div
       className={`min-h-screen flex flex-col p-6 transition-colors duration-300 ${
@@ -122,49 +128,67 @@ const Home = () => {
 
         {/* Charts Section */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
+          {/* Category Filter */}
+          <div className="flex flex-col mb-4">
+            <label htmlFor="category" className="font-medium">Select Category:</label>
+            <select
+              id="category"
+              className={selectClassName}
+              value={selectedCategory}
+              onChange={(e) => {
+                setSelectedCategory(e.target.value);
+                setSelectedSubCategory(''); // Reset sub-category on category change
+              }}
+            >
+              <option value="">All Categories</option>
+              {categories.map(category => (
+                <option key={category} value={category}>{category}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Sub-Category Filter */}
+          <div className="flex flex-col mb-4">
+            <label htmlFor="subCategory" className="font-medium">Select Sub-Category:</label>
+            <select
+              id="subCategory"
+              className={selectClassName}
+              value={selectedSubCategory}
+              onChange={(e) => setSelectedSubCategory(e.target.value)}
+            >
+              <option value="">All Sub-Categories</option>
+              {subCategories.map(subCategory => (
+                <option key={subCategory} value={subCategory}>{subCategory}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
           {/* Category Chart */}
-          <div className="p-4 rounded-md shadow-md bg-gray-800">
+          <div className={`p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
             <h2 className="text-lg font-medium mb-4 text-center">Courses by Category</h2>
             <div className="h-64">
               <Bar
                 data={getChartData('category', courses)}
-                options={{
-                  ...categoryOptions,
-                  onClick: (_, elements) => {
-                    if (elements.length > 0) {
-                      const index = elements[0].index;
-                      const selectedCategoryLabel = Object.keys(groupBy(courses, 'category'))[index];
-                      setSelectedCategory(selectedCategoryLabel);
-                      setSelectedSubCategory(null); // Reset sub-category on new category selection
-                    }
-                  },
-                }}
+                options={categoryOptions}
               />
             </div>
           </div>
 
           {/* Sub-Category Chart */}
-          <div className="p-4 rounded-md shadow-md bg-gray-800">
+          <div className={`p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
             <h2 className="text-lg font-medium mb-4 text-center">Courses by Sub-Category</h2>
             <div className="h-64">
               <Bar
                 data={getChartData('subCategory', selectedCategory ? getFilteredData('category', selectedCategory) : courses)}
-                options={{
-                  ...categoryOptions,
-                  onClick: (_, elements) => {
-                    if (elements.length > 0) {
-                      const index = elements[0].index;
-                      const subCategoryLabel = Object.keys(groupBy(getFilteredData('category', selectedCategory), 'subCategory'))[index];
-                      setSelectedSubCategory(subCategoryLabel);
-                    }
-                  },
-                }}
+                options={categoryOptions}
               />
             </div>
           </div>
 
           {/* Importance Chart */}
-          <div className="p-4 rounded-md shadow-md bg-gray-800">
+          <div className={`p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
             <h2 className="text-lg font-medium mb-4 text-center">Courses by Importance</h2>
             <div className="h-64">
               <Bar
@@ -175,7 +199,7 @@ const Home = () => {
           </div>
 
           {/* Status Chart */}
-          <div className="p-4 rounded-md shadow-md bg-gray-800">
+          <div className={`p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
             <h2 className="text-lg font-medium mb-4 text-center">Courses by Status</h2>
             <div className="h-64">
               <Bar
