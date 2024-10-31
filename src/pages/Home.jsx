@@ -1,22 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Bar, Pie, Line } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 import { useTheme } from '../context/ThemeContext';
 import axios from 'axios';
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 
 import {
   Chart as ChartJS,
-  ArcElement,
-  Tooltip,
-  Legend,
   CategoryScale,
   LinearScale,
   BarElement,
-  PointElement,
-  LineElement,
+  Tooltip,
+  Legend,
 } from 'chart.js';
 
-ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, PointElement, LineElement);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 const Home = () => {
   const { theme } = useTheme();
@@ -25,9 +21,8 @@ const Home = () => {
   const [courses, setCourses] = useState([]);
   const [totalHours, setTotalHours] = useState(0);
   const [importantCourses, setImportantCourses] = useState([]);
-  const [categories, setCategories] = useState({});
-  const [skills, setSkills] = useState({});
-  const [completionTrend, setCompletionTrend] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedSubCategory, setSelectedSubCategory] = useState(null);
 
   useEffect(() => {
     axios.get('https://udemy-tracker.vercel.app/courses/')
@@ -41,98 +36,57 @@ const Home = () => {
 
         const important = data.filter(course => course.importantStatus === 'Important');
         setImportantCourses(important);
-
-        const categoryCounts = groupBy(data, 'category');
-        setCategories(categoryCounts);
-
-        const skillCounts = groupBy(data, 'skills'); // Assuming skills are stored in an array
-        setSkills(skillCounts);
-
-        // Set completion trend over the past months
-        const trendData = calculateCompletionTrend(data);
-        setCompletionTrend(trendData);
       })
       .catch(error => console.error('Error fetching courses:', error));
   }, []);
 
   const groupBy = (array, key) => {
     return array.reduce((acc, item) => {
-      acc[item[key]] = (acc[item[key]] || 0) + 1;
+      const value = item[key] || 'Unknown';
+      acc[value] = (acc[value] || 0) + 1;
       return acc;
     }, {});
   };
 
-  const calculateCompletionTrend = (courses) => {
-    // Assuming courses have a completion date to calculate monthly trends
-    const monthTrend = {};
-    courses.forEach(course => {
-      const month = new Date(course.completionDate).toLocaleString('default', { month: 'long', year: 'numeric' });
-      monthTrend[month] = (monthTrend[month] || 0) + (course.status === 'Completed' ? 1 : 0);
-    });
-    return monthTrend;
+  const getFilteredData = (filterKey, value) => {
+    return courses.filter(course => course[filterKey] === value);
   };
 
-  const statusCounts = {
-    'Not Started Yet': courses.filter(c => c.status === 'Not Started Yet').length,
-    'In Progress': courses.filter(c => c.status === 'In Progress').length,
-    'Completed': courses.filter(c => c.status === 'Completed').length,
-  };
-
-  const statusData = {
-    labels: ['Not Started', 'In Progress', 'Completed'],
-    datasets: [
-      {
-        label: 'Course Status',
-        data: Object.values(statusCounts),
-        backgroundColor: ['#FF6384', '#36A2EB', '#4CAF50'],
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  const categoryData = {
-    labels: Object.keys(categories),
-    datasets: [
-      {
-        label: 'Courses per Category',
-        data: Object.values(categories),
-        backgroundColor: ['#FFCE56', '#66BB6A', '#42A5F5'],
-      },
-    ],
-  };
-
-  const skillsData = {
-    labels: Object.keys(skills),
-    datasets: [
-      {
-        label: 'Skills Progress',
-        data: Object.values(skills),
-        backgroundColor: '#FFA500',
-      },
-    ],
-  };
-
-  const completionTrendData = {
-    labels: Object.keys(completionTrend),
-    datasets: [
-      {
-        label: 'Completion Trend',
-        data: Object.values(completionTrend),
-        fill: false,
-        backgroundColor: '#4CAF50',
-        borderColor: '#4CAF50',
-      },
-    ],
+  const getChartData = (key, filteredCourses) => {
+    const groupedData = groupBy(filteredCourses, key);
+    return {
+      labels: Object.keys(groupedData),
+      datasets: [
+        {
+          label: `Courses by ${key.charAt(0).toUpperCase() + key.slice(1)}`,
+          data: Object.values(groupedData),
+          backgroundColor: isDarkMode ? ['#FF6384', '#36A2EB', '#FFCE56', '#66BB6A'] : ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
+          borderWidth: 1,
+        },
+      ],
+    };
   };
 
   const categoryOptions = {
     plugins: {
       legend: {
         position: 'right',
-        align: 'center',
         labels: {
+          color: isDarkMode ? '#FFFFFF' : '#000000',
           boxWidth: 10,
           boxHeight: 10,
+        },
+      },
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: isDarkMode ? '#FFFFFF' : '#000000',
+        },
+      },
+      y: {
+        ticks: {
+          color: isDarkMode ? '#FFFFFF' : '#000000',
         },
       },
     },
@@ -150,49 +104,84 @@ const Home = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Total Courses Card */}
-          <Link to="/courses" className={`p-4 rounded-md shadow-md cursor-pointer ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+          <div className={`p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
             <h2 className="text-lg font-medium">Total Courses</h2>
             <p className="text-3xl font-semibold mt-2">{courses.length}</p>
-          </Link>
+          </div>
 
           <div className={`p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
             <h2 className="text-lg font-medium">Total Learning Hours</h2>
             <p className="text-3xl font-semibold mt-2">{totalHours} hrs</p>
           </div>
+
           <div className={`p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
             <h2 className="text-lg font-medium">Important Courses</h2>
             <p className="text-3xl font-semibold mt-2">{importantCourses.length}</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-          <div className={`p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
-            <h2 className="text-lg font-medium mb-4">Course Status Overview</h2>
+        {/* Charts Section */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
+          {/* Category Chart */}
+          <div className="p-4 rounded-md shadow-md bg-gray-800">
+            <h2 className="text-lg font-medium mb-4 text-center">Courses by Category</h2>
             <div className="h-64">
-              <Bar data={statusData} />
+              <Bar
+                data={getChartData('category', courses)}
+                options={{
+                  ...categoryOptions,
+                  onClick: (_, elements) => {
+                    if (elements.length > 0) {
+                      const index = elements[0].index;
+                      const selectedCategoryLabel = Object.keys(groupBy(courses, 'category'))[index];
+                      setSelectedCategory(selectedCategoryLabel);
+                      setSelectedSubCategory(null); // Reset sub-category on new category selection
+                    }
+                  },
+                }}
+              />
             </div>
           </div>
-          <div className={`p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
-            <h2 className="text-lg font-medium mb-4">Courses by Category</h2>
-            <div className="h-64 flex">
-              <div className="w-2/3">
-                <Pie data={categoryData} options={categoryOptions} />
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-          <div className={`p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
-            <h2 className="text-lg font-medium mb-4">Skills Progress</h2>
+          {/* Sub-Category Chart */}
+          <div className="p-4 rounded-md shadow-md bg-gray-800">
+            <h2 className="text-lg font-medium mb-4 text-center">Courses by Sub-Category</h2>
             <div className="h-64">
-              <Bar data={skillsData} />
+              <Bar
+                data={getChartData('subCategory', selectedCategory ? getFilteredData('category', selectedCategory) : courses)}
+                options={{
+                  ...categoryOptions,
+                  onClick: (_, elements) => {
+                    if (elements.length > 0) {
+                      const index = elements[0].index;
+                      const subCategoryLabel = Object.keys(groupBy(getFilteredData('category', selectedCategory), 'subCategory'))[index];
+                      setSelectedSubCategory(subCategoryLabel);
+                    }
+                  },
+                }}
+              />
             </div>
           </div>
-          <div className={`p-4 rounded-md shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
-            <h2 className="text-lg font-medium mb-4">Completion Trend Over Time</h2>
+
+          {/* Importance Chart */}
+          <div className="p-4 rounded-md shadow-md bg-gray-800">
+            <h2 className="text-lg font-medium mb-4 text-center">Courses by Importance</h2>
             <div className="h-64">
-              <Line data={completionTrendData} />
+              <Bar
+                data={getChartData('importantStatus', selectedSubCategory ? getFilteredData('subCategory', selectedSubCategory) : selectedCategory ? getFilteredData('category', selectedCategory) : courses)}
+                options={categoryOptions}
+              />
+            </div>
+          </div>
+
+          {/* Status Chart */}
+          <div className="p-4 rounded-md shadow-md bg-gray-800">
+            <h2 className="text-lg font-medium mb-4 text-center">Courses by Status</h2>
+            <div className="h-64">
+              <Bar
+                data={getChartData('status', selectedSubCategory ? getFilteredData('subCategory', selectedSubCategory) : selectedCategory ? getFilteredData('category', selectedCategory) : courses)}
+                options={categoryOptions}
+              />
             </div>
           </div>
         </div>
