@@ -112,12 +112,11 @@ const Courses = () => {
       </h2>
 
         {/* Loading Spinner */}
-      {loading ? (
-        <div className="flex justify-center items-center h-64">
-          <div className="loader" /> {/* CSS or spinner component can be used here */}
-          <p className={`${isDarkMode ? "text-white" : "text-gray-800"}`}>Loading courses...</p>
+        {loading ? (
+        <div className="flex justify-center items-center min-h-screen">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
         </div>
-      ) : (
+      )  : (
         <>
       {/* Search and Filters */}
       <div className="flex flex-col sm:flex-row justify-between items-center mb-4 space-y-4 sm:space-y-0">
