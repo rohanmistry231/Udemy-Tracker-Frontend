@@ -147,13 +147,13 @@ const Home = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
-        <div className="flex flex-col mb-4">
-          <label htmlFor="category" className="font-medium">
+        <div className="flex flex-col">
+          <label htmlFor="category" className="font-medium text-center">
             Select Category:
           </label>
           <select
             id="category"
-            className={selectClassName}
+            className={`${selectClassName} mt-4`}
             value={selectedCategory}
             onChange={(e) => {
               setSelectedCategory(e.target.value);
@@ -169,13 +169,13 @@ const Home = () => {
           </select>
         </div>
 
-        <div className="flex flex-col mb-4">
-          <label htmlFor="subCategory" className="font-medium">
+        <div className="flex flex-col">
+          <label htmlFor="subCategory" className="font-medium text-center">
             Select Sub-Category:
           </label>
           <select
             id="subCategory"
-            className={selectClassName}
+            className={`${selectClassName} mt-4`}
             value={selectedSubCategory}
             onChange={(e) => setSelectedSubCategory(e.target.value)}
           >
@@ -188,13 +188,13 @@ const Home = () => {
           </select>
         </div>
 
-        <div className="flex flex-col mb-4">
-          <label htmlFor="importantStatus" className="font-medium">
+        <div className="flex flex-col">
+          <label htmlFor="importantStatus" className="font-medium text-center">
             Select Important Status:
           </label>
           <select
             id="importantStatus"
-            className={selectClassName}
+            className={`${selectClassName} mt-4`}
             value={selectedImportantStatus}
             onChange={(e) => setSelectedImportantStatus(e.target.value)}
           >
@@ -207,13 +207,13 @@ const Home = () => {
           </select>
         </div>
 
-        <div className="flex flex-col mb-4">
-          <label htmlFor="status" className="font-medium">
+        <div className="flex flex-col">
+          <label htmlFor="status" className="font-medium text-center">
             Select Status:
           </label>
           <select
             id="status"
-            className={selectClassName}
+            className={`${selectClassName} mt-4`}
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
           >
@@ -288,30 +288,40 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
-        <div className="h-80">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8 mb-10">
+        <div className="h-80 mb-4 sm:mb-0">
           <Bar
             data={getChartData("category", filteredData)}
             options={categoryOptions}
           />
+          <h3 className="text-center mt-4 font-semibold">
+            Courses by Category
+          </h3>
         </div>
-        <div className="h-80">
+        <div className="h-80 mb-4 sm:mb-0 sm:mt-0 mt-6">
           <Bar
             data={getChartData("subCategory", filteredData)}
             options={categoryOptions}
           />
+          <h3 className="text-center mt-4 font-semibold">
+            Courses by Sub-Category
+          </h3>
         </div>
-        <div className="h-80">
+        <div className="h-80 mb-4 sm:mb-0  sm:mt-0 mt-6">
           <Bar
             data={getChartData("importantStatus", filteredData)}
             options={categoryOptions}
           />
+          <h3 className="text-center mt-4 font-semibold">
+            Courses by Importance
+          </h3>
         </div>
-        <div className="h-80">
+        <div className="h-80 sm:mb-0  sm:mt-0 mt-6">
           <Bar
             data={getChartData("status", filteredData)}
             options={categoryOptions}
           />
+          <h3 className="text-center mt-4 font-semibold">Courses by Status</h3>
         </div>
       </div>
     </div>
