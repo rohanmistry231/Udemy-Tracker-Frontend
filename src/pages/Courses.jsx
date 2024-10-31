@@ -5,6 +5,7 @@ import { useTheme } from "../context/ThemeContext"; // Import theme context
 const Courses = () => {
   const [courses, setCourses] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true); // Loading state
   const [statusFilter, setStatusFilter] = useState(""); // Filter by course status
   const [importantFilter, setImportantFilter] = useState(""); // Filter by important status
   const [sortOrder, setSortOrder] = useState(""); // Sorting order
@@ -20,18 +21,20 @@ const Courses = () => {
   // Fetch courses from backend
   useEffect(() => {
     const fetchCourses = async () => {
+      setLoading(true); // Start loading
       try {
         const response = await fetch("https://udemy-tracker.vercel.app/courses");
         const data = await response.json();
         setCourses(data);
       } catch (error) {
         console.error("Error fetching courses:", error);
+      } finally {
+        setLoading(false); // Stop loading
       }
     };
-
     fetchCourses();
   }, []);
-
+  
   // Filtered list of sub-categories based on selected category
   const getSubCategories = () => {
     const selectedCategoryCourses = courses.filter(
@@ -228,6 +231,13 @@ const Courses = () => {
         </Link>
       </div>
 
+        {/* Loading Spinner */}
+        {loading ? (
+        <div className="flex justify-center items-center min-h-screen">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
+        </div>
+      )  : (
+        <>
       {/* Courses List */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
         {currentCourses.map((course) => (
@@ -353,6 +363,7 @@ const Courses = () => {
           Next
         </button>
       </div>
+      </>)}
     </div>
   );
 };

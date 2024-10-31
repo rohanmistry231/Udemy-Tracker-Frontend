@@ -127,9 +127,9 @@ const Home = () => {
     >
       {isLoading ? (
         <div className="flex justify-center items-center min-h-screen">
-          <p className="text-2xl font-semibold">Loading...</p>
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
         </div>
-      ) : (
+      )  : (
         <>
           <div className="flex flex-col items-center">
             <h1 className="text-2xl font-bold text-center mb-6">
