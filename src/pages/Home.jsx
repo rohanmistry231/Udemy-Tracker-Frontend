@@ -24,8 +24,10 @@ const Home = () => {
   const [selectedSubCategory, setSelectedSubCategory] = useState("");
   const [selectedImportantStatus, setSelectedImportantStatus] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    setIsLoading(true); // Set loading to true when fetching starts
     axios
       .get("https://udemy-tracker.vercel.app/courses/")
       .then((response) => {
@@ -38,7 +40,8 @@ const Home = () => {
         );
         setTotalHours(hours);
       })
-      .catch((error) => console.error("Error fetching courses:", error));
+      .catch((error) => console.error("Error fetching courses:", error))
+      .finally(() => setIsLoading(false)); // Set loading to false when fetching completes
   }, []);
 
   const groupBy = (array, key) => {
@@ -122,31 +125,37 @@ const Home = () => {
         isDarkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"
       }`}
     >
-      <div className="flex flex-col items-center">
-        <h1 className="text-2xl font-bold text-center mb-6">
-          Udemy Courses Analysis
-        </h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-2">
-          <div
-            className={`p-4 rounded-md shadow-md ${
-              isDarkMode ? "bg-gray-800" : "bg-white"
-            }`}
-          >
-            <h2 className="text-lg font-medium">Total Courses</h2>
-            <p className="text-3xl font-semibold mt-2">{courses.length}</p>
-          </div>
-          <div
-            className={`p-4 rounded-md shadow-md ${
-              isDarkMode ? "bg-gray-800" : "bg-white"
-            }`}
-          >
-            <h2 className="text-lg font-medium">Total Learning Hours</h2>
-            <p className="text-3xl font-semibold mt-2">{totalHours} hrs</p>
-          </div>
+      {isLoading ? (
+        <div className="flex justify-center items-center min-h-screen">
+          <p className="text-2xl font-semibold">Loading...</p>
         </div>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
+      ) : (
+        <>
+          <div className="flex flex-col items-center">
+            <h1 className="text-2xl font-bold text-center mb-6">
+              Udemy Courses Analysis
+            </h1>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-2">
+              <div
+                className={`p-4 rounded-md shadow-md ${
+                  isDarkMode ? "bg-gray-800" : "bg-white"
+                }`}
+              >
+                <h2 className="text-lg font-medium">Total Courses</h2>
+                <p className="text-3xl font-semibold mt-2">{courses.length}</p>
+              </div>
+              <div
+                className={`p-4 rounded-md shadow-md ${
+                  isDarkMode ? "bg-gray-800" : "bg-white"
+                }`}
+              >
+                <h2 className="text-lg font-medium">Total Learning Hours</h2>
+                <p className="text-3xl font-semibold mt-2">{totalHours} hrs</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
         <div className="flex flex-col">
           <label htmlFor="category" className="font-medium text-center">
             Select Category:
@@ -324,6 +333,8 @@ const Home = () => {
           <h3 className="text-center mt-4 font-semibold">Courses by Status</h3>
         </div>
       </div>
+        </>
+      )}
     </div>
   );
 };
