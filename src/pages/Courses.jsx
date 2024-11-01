@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "../context/ThemeContext"; // Import theme context
 
 const Courses = () => {
@@ -13,6 +15,9 @@ const Courses = () => {
   const [categoryFilter, setCategoryFilter] = useState(""); // Filter by category
   const [subCategoryFilter, setSubCategoryFilter] = useState(""); // Filter by sub-category
   const coursesPerPage = 12; // Number of courses to display per page
+  const [isPasswordPromptVisible, setPasswordPromptVisible] = useState(false);
+  const [password, setPassword] = useState("");
+  const [courseToDelete, setCourseToDelete] = useState(null); // Store the course ID to delete
 
   const navigate = useNavigate();
   const { theme } = useTheme(); // Use theme context
@@ -21,20 +26,26 @@ const Courses = () => {
   // Fetch courses from backend
   useEffect(() => {
     const fetchCourses = async () => {
-      setLoading(true); // Start loading
+      setLoading(true);
       try {
-        const response = await fetch("https://udemy-tracker.vercel.app/courses");
-        const data = await response.json();
+        const response = await fetch(
+          "https://udemy-tracker.vercel.app/courses"
+        );
+        let data = await response.json();
+
+        // Sort courses by 'no' field
+        data = data.sort((a, b) => a.no - b.no);
+
         setCourses(data);
       } catch (error) {
         console.error("Error fetching courses:", error);
       } finally {
-        setLoading(false); // Stop loading
+        setLoading(false);
       }
     };
     fetchCourses();
   }, []);
-  
+
   // Filtered list of sub-categories based on selected category
   const getSubCategories = () => {
     const selectedCategoryCourses = courses.filter(
@@ -52,7 +63,8 @@ const Courses = () => {
       (course) =>
         course.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
         (statusFilter === "" || course.status === statusFilter) &&
-        (importantFilter === "" || course.importantStatus === importantFilter) &&
+        (importantFilter === "" ||
+          course.importantStatus === importantFilter) &&
         (categoryFilter === "" || course.category === categoryFilter) &&
         (subCategoryFilter === "" || course.subCategory === subCategoryFilter)
     )
@@ -86,7 +98,10 @@ const Courses = () => {
   const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;
 
   // Get current courses
-  const currentCourses = filteredCourses.slice(indexOfFirstCourse, indexOfLastCourse);
+  const currentCourses = filteredCourses.slice(
+    indexOfFirstCourse,
+    indexOfLastCourse
+  );
 
   // Calculate total pages
   const totalPages = Math.ceil(filteredCourses.length / coursesPerPage);
@@ -111,259 +126,329 @@ const Courses = () => {
         📚 Courses List 📚
       </h2>
 
-        {/* Loading Spinner */}
-        {loading ? (
+      {/* Loading Spinner */}
+      {loading ? (
         <div className="flex justify-center items-center min-h-screen">
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
         </div>
-      )  : (
+      ) : (
         <>
-      {/* Search and Filters */}
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-4 space-y-4 sm:space-y-0">
-        <input
-          type="text"
-          placeholder="Search courses..."
-          className={`border p-2 rounded w-full sm:w-1/3 h-12 ${
-            isDarkMode
-              ? "bg-gray-800 text-white border-gray-700"
-              : "bg-white text-black border-gray-300"
-          }`}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-
-        {/* Category Filter */}
-        <select
-          className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
-            isDarkMode
-              ? "bg-gray-800 text-white border-gray-700"
-              : "bg-white text-black border-gray-300"
-          }`}
-          value={categoryFilter}
-          onChange={(e) => {
-            setCategoryFilter(e.target.value);
-            setSubCategoryFilter(""); // Reset sub-category when category changes
-          }}
-        >
-          <option value="">All Categories</option>
-          {/* Generate unique category options */}
-          {[...new Set(courses.map((course) => course.category))].map(
-            (category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            )
-          )}
-        </select>
-
-        {/* Sub-category Filter */}
-        <select
-          className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
-            isDarkMode
-              ? "bg-gray-800 text-white border-gray-700"
-              : "bg-white text-black border-gray-300"
-          }`}
-          value={subCategoryFilter}
-          onChange={(e) => setSubCategoryFilter(e.target.value)}
-          disabled={!categoryFilter} // Disable if no category is selected
-        >
-          <option value="">All Sub-categories</option>
-          {/* Render sub-categories based on selected category */}
-          {getSubCategories().map((subCategory) => (
-            <option key={subCategory} value={subCategory}>
-              {subCategory}
-            </option>
-          ))}
-        </select>
-
-        {/* Status Filter */}
-        <select
-          className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
-            isDarkMode
-              ? "bg-gray-800 text-white border-gray-700"
-              : "bg-white text-black border-gray-300"
-          }`}
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-        >
-          <option value="">All Statuses</option>
-          <option value="Completed">Completed</option>
-          <option value="In Progress">In Progress</option>
-          <option value="Not Started Yet">Not Started Yet</option>
-        </select>
-
-        {/* Important Status Filter */}
-        <select
-          className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
-            isDarkMode
-              ? "bg-gray-800 text-white border-gray-700"
-              : "bg-white text-black border-gray-300"
-          }`}
-          value={importantFilter}
-          onChange={(e) => setImportantFilter(e.target.value)}
-        >
-          <option value="">All Courses</option>
-          <option value="Extra">Extra</option>
-          <option value="Not Important">Not Important</option>
-          <option value="Important">Important</option>
-          <option value="Very Important">Very Important</option>
-        </select>
-
-        {/* Sort Order Filter */}
-        <select
-          className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
-            isDarkMode
-              ? "bg-gray-800 text-white border-gray-700"
-              : "bg-white text-black border-gray-300"
-          }`}
-          value={sortOrder}
-          onChange={(e) => setSortOrder(e.target.value)}
-        >
-          <option value="">Sort by Duration</option>
-          <option value="lowToHigh">Low to High</option>
-          <option value="highToLow">High to Low</option>
-        </select>
-
-        <Link to="/add-course" className="w-full sm:w-auto">
-          <button
-            type="button"
-            className={`rounded h-12 w-full sm:w-32 transition duration-200 flex items-center justify-center ${
-              isDarkMode
-                ? "bg-blue-600 hover:bg-blue-700 text-white"
-                : "bg-blue-500 hover:bg-blue-600 text-white"
-            }`}
-          >
-            Add Course
-          </button>
-        </Link>
-      </div>
-
-      {/* Courses List */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-        {currentCourses.map((course) => (
-          <div
-            key={course._id}
-            onClick={() => navigate(`/courses/${course._id}/view`)} // Make the card clickable
-            className={`shadow-md rounded-lg p-4 cursor-pointer ${
-              isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
-            }`}
-          >
-            <h3 className="font-bold text-lg">{course.name}</h3>
-            <p
-              className={`text-gray-600 ${
-                isDarkMode ? "text-gray-400" : "text-gray-600"
+          {/* Search and Filters */}
+          <div className="flex flex-col sm:flex-row justify-between items-center mb-4 space-y-4 sm:space-y-0">
+            <input
+              type="text"
+              placeholder="Search courses..."
+              className={`border p-2 rounded w-full sm:w-1/3 h-12 ${
+                isDarkMode
+                  ? "bg-gray-800 text-white border-gray-700"
+                  : "bg-white text-black border-gray-300"
               }`}
-            >
-              Category: {course.category}
-            </p>
-            <p
-              className={`text-gray-600 ${
-                isDarkMode ? "text-gray-400" : "text-gray-600"
-              }`}
-            >
-              Sub-category: {course.subCategory}
-            </p>
-            <p
-              className={`text-gray-600 ${
-                isDarkMode ? "text-gray-400" : "text-gray-600"
-              }`}
-            >
-              Status: {course.status}
-            </p>
-            <p
-              className={`text-gray-600 ${
-                isDarkMode ? "text-gray-400" : "text-gray-600"
-              }`}
-            >
-              Duration: {course.durationInHours} hrs
-            </p>
-            <p
-              className={`text-gray-600 ${
-                isDarkMode ? "text-gray-400" : "text-gray-600"
-              }`}
-            >
-              Priority: {course.categoryPriority}
-            </p>
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
 
-            <div className="flex flex-wrap gap-2 mt-4">
+            {/* Category Filter */}
+            <select
+              className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
+                isDarkMode
+                  ? "bg-gray-800 text-white border-gray-700"
+                  : "bg-white text-black border-gray-300"
+              }`}
+              value={categoryFilter}
+              onChange={(e) => {
+                setCategoryFilter(e.target.value);
+                setSubCategoryFilter(""); // Reset sub-category when category changes
+              }}
+            >
+              <option value="">All Categories</option>
+              {/* Generate unique category options */}
+              {[...new Set(courses.map((course) => course.category))].map(
+                (category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                )
+              )}
+            </select>
+
+            {/* Sub-category Filter */}
+            <select
+              className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
+                isDarkMode
+                  ? "bg-gray-800 text-white border-gray-700"
+                  : "bg-white text-black border-gray-300"
+              }`}
+              value={subCategoryFilter}
+              onChange={(e) => setSubCategoryFilter(e.target.value)}
+              disabled={!categoryFilter} // Disable if no category is selected
+            >
+              <option value="">All Sub-categories</option>
+              {/* Render sub-categories based on selected category */}
+              {getSubCategories().map((subCategory) => (
+                <option key={subCategory} value={subCategory}>
+                  {subCategory}
+                </option>
+              ))}
+            </select>
+
+            {/* Status Filter */}
+            <select
+              className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
+                isDarkMode
+                  ? "bg-gray-800 text-white border-gray-700"
+                  : "bg-white text-black border-gray-300"
+              }`}
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              <option value="">All Statuses</option>
+              <option value="Completed">Completed</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Not Started Yet">Not Started Yet</option>
+            </select>
+
+            {/* Important Status Filter */}
+            <select
+              className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
+                isDarkMode
+                  ? "bg-gray-800 text-white border-gray-700"
+                  : "bg-white text-black border-gray-300"
+              }`}
+              value={importantFilter}
+              onChange={(e) => setImportantFilter(e.target.value)}
+            >
+              <option value="">All Courses</option>
+              <option value="Extra">Extra</option>
+              <option value="Not Important">Not Important</option>
+              <option value="Important">Important</option>
+              <option value="Very Important">Very Important</option>
+            </select>
+
+            {/* Sort Order Filter */}
+            <select
+              className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
+                isDarkMode
+                  ? "bg-gray-800 text-white border-gray-700"
+                  : "bg-white text-black border-gray-300"
+              }`}
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value)}
+            >
+              <option value="">Sort by Duration</option>
+              <option value="lowToHigh">Low to High</option>
+              <option value="highToLow">High to Low</option>
+            </select>
+
+            <Link to="/add-course" className="w-full sm:w-auto">
               <button
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent card click from triggering
-                  navigate(`/courses/${course._id}/edit`);
-                }}
-                className={`p-2 rounded ${
+                type="button"
+                className={`rounded h-12 w-full sm:w-32 transition duration-200 flex items-center justify-center ${
                   isDarkMode
-                    ? "bg-blue-700 hover:bg-blue-800"
-                    : "bg-blue-500 hover:bg-blue-600"
-                } text-white`}
+                    ? "bg-blue-600 hover:bg-blue-700 text-white"
+                    : "bg-blue-500 hover:bg-blue-600 text-white"
+                }`}
               >
-                Update Course
+                Add Course
               </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent card click from triggering
-                  navigate(`/courses/${course._id}/notes`);
-                }}
-                className={`p-2 rounded ${
-                  isDarkMode
-                    ? "bg-purple-700 hover:bg-purple-800"
-                    : "bg-purple-500 hover:bg-purple-600"
-                } text-white`}
-              >
-                View Notes
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent card click from triggering
-                  navigate(`/courses/${course._id}/add-notes`);
-                }}
-                className={`p-2 rounded ${
-                  isDarkMode
-                    ? "bg-yellow-700 hover:bg-yellow-800"
-                    : "bg-yellow-500 hover:bg-yellow-600"
-                } text-white`}
-              >
-                Add Notes
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent card click from triggering
-                  handleDelete(course._id);
-                }}
-                className={`p-2 rounded ${
-                  isDarkMode
-                    ? "bg-red-700 hover:bg-red-800"
-                    : "bg-red-500 hover:bg-red-600"
-                } text-white`}
-              >
-                Delete
-              </button>
-            </div>
+            </Link>
           </div>
-        ))}
-      </div>
 
-      {/* Pagination Controls */}
-      <div className="flex justify-between items-center mt-6">
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className={`p-2 rounded ${isDarkMode ? "bg-gray-700" : "bg-gray-300"}`}
-        >
-          Previous
-        </button>
-        <span className={`${isDarkMode ? "text-white" : "text-black"}`}>
-          Page {currentPage} of {totalPages}
-        </span>
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className={`p-2 rounded ${isDarkMode ? "bg-gray-700" : "bg-gray-300"}`}
-        >
-          Next
-        </button>
-      </div>
-      </>)}
+          {/* Courses List */}
+
+          {isPasswordPromptVisible && (
+            <div
+              className={`fixed inset-0 flex justify-center items-center z-50 ${
+                isDarkMode
+                  ? "bg-black bg-opacity-70"
+                  : "bg-gray-100 bg-opacity-50"
+              }`}
+            >
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  // Check the password (replace 'yourSecretPassword' with your actual password)
+                  if (password === "yourSecretPassword") {
+                    handleDelete(courseToDelete); // Proceed with deletion
+                    setPasswordPromptVisible(false); // Hide prompt
+                    setPassword(""); // Clear password
+                  } else {
+                    // Optionally, handle incorrect password case (e.g., show a toast)
+                    toast.error("Incorrect password!"); // Example using toast for error message
+                  }
+                }}
+                className={`rounded shadow-md p-6 w-96 ${
+                  isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+                }`}
+              >
+                <label
+                  htmlFor="password"
+                  className={`block mb-2 ${
+                    isDarkMode ? "text-white" : "text-black"
+                  }`}
+                >
+                  🔒 Enter the password to confirm deletion:
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  autoFocus // Add autofocus here
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className={`border p-2 rounded w-full ${
+                    isDarkMode
+                      ? "bg-gray-700 text-white"
+                      : "bg-white text-black"
+                  }`}
+                  required
+                />
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white p-2 rounded mt-4"
+                >
+                  Confirm Delete
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPasswordPromptVisible(false)} // Close the prompt
+                  className="bg-gray-300 text-black p-2 rounded mt-4 ml-2"
+                >
+                  Cancel
+                </button>
+              </form>
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+            {currentCourses.map((course) => (
+              <div
+                key={course._id}
+                onClick={() => navigate(`/courses/${course._id}/view`)} // Make the card clickable
+                className={`shadow-md rounded-lg p-4 cursor-pointer ${
+                  isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+                }`}
+              >
+                <h3 className="font-bold text-lg">{course.name}</h3>
+                <p
+                  className={`text-gray-600 ${
+                    isDarkMode ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
+                  Category: {course.category}
+                </p>
+                <p
+                  className={`text-gray-600 ${
+                    isDarkMode ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
+                  Sub-category: {course.subCategory}
+                </p>
+                <p
+                  className={`text-gray-600 ${
+                    isDarkMode ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
+                  Status: {course.status}
+                </p>
+                <p
+                  className={`text-gray-600 ${
+                    isDarkMode ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
+                  Duration: {course.durationInHours} hrs
+                </p>
+                <p
+                  className={`text-gray-600 ${
+                    isDarkMode ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
+                  Priority: {course.categoryPriority}
+                </p>
+
+                <div className="flex flex-wrap gap-2 mt-4">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent card click from triggering
+                      navigate(`/courses/${course._id}/edit`);
+                    }}
+                    className={`p-2 rounded ${
+                      isDarkMode
+                        ? "bg-blue-700 hover:bg-blue-800"
+                        : "bg-blue-500 hover:bg-blue-600"
+                    } text-white`}
+                  >
+                    Update Course
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent card click from triggering
+                      navigate(`/courses/${course._id}/notes`);
+                    }}
+                    className={`p-2 rounded ${
+                      isDarkMode
+                        ? "bg-purple-700 hover:bg-purple-800"
+                        : "bg-purple-500 hover:bg-purple-600"
+                    } text-white`}
+                  >
+                    View Notes
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent card click from triggering
+                      navigate(`/courses/${course._id}/add-notes`);
+                    }}
+                    className={`p-2 rounded ${
+                      isDarkMode
+                        ? "bg-yellow-700 hover:bg-yellow-800"
+                        : "bg-yellow-500 hover:bg-yellow-600"
+                    } text-white`}
+                  >
+                    Add Notes
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent card click from triggering
+                      setCourseToDelete(course._id); // Set the course ID to delete
+                      setPasswordPromptVisible(true); // Show password prompt
+                    }}
+                    className={`p-2 rounded ${
+                      isDarkMode
+                        ? "bg-red-700 hover:bg-red-800"
+                        : "bg-red-500 hover:bg-red-600"
+                    } text-white`}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Pagination Controls */}
+          <div className="flex justify-between items-center mt-6">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className={`p-2 rounded ${
+                isDarkMode ? "bg-gray-700" : "bg-gray-300"
+              }`}
+            >
+              Previous
+            </button>
+            <span className={`${isDarkMode ? "text-white" : "text-black"}`}>
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className={`p-2 rounded ${
+                isDarkMode ? "bg-gray-700" : "bg-gray-300"
+              }`}
+            >
+              Next
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };
