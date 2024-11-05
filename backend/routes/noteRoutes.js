@@ -77,12 +77,8 @@ router.delete('/:noteId', async (req, res) => {
       return res.status(404).json({ message: 'Course not found' });
     }
 
-    const note = course.notes.id(noteId);
-    if (!note) {
-      return res.status(404).json({ message: 'Note not found' });
-    }
-
-    note.remove(); // Remove the note from the notes array
+    // Filter out the note to delete it
+    course.notes = course.notes.filter(note => note._id.toString() !== noteId);
     await course.save();
 
     res.status(200).json({ message: 'Note deleted successfully' });
