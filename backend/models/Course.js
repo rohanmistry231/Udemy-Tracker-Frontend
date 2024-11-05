@@ -4,6 +4,9 @@ const mongoose = require('mongoose');
 const noteSchema = new mongoose.Schema({
   question: { type: String, required: true },
   answer: { type: String, required: true },
+  mainTargetCategory: { type: String, required: true }, // Main Target Goals Category (e.g., "Programming Language")
+  mainTargetGoal: { type: String, required: true },     // Target Goal (e.g., "Python")
+  subTargetGoal: { type: String },                      // Sub Target Goal (e.g., "Data Types")
   createdAt: { type: Date, default: Date.now }
 });
 
