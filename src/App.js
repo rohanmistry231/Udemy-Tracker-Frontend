@@ -4,22 +4,22 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Courses from "./pages/Courses";
-import AddCourse from "./pages/AddCourse"; // Import the AddCourse page
-import EditCourse from "./pages/EditCourse"; // Import the AddCourse page
-import ViewCourse from "./pages/ViewCourse"; // Import the AddCourse page
-import AddNotes from "./pages/AddNotes"; // Import the AddCourse page
-import ViewNotes from "./pages/ViewNotes"; // Import the AddCourse page
-import { ThemeProvider, useTheme } from "./context/ThemeContext"; // Import ThemeContext
+import AddCourse from "./pages/AddCourse";
+import EditCourse from "./pages/EditCourse";
+import ViewCourse from "./pages/ViewCourse";
+import AddNotes from "./pages/AddNotes";
+import ViewNotes from "./pages/ViewNotes";
+import AddNote from "./pages/AddNote"; // Import the new AddNote page
+import { ThemeProvider, useTheme } from "./context/ThemeContext";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Progress from "./pages/Progress";
 import Notes from "./pages/Notes";
 
 function App() {
-  const { isDarkMode } = useTheme(); // Get isDarkMode from ThemeContext
-  const [courses, setCourses] = useState([]); // State to store courses
+  const { isDarkMode } = useTheme();
+  const [courses, setCourses] = useState([]);
 
-  // Define the onAdd function to add a new course
   const handleAddCourse = (newCourse) => {
     setCourses((prevCourses) => [...prevCourses, newCourse]);
   };
@@ -27,9 +27,7 @@ function App() {
   return (
     <Router>
       <div
-        className={`flex flex-col min-h-screen ${
-          isDarkMode ? "dark" : "light"
-        }`}
+        className={`flex flex-col min-h-screen ${isDarkMode ? "dark" : "light"}`}
       >
         <Navbar />
         <main className="flex-grow">
@@ -38,7 +36,7 @@ function App() {
             <Route path="/courses" element={<Courses courses={courses} />} />
             <Route
               path="/add-course"
-              element={<AddCourse onAdd={handleAddCourse} />} // Pass handleAddCourse as prop
+              element={<AddCourse onAdd={handleAddCourse} />}
             />
             <Route path="/courses/:id/view" element={<ViewCourse />} />
             <Route path="/courses/:id/edit" element={<EditCourse />} />
@@ -47,6 +45,7 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/progress" element={<Progress />} />
             <Route path="/notes" element={<Notes />} />
+            <Route path="/add-note" element={<AddNote />} /> {/* New route for AddNote */}
           </Routes>
         </main>
         <Footer />
