@@ -4,11 +4,12 @@ const Course = require('../models/Course'); // Import Course model
 
 const router = express.Router({ mergeParams: true }); // Merge params for courseId access
 
+// Fetch all notes across all courses
 router.get('/all', async (req, res) => {
   try {
     const courses = await Course.find({}, 'notes'); // Fetch only notes from each course
-    const allNotes = courses.flatMap(course => course.notes); // Flatten notes from each course into a single array
-    res.json(allNotes);
+    const allNotes = courses.flatMap(course => course.notes); // Flatten notes into a single array
+    res.json({ message: 'All notes retrieved successfully', notes: allNotes });
   } catch (error) {
     res.status(500).json({ message: 'Error fetching all notes', error: error.message });
   }
@@ -81,17 +82,17 @@ router.get('/:noteId?', async (req, res) => {
       return res.status(404).json({ message: 'Course not found' });
     }
 
-    // If noteId is provided, find that specific note
+    // If noteId is provided, retrieve that specific note
     if (noteId) {
       const note = course.notes.id(noteId);
       if (!note) {
         return res.status(404).json({ message: 'Note not found' });
       }
-      return res.json(note);
+      return res.json({ message: 'Note retrieved successfully', note });
     }
 
-    // If no noteId, return all notes
-    res.json(course.notes);
+    // If no noteId, return all notes for the course
+    res.json({ message: 'Notes retrieved successfully', notes: course.notes });
   } catch (error) {
     res.status(500).json({ message: 'Error fetching notes', error: error.message });
   }
