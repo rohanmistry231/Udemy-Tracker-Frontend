@@ -244,13 +244,15 @@ const AddNotes = () => {
           question,
           answer,
           mainTargetCategory: mainCategory,
-          targetGoal,
-          subTargetGoal
-        })
+          mainTargetGoal: targetGoal, // Updated to match the expected backend field
+          subTargetGoal,
+        }),
       });
       navigate(`/courses/${id}/view`);
+      toast.success("Note added successfully!");
     } catch (error) {
       console.error("Error adding note:", error);
+      toast.error("Failed to add note. Please try again.");
     }
   };
 
@@ -303,50 +305,55 @@ const AddNotes = () => {
               ))}
             </select>
 
-            {mainCategory && (
-              <select
-                value={targetGoal}
-                onChange={(e) => {
-                  setTargetGoal(e.target.value);
-                  setSubTargetGoal("");
-                }}
-                className={`border p-2 rounded w-full ${isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`}
-              >
-                <option value="">Select Target Goal</option>
-                {(targetGoals[mainCategory] || []).map((goal) => (
-                  <option key={goal} value={goal}>{goal}</option>
-                ))}
-              </select>
-            )}
-
-            {targetGoal && (
-              <select
-                value={subTargetGoal}
-                onChange={(e) => setSubTargetGoal(e.target.value)}
-                className={`border p-2 rounded w-full ${isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`}
-              >
-                <option value="">Select Sub Target Goal</option>
-                {(subGoals[targetGoal] || []).map((subGoal) => (
-                  <option key={subGoal} value={subGoal}>{subGoal}</option>
-                ))}
-              </select>
-            )}
-
-            <textarea
-              placeholder="Enter the question"
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
+            <select
+              value={targetGoal}
+              onChange={(e) => {
+                setTargetGoal(e.target.value);
+                setSubTargetGoal(""); // Reset subTargetGoal when targetGoal changes
+              }}
               className={`border p-2 rounded w-full ${isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`}
-              required
-            />
+              disabled={!mainCategory}
+            >
+              <option value="">Select Target Goal</option>
+              {mainCategory && targetGoals[mainCategory].map((goal) => (
+                <option key={goal} value={goal}>{goal}</option>
+              ))}
+            </select>
 
-            <textarea
-              placeholder="Enter the answer"
-              value={answer}
-              onChange={(e) => setAnswer(e.target.value)}
+            <select
+              value={subTargetGoal}
+              onChange={(e) => setSubTargetGoal(e.target.value)}
               className={`border p-2 rounded w-full ${isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`}
-              required
-            />
+              disabled={!targetGoal}
+            >
+              <option value="">Select Sub Target Goal</option>
+              {targetGoal && subGoals[targetGoal]?.map((subGoal) => (
+                <option key={subGoal} value={subGoal}>{subGoal}</option>
+              ))}
+            </select>
+
+            <div>
+              <label htmlFor="question" className="block mb-1">Question:</label>
+              <input
+                type="text"
+                id="question"
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
+                className={`border p-2 rounded w-full ${isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`}
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="answer" className="block mb-1">Answer:</label>
+              <textarea
+                id="answer"
+                value={answer}
+                onChange={(e) => setAnswer(e.target.value)}
+                className={`border p-2 rounded w-full ${isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`}
+                required
+              />
+            </div>
 
             <button type="submit" className="bg-blue-500 text-white p-2 rounded">Add Note</button>
           </form>

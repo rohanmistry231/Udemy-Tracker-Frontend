@@ -1,4 +1,3 @@
-// src/pages/ViewNotes.js
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext'; // Import theme context
@@ -11,8 +10,11 @@ const ViewNotes = () => {
   const isDarkMode = theme === 'dark'; // Check if dark mode is enabled
   const [notes, setNotes] = useState([]);
   const [editingNote, setEditingNote] = useState(null); // Track the note being edited
-  const [question, setQuestion] = useState(''); // State for editing question
-  const [answer, setAnswer] = useState(''); // State for editing answer
+  const [question, setQuestion] = useState('');
+  const [answer, setAnswer] = useState('');
+  const [mainTargetCategory, setMainTargetCategory] = useState('');
+  const [mainTargetGoal, setMainTargetGoal] = useState('');
+  const [subTargetGoal, setSubTargetGoal] = useState('');
   const [password, setPassword] = useState("");
   const [isAuthorized, setIsAuthorized] = useState(false);
 
@@ -36,9 +38,10 @@ const ViewNotes = () => {
           throw new Error('Failed to fetch notes');
         }
         const data = await response.json();
-        setNotes(data);
+        setNotes(data.notes); // Update to use the 'notes' property from the response
       } catch (error) {
         console.error('Error fetching notes:', error);
+        toast.error('Failed to load notes. Please try again later.');
       }
     };
 
@@ -56,8 +59,10 @@ const ViewNotes = () => {
           throw new Error('Failed to delete note');
         }
         setNotes((prevNotes) => prevNotes.filter((note) => note._id !== noteId));
+        toast.success('Note deleted successfully');
       } catch (error) {
         console.error('Error deleting note:', error);
+        toast.error('Failed to delete note. Please try again later.');
       }
     }
   };
@@ -67,6 +72,9 @@ const ViewNotes = () => {
     setEditingNote(note._id);
     setQuestion(note.question);
     setAnswer(note.answer);
+    setMainTargetCategory(note.mainTargetCategory);
+    setMainTargetGoal(note.mainTargetGoal || ''); // Ensure it’s initialized
+    setSubTargetGoal(note.subTargetGoal || ''); // Ensure it’s initialized
   };
 
   // Update a specific note
@@ -78,7 +86,7 @@ const ViewNotes = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ question, answer }),
+        body: JSON.stringify({ question, answer, mainTargetCategory, mainTargetGoal, subTargetGoal }),
       });
       if (!response.ok) {
         throw new Error('Failed to update note');
@@ -87,11 +95,16 @@ const ViewNotes = () => {
       setNotes((prevNotes) =>
         prevNotes.map((note) => (note._id === editingNote ? updatedNote.note : note))
       );
+      toast.success('Note updated successfully');
       setEditingNote(null); // Exit edit mode
-      setQuestion(''); // Clear form fields
+      setQuestion('');
       setAnswer('');
+      setMainTargetCategory('');
+      setMainTargetGoal('');
+      setSubTargetGoal('');
     } catch (error) {
       console.error('Error updating note:', error);
+      toast.error('Failed to update note. Please try again later.');
     }
   };
 
@@ -100,22 +113,18 @@ const ViewNotes = () => {
       {!isAuthorized ? (
         <form
           onSubmit={handlePasswordSubmit}
-          className={`p-6 rounded shadow-md mt-12 ${
-            isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
-          }`}
+          className={`p-6 rounded shadow-md ${isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"}`}
         >
           <label htmlFor="password" className="block mb-2">
-          🔒 Prove You're Worthy! Enter the Secret Code:
+            🔒 Prove You're Worthy! Enter the Secret Code:
           </label>
           <input
             type="password"
             id="password"
-            autoFocus // Add autofocus here
+            autoFocus
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className={`border p-2 rounded w-full ${
-              isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
-            }`}
+            className={`border p-2 rounded w-full ${isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`}
             required
           />
           <button
@@ -127,82 +136,107 @@ const ViewNotes = () => {
         </form>
       ) : (
         <>
-      <div className={`shadow-md rounded-lg p-6 ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
-        <h2 className="text-2xl mb-4">Notes</h2>
-        <ul className="space-y-4">
-          {notes.length > 0 ? (
-            notes.map((note) => (
-              <li
-                key={note._id}
-                className={`border-b py-4 flex justify-between items-start ${isDarkMode ? 'border-gray-700' : 'border-gray-300'}`}
-              >
-                {editingNote === note._id ? (
-                  // Edit form for the selected note
-                  <form onSubmit={handleUpdate} className={`flex flex-col space-y-2 w-full ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
-                    <input
-                      type="text"
-                      value={question}
-                      onChange={(e) => setQuestion(e.target.value)}
-                      placeholder="Question"
-                      className={`p-2 rounded border ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
-                    />
-                    <textarea
-                      value={answer}
-                      onChange={(e) => setAnswer(e.target.value)}
-                      placeholder="Answer"
-                      className={`p-2 rounded border ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
-                    ></textarea>
-                    <button
-                      type="submit"
-                      className={`p-2 rounded ${isDarkMode ? 'bg-blue-700 hover:bg-blue-800' : 'bg-blue-500 hover:bg-blue-600'} text-white`}
-                    >
-                      Save
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setEditingNote(null)}
-                      className="text-red-500 mt-2"
-                    >
-                      Cancel
-                    </button>
-                  </form>
-                ) : (
-                  // Display note and actions
-                  <>
-                    <div>
-                      <h3 className="font-bold text-lg">{note.question}</h3>
-                      <p className="text-gray-600">{note.answer}</p>
-                    </div>
-                    <div className="space-x-2">
-                      <button
-                        onClick={() => handleEditClick(note)}
-                        className={`p-2 rounded transition-transform transform hover:scale-105 ${isDarkMode ? 'bg-yellow-700 hover:bg-yellow-800' : 'bg-yellow-500 hover:bg-yellow-600'} text-white`}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(note._id)}
-                        className={`p-2 rounded transition-transform transform hover:scale-105 ${isDarkMode ? 'bg-red-700 hover:bg-red-800' : 'bg-red-500 hover:bg-red-600'} text-white`}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </>
-                )}
-              </li>
-            ))
-          ) : (
-            <p>No notes available for this course.</p>
-          )}
-        </ul>
-        <Link
-          to="/courses"
-          className={`inline-block mt-4 px-4 py-2 rounded-lg shadow-lg transition-transform transform font-semibold ${isDarkMode ? 'bg-gray-600 hover:bg-gray-700 text-white' : 'bg-blue-500 hover:bg-blue-600 text-white'}`}
-        >
-          Back to Courses
-        </Link>
-      </div>
-      </>)}
+          <div className={`shadow-md rounded-lg p-6 ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
+            <h2 className="text-2xl mb-4">Notes</h2>
+            <ul className="space-y-4">
+              {notes.length > 0 ? (
+                notes.map((note) => (
+                  <li
+                    key={note._id}
+                    className={`border-b py-4 flex justify-between items-start ${isDarkMode ? 'border-gray-700' : 'border-gray-300'}`}
+                  >
+                    {editingNote === note._id ? (
+                      // Edit form for the selected note
+                      <form onSubmit={handleUpdate} className={`flex flex-col space-y-2 w-full ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+                        <input
+                          type="text"
+                          value={question}
+                          onChange={(e) => setQuestion(e.target.value)}
+                          placeholder="Question"
+                          className={`p-2 rounded border ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
+                          required
+                        />
+                        <textarea
+                          value={answer}
+                          onChange={(e) => setAnswer(e.target.value)}
+                          placeholder="Answer"
+                          className={`p-2 rounded border ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
+                          required
+                        ></textarea>
+                        <input
+                          type="text"
+                          value={mainTargetCategory}
+                          onChange={(e) => setMainTargetCategory(e.target.value)}
+                          placeholder="Main Target Goal"
+                          className={`p-2 rounded border ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
+                          required
+                        />
+                        <input
+                          type="text"
+                          value={mainTargetGoal}
+                          onChange={(e) => setMainTargetGoal(e.target.value)}
+                          placeholder="Target Goal"
+                          className={`p-2 rounded border ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
+                        />
+                        <input
+                          type="text"
+                          value={subTargetGoal}
+                          onChange={(e) => setSubTargetGoal(e.target.value)}
+                          placeholder="Sub Target Goal"
+                          className={`p-2 rounded border ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
+                        />
+                        <button
+                          type="submit"
+                          className={`p-2 rounded ${isDarkMode ? 'bg-blue-700 hover:bg-blue-800' : 'bg-blue-500 hover:bg-blue-600'} text-white`}
+                        >
+                          Save
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setEditingNote(null)}
+                          className="text-red-500 mt-2"
+                        >
+                          Cancel
+                        </button>
+                      </form>
+                    ) : (
+                      // Display note and actions
+                      <>
+                        <div>
+                          <h3 className="font-bold text-lg">{note.question}</h3>
+                          <p className="text-gray-600">{note.answer}</p>
+                          <p className="text-gray-600">Main Target Goal: {note.mainTargetCategory}</p>
+                          <p className="text-gray-600">Target Goal: {note.mainTargetGoal || 'N/A'}</p>
+                          <p className="text-gray-600">Sub Target Goal: {note.subTargetGoal || 'N/A'}</p>
+                        </div>
+                        <div className="flex space-x-4">
+                          <button
+                            onClick={() => handleEditClick(note)}
+                            className={`text-blue-500 ${isDarkMode ? 'hover:text-blue-300' : 'hover:text-blue-700'}`}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(note._id)}
+                            className={`text-red-500 ${isDarkMode ? 'hover:text-red-300' : 'hover:text-red-700'}`}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </li>
+                ))
+              ) : (
+                <li className="text-gray-500">No notes available.</li>
+              )}
+            </ul>
+            <Link to={`/courses/${id}/add-note`} className="mt-4 inline-block text-blue-500">
+              Add a new note
+            </Link>
+          </div>
+        </>
+      )}
     </div>
   );
 };
