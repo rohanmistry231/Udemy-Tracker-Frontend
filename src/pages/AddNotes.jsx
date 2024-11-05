@@ -244,8 +244,8 @@ const AddNotes = () => {
           question,
           answer,
           mainTargetCategory: mainCategory,
-          mainTargetGoal: targetGoal,
-          subTargetGoal: subTargetGoal
+          targetGoal,
+          subTargetGoal
         })
       });
       navigate(`/courses/${id}/view`);
@@ -313,7 +313,7 @@ const AddNotes = () => {
                 className={`border p-2 rounded w-full ${isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`}
               >
                 <option value="">Select Target Goal</option>
-                {targetGoals[mainCategory]?.map((goal) => (
+                {(targetGoals[mainCategory] || []).map((goal) => (
                   <option key={goal} value={goal}>{goal}</option>
                 ))}
               </select>
@@ -326,29 +326,29 @@ const AddNotes = () => {
                 className={`border p-2 rounded w-full ${isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`}
               >
                 <option value="">Select Sub Target Goal</option>
-                {subGoals[targetGoal]?.map((subGoal) => (
+                {(subGoals[targetGoal] || []).map((subGoal) => (
                   <option key={subGoal} value={subGoal}>{subGoal}</option>
                 ))}
               </select>
             )}
 
             <textarea
+              placeholder="Enter the question"
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
-              className={`border p-2 w-full h-24 ${isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`}
-              placeholder="Enter your question..."
-            />
-            <textarea
-              value={answer}
-              onChange={(e) => setAnswer(e.target.value)}
-              className={`border p-2 w-full h-24 ${isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`}
-              placeholder="Enter your answer..."
+              className={`border p-2 rounded w-full ${isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`}
+              required
             />
 
-            <div className="flex space-x-2">
-              <button type="submit" className="bg-green-500 text-white p-2 rounded hover:bg-green-600">Add Note</button>
-              <button onClick={() => navigate("/courses")} className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Back to Courses</button>
-            </div>
+            <textarea
+              placeholder="Enter the answer"
+              value={answer}
+              onChange={(e) => setAnswer(e.target.value)}
+              className={`border p-2 rounded w-full ${isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`}
+              required
+            />
+
+            <button type="submit" className="bg-blue-500 text-white p-2 rounded">Add Note</button>
           </form>
         </div>
       )}

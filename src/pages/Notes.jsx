@@ -264,7 +264,7 @@ const Notes = () => {
           isDarkMode ? "text-white" : "text-gray-800"
         }`}
       >
-        📝 Notes 📝
+        📝 Notes List 📝
       </h2>
 
       {loading ? (
@@ -366,14 +366,21 @@ const Notes = () => {
                     isDarkMode ? "text-gray-400" : "text-gray-600"
                   }`}
                 >
-                  Main Goal: {note.mainGoal}
+                  Question: {note.question}
                 </p>
                 <p
                   className={`${
                     isDarkMode ? "text-gray-400" : "text-gray-600"
                   }`}
                 >
-                  Target Goal: {note.targetGoal}
+                  Main Goal: {note.mainTargetCategory}
+                </p>
+                <p
+                  className={`${
+                    isDarkMode ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
+                  Target Goal: {note.mainTargetGoal}
                 </p>
                 <p
                   className={`${
@@ -387,7 +394,7 @@ const Notes = () => {
                     isDarkMode ? "text-gray-400" : "text-gray-600"
                   }`}
                 >
-                  Content: {note.content}
+                  Answer: {note.answer}
                 </p>
 
                 <div className="flex flex-wrap gap-2 mt-4">
