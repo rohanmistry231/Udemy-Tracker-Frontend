@@ -11,6 +11,8 @@ import AddNotes from "./pages/AddNotes"; // Import the AddCourse page
 import ViewNotes from "./pages/ViewNotes"; // Import the AddCourse page
 import { ThemeProvider, useTheme } from "./context/ThemeContext"; // Import ThemeContext
 import Home from "./pages/Home";
+import Profile from "./pages/Profile";
+import Progress from "./pages/Progress";
 
 function App() {
   const { isDarkMode } = useTheme(); // Get isDarkMode from ThemeContext
@@ -41,6 +43,8 @@ function App() {
             <Route path="/courses/:id/edit" element={<EditCourse />} />
             <Route path="/courses/:id/add-notes" element={<AddNotes />} />
             <Route path="/courses/:id/notes" element={<ViewNotes />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/progress" element={<Progress />} />
           </Routes>
         </main>
         <Footer />

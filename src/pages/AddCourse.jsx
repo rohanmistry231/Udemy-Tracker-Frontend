@@ -334,7 +334,7 @@ const AddCourse = ({ onAdd }) => {
       {!isAuthorized ? (
         <form
           onSubmit={handlePasswordSubmit}
-          className={`p-6 rounded shadow-md ${
+          className={`p-6 rounded shadow-md mt-12 ${
             isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
           }`}
         >

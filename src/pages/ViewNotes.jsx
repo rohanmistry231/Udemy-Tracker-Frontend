@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext'; // Import theme context
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ViewNotes = () => {
   const { id } = useParams(); // Get course ID from URL
@@ -11,6 +13,19 @@ const ViewNotes = () => {
   const [editingNote, setEditingNote] = useState(null); // Track the note being edited
   const [question, setQuestion] = useState(''); // State for editing question
   const [answer, setAnswer] = useState(''); // State for editing answer
+  const [password, setPassword] = useState("");
+  const [isAuthorized, setIsAuthorized] = useState(false);
+
+  const handlePasswordSubmit = (e) => {
+    e.preventDefault();
+    const correctPassword = "12345"; // Define the correct password here
+    if (password === correctPassword) {
+      setIsAuthorized(true);
+      toast.success("Access granted!");
+    } else {
+      toast.error("Incorrect password. Please try again.");
+    }
+  };
 
   // Fetch notes for the specific course
   useEffect(() => {
@@ -82,6 +97,36 @@ const ViewNotes = () => {
 
   return (
     <div className={`container mx-auto px-4 py-6 mt-10 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
+      {!isAuthorized ? (
+        <form
+          onSubmit={handlePasswordSubmit}
+          className={`p-6 rounded shadow-md mt-12 ${
+            isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+          }`}
+        >
+          <label htmlFor="password" className="block mb-2">
+          🔒 Prove You're Worthy! Enter the Secret Code:
+          </label>
+          <input
+            type="password"
+            id="password"
+            autoFocus // Add autofocus here
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className={`border p-2 rounded w-full ${
+              isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
+            }`}
+            required
+          />
+          <button
+            type="submit"
+            className="bg-blue-500 text-white p-2 rounded mt-4"
+          >
+            Submit
+          </button>
+        </form>
+      ) : (
+        <>
       <div className={`shadow-md rounded-lg p-6 ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
         <h2 className="text-2xl mb-4">Notes</h2>
         <ul className="space-y-4">
@@ -157,6 +202,7 @@ const ViewNotes = () => {
           Back to Courses
         </Link>
       </div>
+      </>)}
     </div>
   );
 };

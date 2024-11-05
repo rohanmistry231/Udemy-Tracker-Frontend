@@ -59,15 +59,15 @@ const Courses = () => {
 
   // Filter and sort courses based on search term and selected filters
   const filteredCourses = courses
-    .filter(
-      (course) =>
-        course.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        (statusFilter === "" || course.status === statusFilter) &&
-        (importantFilter === "" ||
-          course.importantStatus === importantFilter) &&
-        (categoryFilter === "" || course.category === categoryFilter) &&
-        (subCategoryFilter === "" || course.subCategory === subCategoryFilter)
-    )
+  .filter(
+    (course) =>
+      (course.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+       course.no.toString().includes(searchTerm)) && // Multi-search by name or 'no'
+      (statusFilter === "" || course.status === statusFilter) &&
+      (importantFilter === "" || course.importantStatus === importantFilter) &&
+      (categoryFilter === "" || course.category === categoryFilter) &&
+      (subCategoryFilter === "" || course.subCategory === subCategoryFilter)
+  )
     .sort((a, b) => {
       if (sortOrder === "lowToHigh") {
         return a.durationInHours - b.durationInHours; // Sort from low to high
@@ -137,7 +137,7 @@ const Courses = () => {
           <div className="flex flex-col sm:flex-row justify-between items-center mb-4 space-y-4 sm:space-y-0">
             <input
               type="text"
-              placeholder="Search courses..."
+              placeholder="Search by name or course number..."
               className={`border p-2 rounded w-full sm:w-1/3 h-12 ${
                 isDarkMode
                   ? "bg-gray-800 text-white border-gray-700"
@@ -267,7 +267,7 @@ const Courses = () => {
                 onSubmit={(e) => {
                   e.preventDefault();
                   // Check the password (replace 'yourSecretPassword' with your actual password)
-                  if (password === "yourSecretPassword") {
+                  if (password === "12345") {
                     handleDelete(courseToDelete); // Proceed with deletion
                     setPasswordPromptVisible(false); // Hide prompt
                     setPassword(""); // Clear password
@@ -286,7 +286,7 @@ const Courses = () => {
                     isDarkMode ? "text-white" : "text-black"
                   }`}
                 >
-                  🔒 Enter the password to confirm deletion:
+                  🔒 Prove You're Worthy! Enter the Secret Code for Deletion:
                 </label>
                 <input
                   type="password"
@@ -328,6 +328,13 @@ const Courses = () => {
                 }`}
               >
                 <h3 className="font-bold text-lg">{course.name}</h3>
+                <p
+                  className={`text-gray-600 ${
+                    isDarkMode ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
+                  No: {course.no}
+                </p>
                 <p
                   className={`text-gray-600 ${
                     isDarkMode ? "text-gray-400" : "text-gray-600"

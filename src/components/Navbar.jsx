@@ -1,36 +1,38 @@
 // src/components/Navbar.js
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useTheme } from '../context/ThemeContext'; // Import the theme context
+import { useTheme } from '../context/ThemeContext';
 
 const Navbar = () => {
-  const { theme, toggleTheme } = useTheme(); // Use theme context
+  const { theme, toggleTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
-  const isDarkMode = theme === 'dark'; // Check if dark mode is active
+  const isDarkMode = theme === 'dark';
 
   return (
     <nav className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} shadow-md fixed w-full top-0 z-50`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-14">
-          {/* Brand Logo */}
           <div className="flex-shrink-0">
             <Link to="/" className={`${isDarkMode ? 'text-white' : 'text-purple-600'} text-3xl font-bold`}>
               Udemy Tracker
             </Link>
           </div>
 
-          {/* Desktop Menu Links */}
           <div className="hidden md:flex space-x-6 items-center">
             <Link to="/courses" className={`${isDarkMode ? 'text-gray-300' : 'text-gray-800'} hover:text-purple-500 transition duration-150`}>
               Courses
             </Link>
-
-            {/* Dark/Light Mode Toggle */}
+            <Link to="/profile" className={`${isDarkMode ? 'text-gray-300' : 'text-gray-800'} hover:text-purple-500 transition duration-150`}>
+              Profile
+            </Link>
+            <Link to="/progress" className={`${isDarkMode ? 'text-gray-300' : 'text-gray-800'} hover:text-purple-500 transition duration-150`}>
+              Progress
+            </Link>
             <button
               onClick={toggleTheme}
               className={`px-3 py-1.5 rounded-lg shadow-md border focus:outline-none transition duration-300 ${
@@ -42,7 +44,6 @@ const Navbar = () => {
             </button>
           </div>
 
-          {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center">
             <button
               onClick={toggleTheme}
@@ -68,7 +69,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       <div
         className={`md:hidden ${isDarkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg space-y-2 px-4 pt-2 pb-3 transition-transform duration-300 ease-in-out transform ${
           isOpen ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
@@ -77,6 +77,12 @@ const Navbar = () => {
       >
         <Link to="/courses" className={`block ${isDarkMode ? 'text-gray-300' : 'text-gray-800'} hover:text-purple-500 py-2`} onClick={toggleMenu}>
           Courses
+        </Link>
+        <Link to="/profile" className={`block ${isDarkMode ? 'text-gray-300' : 'text-gray-800'} hover:text-purple-500 py-2`} onClick={toggleMenu}>
+          Profile
+        </Link>
+        <Link to="/progress" className={`block ${isDarkMode ? 'text-gray-300' : 'text-gray-800'} hover:text-purple-500 py-2`} onClick={toggleMenu}>
+          Progress
         </Link>
       </div>
     </nav>
