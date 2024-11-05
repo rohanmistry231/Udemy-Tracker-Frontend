@@ -7,14 +7,13 @@ const router = express.Router({ mergeParams: true }); // Merge params for course
 // Fetch all notes across all courses
 router.get('/all', async (req, res) => {
   try {
-    const courses = await Course.find({}).select('notes -_id'); // Fetch only the notes field without _id
-    const allNotes = courses.reduce((acc, course) => acc.concat(course.notes), []); // Merge all notes into one array
+    const courses = await Course.find({}, 'notes'); // Fetch only notes from each course
+    const allNotes = courses.flatMap(course => course.notes); // Flatten notes into a single array
     res.json({ message: 'All notes retrieved successfully', notes: allNotes });
   } catch (error) {
     res.status(500).json({ message: 'Error fetching all notes', error: error.message });
   }
 });
-
 
 // Add a new note to a specific course
 router.post('/', async (req, res) => {
