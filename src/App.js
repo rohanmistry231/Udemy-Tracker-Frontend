@@ -13,6 +13,7 @@ import { ThemeProvider, useTheme } from "./context/ThemeContext"; // Import Them
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Progress from "./pages/Progress";
+import Notes from "./pages/Notes";
 
 function App() {
   const { isDarkMode } = useTheme(); // Get isDarkMode from ThemeContext
@@ -45,6 +46,7 @@ function App() {
             <Route path="/courses/:id/notes" element={<ViewNotes />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/progress" element={<Progress />} />
+            <Route path="/notes" element={<Notes />} />
           </Routes>
         </main>
         <Footer />

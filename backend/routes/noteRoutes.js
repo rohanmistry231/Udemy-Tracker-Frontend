@@ -4,6 +4,16 @@ const Course = require('../models/Course'); // Import Course model
 
 const router = express.Router({ mergeParams: true }); // Merge params for courseId access
 
+router.get('/all', async (req, res) => {
+  try {
+    const courses = await Course.find({}, 'notes'); // Fetch only notes from each course
+    const allNotes = courses.flatMap(course => course.notes); // Flatten notes from each course into a single array
+    res.json(allNotes);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching all notes', error: error.message });
+  }
+});
+
 // Add a new note to a course
 router.post('/', async (req, res) => {
   try {

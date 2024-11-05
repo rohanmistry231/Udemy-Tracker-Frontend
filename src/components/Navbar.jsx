@@ -27,11 +27,14 @@ const Navbar = () => {
             <Link to="/courses" className={`${isDarkMode ? 'text-gray-300' : 'text-gray-800'} hover:text-purple-500 transition duration-150`}>
               Courses
             </Link>
-            <Link to="/profile" className={`${isDarkMode ? 'text-gray-300' : 'text-gray-800'} hover:text-purple-500 transition duration-150`}>
-              Profile
+            <Link to="/notes" className={`${isDarkMode ? 'text-gray-300' : 'text-gray-800'} hover:text-purple-500 transition duration-150`}>
+              Notes
             </Link>
             <Link to="/progress" className={`${isDarkMode ? 'text-gray-300' : 'text-gray-800'} hover:text-purple-500 transition duration-150`}>
               Progress
+            </Link>
+            <Link to="/profile" className={`${isDarkMode ? 'text-gray-300' : 'text-gray-800'} hover:text-purple-500 transition duration-150`}>
+              Profile
             </Link>
             <button
               onClick={toggleTheme}
@@ -78,11 +81,14 @@ const Navbar = () => {
         <Link to="/courses" className={`block ${isDarkMode ? 'text-gray-300' : 'text-gray-800'} hover:text-purple-500 py-2`} onClick={toggleMenu}>
           Courses
         </Link>
-        <Link to="/profile" className={`block ${isDarkMode ? 'text-gray-300' : 'text-gray-800'} hover:text-purple-500 py-2`} onClick={toggleMenu}>
-          Profile
+        <Link to="/notes" className={`block ${isDarkMode ? 'text-gray-300' : 'text-gray-800'} hover:text-purple-500 py-2`} onClick={toggleMenu}>
+          Notes
         </Link>
         <Link to="/progress" className={`block ${isDarkMode ? 'text-gray-300' : 'text-gray-800'} hover:text-purple-500 py-2`} onClick={toggleMenu}>
           Progress
+        </Link>
+        <Link to="/profile" className={`block ${isDarkMode ? 'text-gray-300' : 'text-gray-800'} hover:text-purple-500 py-2`} onClick={toggleMenu}>
+          Profile
         </Link>
       </div>
     </nav>

@@ -34,7 +34,7 @@ app.use(express.json());
 
 // Connect to MongoDB
 mongoose
-  .connect(process.env.MONGODB_URI)
+  .connect("mongodb://localhost:27017/udemyCourses")
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("Connection failed", err));
 
@@ -46,6 +46,7 @@ app.get("/", (req, res) => {
 // API Routes
 app.use("/courses", courseRoutes);
 app.use("/courses/:courseId/notes", noteRoutes);
+app.use("/notes", noteRoutes);
 
 // Start the server
 const PORT = process.env.PORT;
