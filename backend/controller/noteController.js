@@ -1,3 +1,4 @@
+// controllers/noteController.js
 const Course = require('../models/Course');
 
 // Add a note to a course
@@ -5,6 +6,11 @@ const addNote = async (req, res) => {
   try {
     const { courseId } = req.params;
     const { question, answer, mainTargetCategory, mainTargetGoal, subTargetGoal } = req.body;
+
+    // Validate required fields
+    if (!question || !answer || !mainTargetCategory || !mainTargetGoal) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
 
     const course = await Course.findById(courseId);
     if (!course) {
@@ -24,9 +30,9 @@ const addNote = async (req, res) => {
     course.notes.push(newNote);
     await course.save();
 
-    res.status(201).json({ message: 'Note added successfully', note: newNote });
+    res.status(201).json({ message: 'Note added successfully', note: course.notes.slice(-1)[0] });
   } catch (error) {
-    res.status(500).json({ error: `Error adding note: ${error.message}` });
+    res.status(500).json({ message: 'Error adding note', error: error.message });
   }
 };
 
@@ -47,16 +53,17 @@ const updateNote = async (req, res) => {
     }
 
     // Update note fields
-    note.question = question;
-    note.answer = answer;
-    note.mainTargetCategory = mainTargetCategory;
-    note.mainTargetGoal = mainTargetGoal;
-    note.subTargetGoal = subTargetGoal;
+    note.question = question || note.question;
+    note.answer = answer || note.answer;
+    note.mainTargetCategory = mainTargetCategory || note.mainTargetCategory;
+    note.mainTargetGoal = mainTargetGoal || note.mainTargetGoal;
+    note.subTargetGoal = subTargetGoal || note.subTargetGoal;
 
     await course.save();
+
     res.json({ message: 'Note updated successfully', note });
   } catch (error) {
-    res.status(500).json({ error: `Error updating note: ${error.message}` });
+    res.status(500).json({ message: 'Error updating note', error: error.message });
   }
 };
 
@@ -75,12 +82,13 @@ const deleteNote = async (req, res) => {
       return res.status(404).json({ message: 'Note not found' });
     }
 
-    note.remove(); // Remove the note from the notes array
+    // Remove the note using Mongoose's remove method
+    note.remove();
     await course.save();
 
-    res.json({ message: 'Note deleted successfully' });
+    res.status(200).json({ message: 'Note deleted successfully' });
   } catch (error) {
-    res.status(500).json({ error: `Error deleting note: ${error.message}` });
+    res.status(500).json({ message: 'Error deleting note', error: error.message });
   }
 };
 
