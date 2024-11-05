@@ -68,7 +68,8 @@ router.put('/:noteId', async (req, res) => {
 });
 
 // Delete a specific note from a course
-router.delete('/:noteId', async (req, res) => {
+// Delete a specific note from a course
+router.delete('/:courseId/:noteId', async (req, res) => {
   try {
     const { courseId, noteId } = req.params;
 
@@ -77,12 +78,14 @@ router.delete('/:noteId', async (req, res) => {
       return res.status(404).json({ message: 'Course not found' });
     }
 
-    const note = course.notes.id(noteId);
-    if (!note) {
+    // Find the index of the note with the specified noteId
+    const noteIndex = course.notes.findIndex(note => note._id.toString() === noteId);
+    if (noteIndex === -1) {
       return res.status(404).json({ message: 'Note not found' });
     }
 
-    note.remove(); // Remove the note from the notes array
+    // Remove the note at the found index
+    course.notes.splice(noteIndex, 1);
     await course.save();
 
     res.status(200).json({ message: 'Note deleted successfully' });
@@ -90,6 +93,8 @@ router.delete('/:noteId', async (req, res) => {
     res.status(500).json({ message: 'Error deleting note', error: error.message });
   }
 });
+
+
 
 // Get all notes for a specific course or a specific note by ID
 router.get('/:noteId?', async (req, res) => {
