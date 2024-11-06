@@ -86,26 +86,33 @@ router.delete('/:noteId', async (req, res) => {
   }
 });
 
-// Delete a note by its ID across all courses
-router.delete('/byNoteId/:noteId', async (req, res) => {
+// Delete a note by its ID from a specific course
+router.delete('/byNoteId/:courseId/:noteId', async (req, res) => {
   try {
-    const { noteId } = req.params;
+    const { courseId, noteId } = req.params;
 
-    // Find and remove the note from all courses
-    const courses = await Course.updateMany(
-      { "notes._id": noteId },
-      { $pull: { notes: { _id: noteId } } }
-    );
-
-    if (!courses.nModified) {
-      return res.status(404).json({ message: 'Note not found in any course' });
+    // Find the course that contains the note
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ message: 'Course not found' });
     }
 
-    res.status(200).json({ message: 'Note deleted successfully from all courses' });
+    // Find and remove the note from the course
+    const note = course.notes.id(noteId);
+    if (!note) {
+      return res.status(404).json({ message: 'Note not found' });
+    }
+
+    // Remove the note from the course's notes array
+    note.remove();
+    await course.save();
+
+    res.status(200).json({ message: 'Note deleted successfully from the course' });
   } catch (error) {
-    res.status(500).json({ message: 'Error deleting note from all courses', error: error.message });
+    res.status(500).json({ message: 'Error deleting note from course', error: error.message });
   }
 });
+
 
 // Get all notes for a specific course or a specific note by ID
 router.get('/:noteId?', async (req, res) => {
