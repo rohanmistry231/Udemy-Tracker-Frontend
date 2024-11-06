@@ -1,3 +1,4 @@
+// controllers/noteController.js
 const Course = require('../models/Course');
 
 // Add a note to a course
@@ -66,7 +67,7 @@ const updateNote = async (req, res) => {
   }
 };
 
-// Delete a note from a specific course
+// Delete a note from a course
 const deleteNote = async (req, res) => {
   try {
     const { courseId, noteId } = req.params;
@@ -91,30 +92,8 @@ const deleteNote = async (req, res) => {
   }
 };
 
-// Delete a note by its noteId (across all courses)
-const deleteNoteById = async (req, res) => {
-  try {
-    const { noteId } = req.params;
-
-    // Find the course containing the specified noteId
-    const course = await Course.findOne({ 'notes._id': noteId });
-    if (!course) {
-      return res.status(404).json({ message: 'Note not found' });
-    }
-
-    // Remove the note by filtering it out
-    course.notes = course.notes.filter(note => note._id.toString() !== noteId);
-    await course.save();
-
-    res.status(200).json({ message: 'Note deleted successfully' });
-  } catch (error) {
-    res.status(500).json({ message: 'Error deleting note', error: error.message });
-  }
-};
-
 module.exports = {
   addNote,
   updateNote,
-  deleteNote,
-  deleteNoteById // Export new function
+  deleteNote
 };
