@@ -161,12 +161,12 @@ const Progress = () => {
         <div className="relative w-full h-6 bg-gray-200 rounded-lg overflow-hidden">
           <div className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-400 to-indigo-600" style={{ width: `${overallProgress}%`, transition: "width 0.5s ease-in-out", }} />
           <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
-            <span className="text-white font-semibold">{Math.round(overallProgress)}%</span>
+            <span className={`text-black font-semibold`}>{Math.round(overallProgress)}%</span>
           </div>
         </div>
-        <div className="flex justify-between mt-2">
-          <span className="text-sm text-gray-600">0%</span>
-          <span className="text-sm text-gray-600">100%</span>
+        <div className={`flex justify-between mt-2 ${isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"}`}>
+          <span className="text-sm">0%</span>
+          <span className="text-sm">100%</span>
         </div>
       </div>
 
