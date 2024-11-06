@@ -1,17 +1,24 @@
-// src/components/Navbar.js
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 
 const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();  // Use useLocation hook to track current path
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
   const isDarkMode = theme === 'dark';
+
+  const getLinkClass = (path) => {
+    const isActive = location.pathname === path;
+    return isActive
+      ? 'text-purple-500'  // Active link in purple
+      : `${isDarkMode ? 'text-gray-300' : 'text-gray-800'} hover:text-purple-500`;  // Default link style
+  };
 
   return (
     <nav className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} shadow-md fixed w-full top-0 z-50`}>
@@ -24,16 +31,16 @@ const Navbar = () => {
           </div>
 
           <div className="hidden md:flex space-x-6 items-center">
-            <Link to="/courses" className={`${isDarkMode ? 'text-gray-300' : 'text-gray-800'} hover:text-purple-500 transition duration-150`}>
+            <Link to="/courses" className={`transition duration-150 ${getLinkClass('/courses')}`}>
               Courses
             </Link>
-            <Link to="/notes" className={`${isDarkMode ? 'text-gray-300' : 'text-gray-800'} hover:text-purple-500 transition duration-150`}>
+            <Link to="/notes" className={`transition duration-150 ${getLinkClass('/notes')}`}>
               Notes
             </Link>
-            <Link to="/progress" className={`${isDarkMode ? 'text-gray-300' : 'text-gray-800'} hover:text-purple-500 transition duration-150`}>
+            <Link to="/progress" className={`transition duration-150 ${getLinkClass('/progress')}`}>
               Progress
             </Link>
-            <Link to="/profile" className={`${isDarkMode ? 'text-gray-300' : 'text-gray-800'} hover:text-purple-500 transition duration-150`}>
+            <Link to="/profile" className={`transition duration-150 ${getLinkClass('/profile')}`}>
               Profile
             </Link>
             <button
@@ -75,19 +82,18 @@ const Navbar = () => {
       <div
         className={`md:hidden ${isDarkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg space-y-2 px-4 pt-2 pb-3 transition-transform duration-300 ease-in-out transform ${
           isOpen ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
-        } fixed top-14 right-0 h-screen w-64 overflow-y-auto z-40`}
-        style={{ borderRadius: '10px' }}
+        } fixed top-14 right-0 h-screen w-64 overflow-y-auto z-40`} 
       >
-        <Link to="/courses" className={`block ${isDarkMode ? 'text-gray-300' : 'text-gray-800'} hover:text-purple-500 py-2`} onClick={toggleMenu}>
+        <Link to="/courses" className={`block ${getLinkClass('/courses')} py-2`} onClick={toggleMenu}>
           Courses
         </Link>
-        <Link to="/notes" className={`block ${isDarkMode ? 'text-gray-300' : 'text-gray-800'} hover:text-purple-500 py-2`} onClick={toggleMenu}>
+        <Link to="/notes" className={`block ${getLinkClass('/notes')} py-2`} onClick={toggleMenu}>
           Notes
         </Link>
-        <Link to="/progress" className={`block ${isDarkMode ? 'text-gray-300' : 'text-gray-800'} hover:text-purple-500 py-2`} onClick={toggleMenu}>
+        <Link to="/progress" className={`block ${getLinkClass('/progress')} py-2`} onClick={toggleMenu}>
           Progress
         </Link>
-        <Link to="/profile" className={`block ${isDarkMode ? 'text-gray-300' : 'text-gray-800'} hover:text-purple-500 py-2`} onClick={toggleMenu}>
+        <Link to="/profile" className={`block ${getLinkClass('/profile')} py-2`} onClick={toggleMenu}>
           Profile
         </Link>
       </div>
