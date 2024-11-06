@@ -97,22 +97,22 @@ router.delete('/byNoteId/:courseId/:noteId', async (req, res) => {
       return res.status(404).json({ message: 'Course not found' });
     }
 
-    // Find and remove the note from the course
-    const note = course.notes.id(noteId);
-    if (!note) {
+    // Use $pull to remove the note from the course's notes array
+    const result = await Course.updateOne(
+      { _id: courseId },
+      { $pull: { notes: { _id: noteId } } }
+    );
+
+    // Check if the note was found and removed
+    if (result.modifiedCount === 0) {
       return res.status(404).json({ message: 'Note not found' });
     }
-
-    // Remove the note from the course's notes array
-    note.remove();
-    await course.save();
 
     res.status(200).json({ message: 'Note deleted successfully from the course' });
   } catch (error) {
     res.status(500).json({ message: 'Error deleting note from course', error: error.message });
   }
 });
-
 
 // Get all notes for a specific course or a specific note by ID
 router.get('/:noteId?', async (req, res) => {
