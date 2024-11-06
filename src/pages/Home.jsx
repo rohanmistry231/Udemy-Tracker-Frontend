@@ -150,7 +150,7 @@ const Home = () => {
                 }`}
               >
                 <h2 className="text-lg font-medium">Total Learning Hours</h2>
-                <p className="text-3xl font-semibold mt-2">{totalHours} hrs</p>
+                <p className="text-3xl font-semibold mt-2">{totalHours.toFixed(2)} hrs</p>
               </div>
             </div>
           </div>
