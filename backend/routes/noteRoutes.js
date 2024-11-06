@@ -1,4 +1,3 @@
-// src/routes/notes.js
 const express = require('express');
 const Course = require('../models/Course'); // Import Course model
 
@@ -54,11 +53,11 @@ router.put('/:noteId', async (req, res) => {
     }
 
     // Update note fields
-    note.question = question;
-    note.answer = answer;
-    note.mainTargetCategory = mainTargetCategory;
-    note.mainTargetGoal = mainTargetGoal;
-    note.subTargetGoal = subTargetGoal;
+    note.question = question || note.question;
+    note.answer = answer || note.answer;
+    note.mainTargetCategory = mainTargetCategory || note.mainTargetCategory;
+    note.mainTargetGoal = mainTargetGoal || note.mainTargetGoal;
+    note.subTargetGoal = subTargetGoal || note.subTargetGoal;
 
     await course.save();
     res.json({ message: 'Note updated successfully', note });
@@ -84,6 +83,27 @@ router.delete('/:noteId', async (req, res) => {
     res.status(200).json({ message: 'Note deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Error deleting note', error: error.message });
+  }
+});
+
+// Delete a note by its ID across all courses
+router.delete('/byNoteId/:noteId', async (req, res) => {
+  try {
+    const { noteId } = req.params;
+
+    // Find and remove the note from all courses
+    const courses = await Course.updateMany(
+      { "notes._id": noteId },
+      { $pull: { notes: { _id: noteId } } }
+    );
+
+    if (!courses.nModified) {
+      return res.status(404).json({ message: 'Note not found in any course' });
+    }
+
+    res.status(200).json({ message: 'Note deleted successfully from all courses' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting note from all courses', error: error.message });
   }
 });
 
