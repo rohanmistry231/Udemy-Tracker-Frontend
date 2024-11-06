@@ -140,23 +140,4 @@ router.get('/:noteId?', async (req, res) => {
   }
 });
 
-// New route: Fetch a specific note by its noteId (directly under /notes/noteId)
-router.get('/note/:noteId', async (req, res) => {
-  try {
-    const { noteId } = req.params;
-
-    // Iterate through courses to find the note by noteId
-    const courses = await Course.find({ 'notes._id': noteId }, 'notes');
-    const note = courses.flatMap(course => course.notes).find(n => n._id.toString() === noteId);
-
-    if (!note) {
-      return res.status(404).json({ message: 'Note not found' });
-    }
-
-    res.json({ message: 'Note retrieved successfully', note });
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching note by ID', error: error.message });
-  }
-});
-
 module.exports = router;
