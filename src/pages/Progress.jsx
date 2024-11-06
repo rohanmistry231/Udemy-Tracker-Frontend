@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTheme } from "../context/ThemeContext";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
@@ -39,32 +39,35 @@ const Progress = () => {
     "Artificial Intelligence": ["Machine Learning", "Neural Networks", "Natural Language Processing"],
   };
 
-  const [checkedCategories, setCheckedCategories] = useState(
-    categories.reduce((acc, category) => ({ ...acc, [category]: false }), {})
-  );
+  const [checkedCategories, setCheckedCategories] = useState(() => {
+    const storedCategories = JSON.parse(localStorage.getItem("checkedCategories"));
+    return storedCategories || categories.reduce((acc, category) => ({ ...acc, [category]: false }), {});
+  });
 
-  const [checkedGoals, setCheckedGoals] = useState(
-    Object.keys(targetGoals).reduce((acc, category) => ({
+  const [checkedGoals, setCheckedGoals] = useState(() => {
+    const storedGoals = JSON.parse(localStorage.getItem("checkedGoals"));
+    return storedGoals || Object.keys(targetGoals).reduce((acc, category) => ({
       ...acc,
       [category]: targetGoals[category]?.reduce((goalAcc, goal) => {
         goalAcc[goal] = false;
         return goalAcc;
       }, {}),
-    }), {})
-  );
+    }), {});
+  });
 
-  const [checkedSubGoals, setCheckedSubGoals] = useState(
-    Object.keys(subGoals).reduce((acc, goal) => ({
+  const [checkedSubGoals, setCheckedSubGoals] = useState(() => {
+    const storedSubGoals = JSON.parse(localStorage.getItem("checkedSubGoals"));
+    return storedSubGoals || Object.keys(subGoals).reduce((acc, goal) => ({
       ...acc,
       [goal]: subGoals[goal]?.reduce((subAcc, subGoal) => {
         subAcc[subGoal] = false;
         return subAcc;
       }, {}),
-    }), {})
-  );
+    }), {});
+  });
 
   const [collapsedCategories, setCollapsedCategories] = useState(
-    categories.reduce((acc, category) => ({ ...acc, [category]: false }), {}) // All categories start collapsed
+    categories.reduce((acc, category) => ({ ...acc, [category]: false }), {})
   );
 
   const [collapsedGoals, setCollapsedGoals] = useState(
@@ -76,6 +79,21 @@ const Progress = () => {
       }, {}),
     }), {})
   );
+
+  useEffect(() => {
+    // Save the checked states to localStorage whenever they change
+    localStorage.setItem("checkedCategories", JSON.stringify(checkedCategories));
+  }, [checkedCategories]);
+
+  useEffect(() => {
+    // Save the checked goals to localStorage whenever they change
+    localStorage.setItem("checkedGoals", JSON.stringify(checkedGoals));
+  }, [checkedGoals]);
+
+  useEffect(() => {
+    // Save the checked subgoals to localStorage whenever they change
+    localStorage.setItem("checkedSubGoals", JSON.stringify(checkedSubGoals));
+  }, [checkedSubGoals]);
 
   const toggleCategory = (category) => {
     setCheckedCategories((prev) => ({
@@ -128,16 +146,20 @@ const Progress = () => {
 
   const overallProgress = getProgress(checkedCategories, categories.length);
 
+  const getTextClass = (checked) => {
+    return checked ? "text-green-500" : ""; // Apply green text if checked
+  };
+
   return (
     <div className={isDarkMode ? "bg-gray-900 text-white" : "bg-white text-black"}>
       <h2 className="text-3xl font-semibold text-center py-4 mt-14 flex justify-center items-center">
         📈 Progress Tracker 📈
       </h2>
 
-      <div className={`my-2 mx-4 ${isDarkMode ? " bg-gray-800 text-white" : "border bg-white text-black"} rounded-lg shadow-lg p-4`}>
+      <div className={`my-2 mx-4 ${isDarkMode ? "bg-gray-800 text-white" : "border bg-white text-black"} rounded-lg shadow-lg p-4`}>
         <h2 className="text-2xl font-semibold mb-4 text-center">Overall Progress</h2>
         <div className="relative w-full h-6 bg-gray-200 rounded-lg overflow-hidden">
-          <div className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-400 to-indigo-600" style={{ width: `${overallProgress}%` }} />
+          <div className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-400 to-indigo-600" style={{ width: `${overallProgress}%`, transition: "width 0.5s ease-in-out", }} />
           <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
             <span className="text-white font-semibold">{Math.round(overallProgress)}%</span>
           </div>
@@ -150,12 +172,12 @@ const Progress = () => {
 
       {categories.map((category) => (
         <div key={category} className="my-6 mx-4">
-          <div className={isDarkMode ? " rounded-lg shadow-lg p-4 bg-gray-800 text-white" : "border rounded-lg shadow-lg p-4 bg-white text-black"}>
+          <div className={isDarkMode ? "rounded-lg shadow-lg p-4 bg-gray-800 text-white" : "border rounded-lg shadow-lg p-4 bg-white text-black"}>
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <input type="checkbox" checked={checkedCategories[category]} onChange={() => toggleCategory(category)} className="mr-2" />
                 <h2
-                  className="text-xl font-semibold cursor-pointer"
+                  className={`text-xl font-semibold cursor-pointer ${getTextClass(checkedCategories[category])}`}
                   onClick={() => toggleCategoryCollapse(category)}
                 >
                   {category}
@@ -174,8 +196,8 @@ const Progress = () => {
                       <div className="flex items-center">
                         <input type="checkbox" checked={checkedGoals[category]?.[goal]} onChange={() => toggleGoal(category, goal)} className="mr-2" />
                         <h3
-                          className="text-lg cursor-pointer"
-                          onClick={() => toggleGoalCollapse(category, goal)} // Add collapse for goal title
+                          className={`text-lg cursor-pointer ${getTextClass(checkedGoals[category]?.[goal])}`}
+                          onClick={() => toggleGoalCollapse(category, goal)}
                         >
                           {goal}
                         </h3>
@@ -191,25 +213,41 @@ const Progress = () => {
                           <div key={subGoal} className="ml-6 my-2">
                             <div className="flex items-center">
                               <input type="checkbox" checked={checkedSubGoals[goal]?.[subGoal]} onChange={() => toggleSubGoal(goal, subGoal)} className="mr-2" />
-                              <span>{subGoal}</span>
+                              <span className={`${getTextClass(checkedSubGoals[goal]?.[subGoal])}`}>{subGoal}</span>
+                              
                             </div>
                           </div>
+                          
                         ))}
                       </div>
                     )}
-
-                    <div className="my-2">
-                      <label className="text-sm">Progress:</label>
-                      <progress value={getProgress(checkedSubGoals[goal], subGoals[goal]?.length)} max={100} className="w-full" />
-                    </div>
+                  <div className="my-2">
+  <label className="text-sm">Progress:</label>
+  <div className="relative w-full h-4 mt-2 bg-gray-200 rounded overflow-hidden">
+    <div
+      className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-400 to-indigo-600"
+      style={{
+        width: `${getProgress(checkedSubGoals[goal], subGoals[goal]?.length)}%`,
+        transition: "width 0.5s ease-in-out",
+      }}
+    />
+  </div>
+</div>
                   </div>
                 ))}
-
-                <div className="my-2">
-                  <label className="text-sm">Overall Goal Progress:</label>
-                  <progress value={getProgress(checkedGoals[category], targetGoals[category]?.length)} max={100} className="w-full" />
-                </div>
-              </div>
+              <div className="my-2">
+  <label className="text-sm">Overall Goal Progress:</label>
+  <div className="relative w-full h-4 mt-2 bg-gray-200 rounded overflow-hidden">
+    <div
+      className="absolute top-0 left-0 h-full bg-gradient-to-r from-green-400 to-teal-500"
+      style={{
+        width: `${getProgress(checkedGoals[category], targetGoals[category]?.length)}%`,
+        transition: "width 0.5s ease-in-out",
+      }}
+    />
+  </div>
+</div>
+          </div>
             )}
           </div>
         </div>
