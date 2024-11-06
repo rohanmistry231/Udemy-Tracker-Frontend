@@ -15,6 +15,7 @@ import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Progress from "./pages/Progress";
 import Notes from "./pages/Notes";
+import EditNote from "./pages/EditNote";
 
 function App() {
   const { isDarkMode } = useTheme();
@@ -41,6 +42,7 @@ function App() {
             <Route path="/courses/:id/view" element={<ViewCourse />} />
             <Route path="/courses/:id/edit" element={<EditCourse />} />
             <Route path="/courses/:id/add-notes" element={<AddNotes />} />
+            <Route path="/notes/:id/edit" element={<EditNote />} />
             <Route path="/courses/:id/notes" element={<ViewNotes />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/progress" element={<Progress />} />

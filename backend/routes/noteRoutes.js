@@ -5,15 +5,26 @@ const Course = require('../models/Course'); // Import Course model
 const router = express.Router({ mergeParams: true }); // Merge params for courseId access
 
 // Fetch all notes across all courses
+// Fetch all notes across all courses with noteId and courseId
 router.get('/all', async (req, res) => {
   try {
-    const courses = await Course.find({}, 'notes'); // Fetch only notes from each course
-    const allNotes = courses.flatMap(course => course.notes); // Flatten notes into a single array
+    // Fetch all courses and include only the `notes` and `_id` fields
+    const courses = await Course.find({}, 'notes');
+
+    // Flatten notes and include `noteId` and `courseId` for each note
+    const allNotes = courses.flatMap(course =>
+      course.notes.map(note => ({
+        ...note.toObject(),
+        courseId: course._id // Attach the courseId to each note
+      }))
+    );
+
     res.json({ message: 'All notes retrieved successfully', notes: allNotes });
   } catch (error) {
     res.status(500).json({ message: 'Error fetching all notes', error: error.message });
   }
 });
+
 
 // Add a new note to a specific course
 router.post('/', async (req, res) => {
@@ -86,6 +97,28 @@ router.delete('/:noteId', async (req, res) => {
     res.status(500).json({ message: 'Error deleting note', error: error.message });
   }
 });
+
+// Delete a note by its noteId, regardless of course
+router.delete('/:noteId', async (req, res) => {
+  try {
+    const { noteId } = req.params;
+
+    // Find the course containing the specified noteId
+    const course = await Course.findOne({ 'notes._id': noteId });
+    if (!course) {
+      return res.status(404).json({ message: 'Note not found' });
+    }
+
+    // Remove the note by filtering it out
+    course.notes = course.notes.filter(note => note._id.toString() !== noteId);
+    await course.save();
+
+    res.status(200).json({ message: 'Note deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting note', error: error.message });
+  }
+});
+
 
 // Get all notes for a specific course or a specific note by ID
 router.get('/:noteId?', async (req, res) => {
