@@ -211,28 +211,19 @@ const Notes = () => {
   const isDarkMode = theme === "dark";
 
   useEffect(() => {
-    const cachedNotes = localStorage.getItem("notesData");
-
-    if (cachedNotes) {
-      const data = JSON.parse(cachedNotes);
-      setNotes(data);
-      setLoading(false);
-    } else {
-      const fetchNotes = async () => {
-        setLoading(true);
-        try {
-          const response = await fetch("https://udemy-tracker.vercel.app/notes/all");
-          const data = await response.json();
-          setNotes(data.notes);
-          localStorage.setItem("notesData", JSON.stringify(data.notes)); // Cache notes data
-        } catch (error) {
-          console.error("Error fetching notes:", error);
-        } finally {
-          setLoading(false);
-        }
-      };
-      fetchNotes();
-    }
+    const fetchNotes = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch("https://udemy-tracker.vercel.app/notes/all");
+        const data = await response.json();
+        setNotes(data.notes); // Ensure the notes are being set correctly
+      } catch (error) {
+        console.error("Error fetching notes:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchNotes();
   }, []);
 
   const getTargetGoals = () => {

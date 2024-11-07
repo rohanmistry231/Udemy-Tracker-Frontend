@@ -25,7 +25,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-14">
           <div className="flex-shrink-0">
-            <Link to="/" className={`${isDarkMode ? 'text-white' : 'text-purple-600'} text-3xl font-bold`}>
+            <Link to="/" className={`${isDarkMode ? 'text-purple-400' : 'text-purple-600'} text-3xl font-bold`}>
               Udemy Tracker
             </Link>
           </div>

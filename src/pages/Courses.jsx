@@ -109,8 +109,7 @@ const Courses = () => {
   // Function to handle page change and scroll to top
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
-   window.scrollTo({ top: 0, behavior: "smooth" });
- // Scroll to the top of the page
+    window.scrollTo(0, 0); // Scroll to the top of the page
   };
 
   return (

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { useTheme } from "../context/ThemeContext";
 import axios from "axios";
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -25,41 +26,23 @@ const Home = () => {
   const [selectedStatus, setSelectedStatus] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
-
-
-  // Fetch courses from backend or local storage
   useEffect(() => {
-    const cachedCourses = localStorage.getItem("coursesData");
+    setIsLoading(true); // Set loading to true when fetching starts
+    axios
+      .get("https://udemy-tracker.vercel.app/courses/")
+      .then((response) => {
+        const data = response.data;
+        setCourses(data);
 
-    if (cachedCourses) {
-      const data = JSON.parse(cachedCourses);
-      setCourses(data);
-
-      // Calculate total hours from cached data
-      const hours = data.reduce((acc, course) => acc + course.durationInHours, 0);
-      setTotalHours(hours);
-      setIsLoading(false);
-    } else {
-      setIsLoading(true);
-      axios
-        .get("https://udemy-tracker.vercel.app/courses/")
-        .then((response) => {
-          const data = response.data;
-          setCourses(data);
-          setTotalHours(data.reduce((acc, course) => acc + course.durationInHours, 0));
-
-          // Cache the data
-          localStorage.setItem("coursesData", JSON.stringify(data));
-        })
-        .catch((error) => console.error("Error fetching courses:", error))
-        .finally(() => setIsLoading(false));
-    }
+        const hours = data.reduce(
+          (acc, course) => acc + course.durationInHours,
+          0
+        );
+        setTotalHours(hours);
+      })
+      .catch((error) => console.error("Error fetching courses:", error))
+      .finally(() => setIsLoading(false)); // Set loading to false when fetching completes
   }, []);
-
-  // Update local storage when courses data changes
-  useEffect(() => {
-    localStorage.setItem("coursesData", JSON.stringify(courses));
-  }, [courses]);
 
   const groupBy = (array, key) => {
     return array.reduce((acc, item) => {
@@ -73,8 +56,12 @@ const Home = () => {
     return courses.filter(
       (course) =>
         (selectedCategory ? course.category === selectedCategory : true) &&
-        (selectedSubCategory ? course.subCategory === selectedSubCategory : true) &&
-        (selectedImportantStatus ? course.importantStatus === selectedImportantStatus : true) &&
+        (selectedSubCategory
+          ? course.subCategory === selectedSubCategory
+          : true) &&
+        (selectedImportantStatus
+          ? course.importantStatus === selectedImportantStatus
+          : true) &&
         (selectedStatus ? course.status === selectedStatus : true)
     );
   };
@@ -87,7 +74,9 @@ const Home = () => {
         {
           label: `Courses by ${key.charAt(0).toUpperCase() + key.slice(1)}`,
           data: Object.values(groupedData),
-          backgroundColor: isDarkMode ? ["#FF6384", "#36A2EB", "#FFCE56", "#66BB6A"] : ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"],
+          backgroundColor: isDarkMode
+            ? ["#FF6384", "#36A2EB", "#FFCE56", "#66BB6A"]
+            : ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"],
           borderWidth: 1,
         },
       ],
@@ -101,43 +90,71 @@ const Home = () => {
       },
     },
     scales: {
-      x: { ticks: { color: isDarkMode ? "#FFFFFF" : "#000000" } },
-      y: { ticks: { color: isDarkMode ? "#FFFFFF" : "#000000" } },
+      x: {
+        ticks: {
+          color: isDarkMode ? "#FFFFFF" : "#000000",
+        },
+      },
+      y: {
+        ticks: {
+          color: isDarkMode ? "#FFFFFF" : "#000000",
+        },
+      },
     },
     maintainAspectRatio: false,
   };
 
   const categories = [...new Set(courses.map((course) => course.category))];
-  const subCategories = [...new Set(getFilteredData().map((course) => course.subCategory))];
-  const importanceStatuses = [...new Set(courses.map((course) => course.importantStatus))];
+  const subCategories = [
+    ...new Set(getFilteredData().map((course) => course.subCategory)),
+  ];
+  const importanceStatuses = [
+    ...new Set(courses.map((course) => course.importantStatus)),
+  ];
   const statuses = [...new Set(courses.map((course) => course.status))];
 
-  const selectClassName = `p-2 rounded-md shadow-md ${isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`;
+  const selectClassName = `p-2 rounded-md shadow-md ${
+    isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
+  }`;
 
   const filteredData = getFilteredData();
 
   return (
-    <div className={`min-h-screen flex flex-col p-6 transition-colors duration-300 mt-12 ${isDarkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"}`}>
+    <div
+      className={`min-h-screen flex flex-col p-6 transition-colors duration-300 mt-12 ${
+        isDarkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"
+      }`}
+    >
       {isLoading ? (
         <div className="flex justify-center items-center min-h-screen">
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
         </div>
-      ) : (
+      )  : (
         <>
           <div className="flex flex-col items-center">
-            <h1 className="text-2xl font-bold text-center mb-6">Udemy Courses Analysis</h1>
+            <h1 className="text-2xl font-bold text-center mb-6">
+              Udemy Courses Analysis
+            </h1>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-2">
-              <div className={`p-4 rounded-md shadow-md ${isDarkMode ? "bg-gray-800" : "bg-white"}`}>
+              <div
+                className={`p-4 rounded-md shadow-md ${
+                  isDarkMode ? "bg-gray-800" : "bg-white"
+                }`}
+              >
                 <h2 className="text-lg font-medium">Total Courses</h2>
                 <p className="text-3xl font-semibold mt-2">{courses.length}</p>
               </div>
-              <div className={`p-4 rounded-md shadow-md ${isDarkMode ? "bg-gray-800" : "bg-white"}`}>
+              <div
+                className={`p-4 rounded-md shadow-md ${
+                  isDarkMode ? "bg-gray-800" : "bg-white"
+                }`}
+              >
                 <h2 className="text-lg font-medium">Total Learning Hours</h2>
                 <p className="text-3xl font-semibold mt-2">{totalHours.toFixed(2)} hrs</p>
               </div>
             </div>
           </div>
-
+          
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
         <div className="flex flex-col">
           <label htmlFor="category" className="font-medium text-center">
