@@ -236,5 +236,25 @@ router.get('/note/:noteId', async (req, res) => {
   }
 });
 
+// Delete all notes from a specific course
+router.delete('/deleteAllNotes/:courseId', async (req, res) => {
+  try {
+    const { courseId } = req.params;
+
+    // Find the course by ID and set the notes array to an empty array
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ message: 'Course not found' });
+    }
+
+    // Clear the notes array
+    course.notes = [];
+    await course.save();
+
+    res.status(200).json({ message: 'All notes deleted successfully from the course' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting all notes from course', error: error.message });
+  }
+});
 
 module.exports = router;

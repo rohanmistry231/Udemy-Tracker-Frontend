@@ -1,4 +1,4 @@
-// src/pages/EditNote.js
+
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -10,6 +10,7 @@ const EditNote = () => {
   const navigate = useNavigate();
   const { theme } = useTheme();
   const isDarkMode = theme === "dark";
+  
   const [note, setNote] = useState({
     question: "",
     answer: "",
@@ -17,7 +18,7 @@ const EditNote = () => {
     mainTargetGoal: "",
     subTargetGoal: "",
   });
-
+  
   // Main Target Goals, Target Goals, Sub Target Goals should be defined similarly to EditCourse
   const mainTargetCategories = [
     "Data Science",
@@ -217,9 +218,17 @@ const EditNote = () => {
   useEffect(() => {
     const fetchNote = async () => {
       try {
-        const response = await fetch(`https://udemy-tracker.vercel.app/notes/${id}`);
+        const response = await fetch(`https://udemy-tracker.vercel.app/notes/note/${id}`);
+        if (!response.ok) throw new Error("Failed to fetch note data");
+
         const data = await response.json();
-        setNote(data);
+        setNote({
+          question: data.note.question || "",
+          answer: data.note.answer || "",
+          mainTargetCategory: data.note.mainTargetCategory || "",
+          mainTargetGoal: data.note.mainTargetGoal || "",
+          subTargetGoal: data.note.subTargetGoal || "",
+        });
       } catch (error) {
         console.error("Error fetching note:", error);
         toast.error("Error fetching note data");
@@ -230,21 +239,31 @@ const EditNote = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setNote({ ...note, [name]: value });
+    setNote((prevNote) => ({
+      ...prevNote,
+      [name]: value || "",
+    }));
   };
 
   const handleCategoryChange = (e) => {
-    setNote({ ...note, mainTargetCategory: e.target.value, mainTargetGoal: "" });
+    setNote({
+      ...note,
+      mainTargetCategory: e.target.value || "",
+      mainTargetGoal: "",
+      subTargetGoal: "",
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await fetch(`https://udemy-tracker.vercel.app/notes/notes/update/${id}`, {
+      const response = await fetch(`https://udemy-tracker.vercel.app/notes/update/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(note),
       });
+      if (!response.ok) throw new Error("Failed to update note");
+
       toast.success("Note updated successfully!");
       navigate(`/notes/${id}/view`);
     } catch (error) {
@@ -254,9 +273,7 @@ const EditNote = () => {
   };
 
   return (
-    <div
-      className={`container mx-auto px-4 py-6 mt-12 ${isDarkMode ? "bg-gray-900" : "bg-white"}`}
-    >
+    <div className={`container mx-auto px-4 py-6 mt-12 ${isDarkMode ? "bg-gray-900" : "bg-white"}`}>
       <div className={`shadow-md rounded-lg p-6 ${isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"}`}>
         <h2 className="text-3xl font-bold mb-4">Edit Note</h2>
         <form onSubmit={handleSubmit} className="space-y-4">

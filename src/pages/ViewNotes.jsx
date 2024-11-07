@@ -231,7 +231,7 @@ const ViewNotes = () => {
                 <li className="text-gray-500">No notes available.</li>
               )}
             </ul>
-            <Link to={`/courses/${id}/add-note`} className="mt-4 inline-block text-blue-500">
+            <Link to={`/courses/${id}/add-notes`} className="mt-4 inline-block text-blue-500">
               Add a new note
             </Link>
           </div>
