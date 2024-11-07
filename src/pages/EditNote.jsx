@@ -240,7 +240,7 @@ const EditNote = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await fetch(`https://udemy-tracker.vercel.app/notes/update/${id}`, {
+      await fetch(`https://udemy-tracker.vercel.app/notes/notes/update/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(note),

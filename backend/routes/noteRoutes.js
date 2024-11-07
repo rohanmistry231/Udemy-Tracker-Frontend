@@ -207,5 +207,34 @@ router.put('/update/:noteId', async (req, res) => {
   }
 });
 
+// Find a note by its ID (without requiring courseId)
+router.get('/note/:noteId', async (req, res) => {
+  try {
+    const { noteId } = req.params;
+
+    // Find the course that contains the note using the noteId
+    const course = await Course.findOne({ 'notes._id': noteId }, { 'notes.$': 1 }); // Select only the specific note with $ projection
+    if (!course || course.notes.length === 0) {
+      return res.status(404).json({ message: 'Note not found' });
+    }
+
+    // Extract the note from the course's notes array
+    const note = course.notes[0];
+    res.json({
+      message: 'Note retrieved successfully',
+      note: {
+        _id: note._id,
+        question: note.question,
+        answer: note.answer,
+        mainTargetCategory: note.mainTargetCategory,
+        mainTargetGoal: note.mainTargetGoal,
+        subTargetGoal: note.subTargetGoal,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching note by ID', error: error.message });
+  }
+});
+
 
 module.exports = router;
