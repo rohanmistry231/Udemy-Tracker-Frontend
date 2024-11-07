@@ -226,6 +226,28 @@ const Notes = () => {
     fetchNotes();
   }, []);
 
+  const deleteNote = async (noteId) => {
+    // Show confirmation dialog
+    const isConfirmed = window.confirm("Are you sure you want to delete this note?");
+    if (!isConfirmed) return; // If the user cancels, exit the function
+    
+    try {
+      const response = await fetch(`https://udemy-tracker.vercel.app/notes/deleteByNoteId/${noteId}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        // Update the state by removing the deleted note from the list
+        setNotes((prevNotes) => prevNotes.filter(note => note._id !== noteId));
+      } else {
+        console.error("Failed to delete the note.");
+      }
+    } catch (error) {
+      console.error("Error deleting the note:", error);
+    }
+  };
+  
+  
+
   const getTargetGoals = () => {
     return mainGoalFilter ? targetGoals[mainGoalFilter] || [] : [];
   };
@@ -327,7 +349,10 @@ const Notes = () => {
                   <button onClick={(e) => { e.stopPropagation(); navigate(`/notes/${note._id}/edit`); }} className={`p-2 rounded ${isDarkMode ? "bg-blue-700 hover:bg-blue-800" : "bg-blue-500 hover:bg-blue-600"} text-white`}>
                     Edit Note
                   </button>
-                  <button onClick={(e) => { e.stopPropagation(); /* handle delete logic here */ }} className={`p-2 rounded ${isDarkMode ? "bg-red-700 hover:bg-red-800" : "bg-red-500 hover:bg-red-600"} text-white`}>
+                  <button onClick={(e) => {
+    e.stopPropagation(); // Prevent triggering the navigation when clicking delete
+    deleteNote(note._id); // Call deleteNote with the note ID
+  }} className={`p-2 rounded ${isDarkMode ? "bg-red-700 hover:bg-red-800" : "bg-red-500 hover:bg-red-600"} text-white`}>
                     Delete
                   </button>
                 </div>

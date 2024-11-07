@@ -168,23 +168,44 @@ router.put('/update/:noteId', async (req, res) => {
     const { noteId } = req.params;
     const { question, answer, mainTargetCategory, mainTargetGoal, subTargetGoal } = req.body;
 
+    // Find the course that contains the note using the noteId
     const course = await Course.findOne({ 'notes._id': noteId });
     if (!course) {
       return res.status(404).json({ message: 'Course or note not found' });
     }
 
+    // Find the specific note by its ID inside the course's notes array
     const note = course.notes.id(noteId);
+    if (!note) {
+      return res.status(404).json({ message: 'Note not found' });
+    }
+
+    // Update the note fields
     note.question = question || note.question;
     note.answer = answer || note.answer;
     note.mainTargetCategory = mainTargetCategory || note.mainTargetCategory;
     note.mainTargetGoal = mainTargetGoal || note.mainTargetGoal;
     note.subTargetGoal = subTargetGoal || note.subTargetGoal;
 
+    // Save the course with the updated note
     await course.save();
-    res.json({ message: 'Note updated successfully', note });
+
+    // Respond with the updated note data
+    res.json({
+      message: 'Note updated successfully',
+      note: {
+        _id: note._id,
+        question: note.question,
+        answer: note.answer,
+        mainTargetCategory: note.mainTargetCategory,
+        mainTargetGoal: note.mainTargetGoal,
+        subTargetGoal: note.subTargetGoal,
+      },
+    });
   } catch (error) {
     res.status(500).json({ message: 'Error updating note by ID', error: error.message });
   }
 });
+
 
 module.exports = router;
