@@ -114,6 +114,28 @@ router.delete('/byNoteId/:courseId/:noteId', async (req, res) => {
   }
 });
 
+// Delete a note by its ID (without requiring courseId)
+router.delete('/deleteByNoteId/:noteId', async (req, res) => {
+  try {
+    const { noteId } = req.params;
+
+    // Find the course that contains the note and remove it
+    const result = await Course.updateOne(
+      { "notes._id": noteId },
+      { $pull: { notes: { _id: noteId } } }
+    );
+
+    // Check if the note was found and removed
+    if (result.modifiedCount === 0) {
+      return res.status(404).json({ message: 'Note not found' });
+    }
+
+    res.status(200).json({ message: 'Note deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting note', error: error.message });
+  }
+});
+
 // Get all notes for a specific course or a specific note by ID
 router.get('/:noteId?', async (req, res) => {
   try {
@@ -137,6 +159,31 @@ router.get('/:noteId?', async (req, res) => {
     res.json({ message: 'Notes retrieved successfully', notes: course.notes });
   } catch (error) {
     res.status(500).json({ message: 'Error fetching notes', error: error.message });
+  }
+});
+
+// Update a note by its ID (using a more focused route)
+router.put('/update/:noteId', async (req, res) => {
+  try {
+    const { noteId } = req.params;
+    const { question, answer, mainTargetCategory, mainTargetGoal, subTargetGoal } = req.body;
+
+    const course = await Course.findOne({ 'notes._id': noteId });
+    if (!course) {
+      return res.status(404).json({ message: 'Course or note not found' });
+    }
+
+    const note = course.notes.id(noteId);
+    note.question = question || note.question;
+    note.answer = answer || note.answer;
+    note.mainTargetCategory = mainTargetCategory || note.mainTargetCategory;
+    note.mainTargetGoal = mainTargetGoal || note.mainTargetGoal;
+    note.subTargetGoal = subTargetGoal || note.subTargetGoal;
+
+    await course.save();
+    res.json({ message: 'Note updated successfully', note });
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating note by ID', error: error.message });
   }
 });
 
