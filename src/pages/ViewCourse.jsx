@@ -93,6 +93,29 @@ const ViewCourse = () => {
     }
   };
 
+    // Handle deleting all notes with confirmation
+    const handleDeleteAllNotes = async () => {
+      const confirmed = window.confirm('Are you sure you want to delete all notes for this course?');
+      if (!confirmed) return;
+  
+      try {
+        const response = await fetch(`https://udemy-tracker.vercel.app/notes/deleteAllNotes/${id}`, {
+          method: 'DELETE',
+        });
+  
+        if (response.ok) {
+          setCourse((prevCourse) => ({
+            ...prevCourse,
+            notes: [],
+          }));
+        } else {
+          console.error('Failed to delete all notes');
+        }
+      } catch (error) {
+        console.error('Error deleting all notes:', error);
+      }
+    };
+
   if (!course) return <p>Loading course details...</p>;
 
   return (
@@ -227,6 +250,15 @@ const ViewCourse = () => {
           <Link to={`/courses/${course._id}/add-notes`} className={`px-4 py-2 rounded ${isDarkMode ? 'bg-green-600 hover:bg-green-700' : 'bg-green-500 hover:bg-green-600'} text-white`}>
             Add Note
           </Link>
+          {/* Delete All Notes Button */}
+          <div className="flex justify-end">
+            <button
+              onClick={handleDeleteAllNotes}
+              className="bg-red-500 text-white p-2 rounded hover:bg-red-600"
+            >
+              Delete All Notes
+            </button>
+          </div>
         </div>
       </div>
     </div>

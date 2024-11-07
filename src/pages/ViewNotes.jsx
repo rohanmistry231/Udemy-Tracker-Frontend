@@ -108,6 +108,25 @@ const ViewNotes = () => {
     }
   };
 
+  // Delete all notes for this course
+  const handleDeleteAllNotes = async () => {
+    if (window.confirm('Are you sure you want to delete all notes for this course?')) {
+      try {
+        const response = await fetch(`https://udemy-tracker.vercel.app/notes/deleteAllNotes/${id}`, {
+          method: 'DELETE',
+        });
+        if (!response.ok) {
+          throw new Error('Failed to delete all notes');
+        }
+        setNotes([]); // Clear the notes state
+        toast.success('All notes deleted successfully');
+      } catch (error) {
+        console.error('Error deleting all notes:', error);
+        toast.error('Failed to delete all notes. Please try again later.');
+      }
+    }
+  };
+
   return (
     <div className={`container mx-auto px-4 py-6 mt-10 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
       {!isAuthorized ? (
@@ -234,6 +253,15 @@ const ViewNotes = () => {
             <Link to={`/courses/${id}/add-notes`} className="mt-4 inline-block text-blue-500">
               Add a new note
             </Link>
+            {/* Delete All Notes button */}
+            {notes.length > 0 && (
+              <button
+                onClick={handleDeleteAllNotes}
+                className={`p-2 rounded text-red-500`}
+              >
+                Delete All Notes
+              </button>
+            )}
           </div>
         </>
       )}
