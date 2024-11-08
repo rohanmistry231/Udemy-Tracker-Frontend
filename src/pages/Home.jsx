@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { useTheme } from "../context/ThemeContext";
 import axios from "axios";
-import { openDB } from 'idb'; // Import the IndexedDB library
 
 import {
   Chart as ChartJS,
@@ -27,63 +26,23 @@ const Home = () => {
   const [selectedStatus, setSelectedStatus] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
-  // Open IndexedDB and create store if it doesn't exist
-  const initDB = async () => {
-    return openDB('UdemyDB', 1, {
-      upgrade(db) {
-        if (!db.objectStoreNames.contains('courses')) {
-          db.createObjectStore('courses', { keyPath: 'id' });
-        }
-      },
-    });
-  };
+  useEffect(() => {
+    setIsLoading(true); // Set loading to true when fetching starts
+    axios
+      .get("https://udemy-tracker.vercel.app/courses/")
+      .then((response) => {
+        const data = response.data;
+        setCourses(data);
 
- // Save courses to IndexedDB
- const saveToIndexedDB = async (courses) => {
-  const db = await initDB();
-  const tx = db.transaction('courses', 'readwrite');
-  const store = tx.objectStore('courses');
-  courses.forEach((course) => {
-    store.put(course); // Add each course to the store
-  });
-  await tx.done;
-};
-
-const fetchCourses = async () => {
-  setIsLoading(true);
-  try {
-    const response = await axios.get("https://udemy-tracker.vercel.app/courses/");
-    const data = response.data;
-    setCourses(data);
-    setTotalHours(data.reduce((acc, course) => acc + course.durationInHours, 0));
-
-    // Save fetched data to IndexedDB
-    await saveToIndexedDB(data);
-  } catch (error) {
-    console.error("Error fetching courses:", error);
-  } finally {
-    setIsLoading(false);
-  }
-};
-
-// Load courses from IndexedDB if offline
-const loadFromIndexedDB = async () => {
-  const db = await initDB();
-  const tx = db.transaction('courses', 'readonly');
-  const store = tx.objectStore('courses');
-  const allCourses = await store.getAll();
-  setCourses(allCourses);
-  setTotalHours(allCourses.reduce((acc, course) => acc + course.durationInHours, 0));
-};
-
-useEffect(() => {
-  // Check if online before fetching
-  if (navigator.onLine) {
-    fetchCourses();
-  } else {
-    loadFromIndexedDB();
-  }
-}, []);
+        const hours = data.reduce(
+          (acc, course) => acc + course.durationInHours,
+          0
+        );
+        setTotalHours(hours);
+      })
+      .catch((error) => console.error("Error fetching courses:", error))
+      .finally(() => setIsLoading(false)); // Set loading to false when fetching completes
+  }, []);
 
   const groupBy = (array, key) => {
     return array.reduce((acc, item) => {
