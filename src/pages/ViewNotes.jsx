@@ -19,6 +19,7 @@ const ViewNotes = () => {
   const [subTargetGoal, setSubTargetGoal] = useState('');
   const [password, setPassword] = useState("");
   const [isAuthorized, setIsAuthorized] = useState(false);
+  const [selectedNotes, setSelectedNotes] = useState([]); // New state to track selected notes
 
   const handlePasswordSubmit = (e) => {
     e.preventDefault();
@@ -129,6 +130,63 @@ const ViewNotes = () => {
     }
   };
 
+  const saveAllNotesAsPDF = () => {
+    const pdf = new jsPDF();
+    pdf.setFontSize(20);
+    pdf.text("All Notes", 10, 10);
+    let yPosition = 20;
+
+    notes.forEach((note) => {
+      pdf.setFontSize(12);
+      pdf.text(`Question: ${note.question}`, 10, yPosition);
+      yPosition += 10;
+      pdf.text(`Answer: ${note.answer}`, 10, yPosition);
+      yPosition += 10;
+      pdf.text(`Main Target Category: ${note.mainTargetCategory}`, 10, yPosition);
+      yPosition += 10;
+      pdf.text(`Main Target Goal: ${note.mainTargetGoal || 'N/A'}`, 10, yPosition);
+      yPosition += 10;
+      pdf.text(`Sub Target Goal: ${note.subTargetGoal || 'N/A'}`, 10, yPosition);
+      yPosition += 20;
+    });
+
+    pdf.save("all_notes.pdf");
+  };
+  
+  const saveSelectedNotesAsPDF = () => {
+    const pdf = new jsPDF();
+    pdf.setFontSize(20);
+    pdf.text("Selected Notes", 10, 10);
+    let yPosition = 20;
+
+    selectedNotes.forEach((noteId) => {
+      const note = notes.find((n) => n._id === noteId);
+      if (note) {
+        pdf.setFontSize(12);
+        pdf.text(`Question: ${note.question}`, 10, yPosition);
+        yPosition += 10;
+        pdf.text(`Answer: ${note.answer}`, 10, yPosition);
+        yPosition += 10;
+        pdf.text(`Main Target Category: ${note.mainTargetCategory}`, 10, yPosition);
+        yPosition += 10;
+        pdf.text(`Main Target Goal: ${note.mainTargetGoal || 'N/A'}`, 10, yPosition);
+        yPosition += 10;
+        pdf.text(`Sub Target Goal: ${note.subTargetGoal || 'N/A'}`, 10, yPosition);
+        yPosition += 20; // Add some space before the next note
+      }
+    });
+
+    pdf.save("selected_notes.pdf");
+  };
+
+  const handleSelectNote = (noteId) => {
+    setSelectedNotes((prevSelected) =>
+      prevSelected.includes(noteId)
+        ? prevSelected.filter((id) => id !== noteId) // Deselect if already selected
+        : [...prevSelected, noteId] // Select if not already selected
+    );
+  };
+
   const saveAsPDF = (note) => {
     const pdf = new jsPDF();
 
@@ -180,10 +238,11 @@ const ViewNotes = () => {
               {notes.length > 0 ? (
                 notes.map((note) => (
                   <li
-                  onClick={() => navigate(`/courses/${id}/notes/note/${note._id}/view`)}
                     key={note._id}
                     className={`border-b py-4 flex justify-between items-start ${isDarkMode ? 'border-gray-700' : 'border-gray-300'}`}
                   >
+                    
+                
                     {editingNote === note._id ? (
                       // Edit form for the selected note
                       <form onSubmit={handleUpdate} className={`flex flex-col space-y-2 w-full ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
@@ -242,13 +301,19 @@ const ViewNotes = () => {
                       // Display note and actions
                       <>
                         <div>
-                          <h3 className="font-bold text-lg">{note.question}</h3>
+                          <h3 onClick={() => navigate(`/courses/${id}/notes/note/${note._id}/view`)} className="font-bold text-lg cursor-pointer">{note.question}</h3>
                           <p className="text-gray-600">{note.answer}</p>
                           <p className="text-gray-600">Main Target Goal: {note.mainTargetCategory}</p>
                           <p className="text-gray-600">Target Goal: {note.mainTargetGoal || 'N/A'}</p>
                           <p className="text-gray-600">Sub Target Goal: {note.subTargetGoal || 'N/A'}</p>
                         </div>
                         <div className="flex space-x-4">
+                        <input
+                        type="checkbox"
+                        checked={selectedNotes.includes(note._id)}
+                        onChange={() => handleSelectNote(note._id)}
+                        className="mr-2"
+                      />
                           <button
                             onClick={saveAsPDF}
                             className={`text-green-500 ${isDarkMode ? 'hover:text-green-300' : 'hover:text-green-700'}`}
@@ -276,6 +341,20 @@ const ViewNotes = () => {
                 <li className="text-gray-500">No notes available.</li>
               )}
             </ul>
+              {selectedNotes.length > 0 && (
+              <button
+                onClick={saveSelectedNotesAsPDF}
+                className="mt-4 p-2 text-green-500 rounded"
+              >
+                Save Selected Notes as PDF
+              </button>
+            )}
+            <button
+              onClick={saveAllNotesAsPDF}
+              className="mt-4 mr-2 p-2 text-green-500 rounded"
+            >
+              Save All Notes as PDF
+            </button>
             <Link to={`/courses/${id}/add-notes`} className="mt-4 inline-block text-blue-500">
               Add a new note
             </Link>

@@ -311,6 +311,8 @@ const ViewCourse = () => {
                   ) : (
                     // Display note and actions
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                      <Link
+                          to={`/courses/${id}/notes/${note._id}/view`}>
                       <div className="mb-4 sm:mb-0">
                         <p>
                           <strong>Q:</strong> {note.question}
@@ -330,6 +332,7 @@ const ViewCourse = () => {
                           <strong>Sub Target Goal:</strong> {note.subTargetGoal}
                         </p>
                       </div>
+                      </Link>
                       <div className="flex space-x-2 sm:space-x-2 mt-2 sm:mt-0">
                         <Link
                           to={`/courses/${id}/notes/${note._id}/view`}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext"; // Import theme context
+import jsPDF from "jspdf";
 
 const categories = [
   "Data Science",
@@ -246,7 +247,21 @@ const Notes = () => {
     }
   };
   
-  
+  const saveNoteAsPDF = (note) => {
+    const doc = new jsPDF();
+    
+    doc.setFontSize(18);
+    doc.text("Note Details", 10, 10);
+
+    doc.setFontSize(12);
+    doc.text(`Question: ${note.question}`, 10, 40);
+    doc.text(`Answer: ${note.answer}`, 10, 80);
+    doc.text(`Main Goal: ${note.mainTargetCategory}`, 10, 50);
+    doc.text(`Target Goal: ${note.mainTargetGoal}`, 10, 60);
+    doc.text(`Sub Goal: ${note.subTargetGoal}`, 10, 70);
+
+    doc.save(`note_${note._id}.pdf`);
+  };
 
   const getTargetGoals = () => {
     return mainGoalFilter ? targetGoals[mainGoalFilter] || [] : [];
@@ -346,6 +361,9 @@ const Notes = () => {
                 <p className={`${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>Sub Goal: {note.subTargetGoal}</p>
                 <p className={`${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>Answer: {note.answer}</p>
                 <div className="flex flex-wrap gap-2 mt-4">
+                <button onClick={(e) => { e.stopPropagation(); saveNoteAsPDF(note); }} className={`p-2 rounded ${isDarkMode ? "bg-green-700 hover:bg-green-800" : "bg-green-500 hover:bg-green-600"} text-white`}>
+                    Save as PDF
+                  </button>
                   <button onClick={(e) => { e.stopPropagation(); navigate(`/notes/${note._id}/edit`); }} className={`p-2 rounded ${isDarkMode ? "bg-blue-700 hover:bg-blue-800" : "bg-blue-500 hover:bg-blue-600"} text-white`}>
                     Edit Note
                   </button>
