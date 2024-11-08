@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext'; // Import theme context
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import jsPDF from "jspdf"; // Import jsPDF
 
 const ViewNotes = () => {
+  const navigate = useNavigate();
   const { id } = useParams(); // Get course ID from URL
   const { theme } = useTheme(); // Use theme context
   const isDarkMode = theme === 'dark'; // Check if dark mode is enabled
@@ -127,6 +129,23 @@ const ViewNotes = () => {
     }
   };
 
+  const saveAsPDF = (note) => {
+    const pdf = new jsPDF();
+
+    pdf.setFontSize(20);
+    pdf.text("Note Details", 10, 10);
+
+    pdf.setFontSize(12);
+    pdf.text(`Question: ${note.question}`, 10, 20);
+    pdf.text(`Answer: ${note.answer}`, 10, 30);
+    pdf.text(`Main Target Category: ${note.mainTargetCategory}`, 10, 40);
+    pdf.text(`Main Target Goal: ${note.mainTargetGoal}`, 10, 50);
+    pdf.text(`Sub Target Goal: ${note.subTargetGoal}`, 10, 60);
+
+    pdf.save(`note_${id}.pdf`);
+  };
+
+
   return (
     <div className={`container mx-auto px-4 py-6 mt-10 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
       {!isAuthorized ? (
@@ -161,6 +180,7 @@ const ViewNotes = () => {
               {notes.length > 0 ? (
                 notes.map((note) => (
                   <li
+                  onClick={() => navigate(`/notes/${note._id}/view`)}
                     key={note._id}
                     className={`border-b py-4 flex justify-between items-start ${isDarkMode ? 'border-gray-700' : 'border-gray-300'}`}
                   >
@@ -230,6 +250,12 @@ const ViewNotes = () => {
                         </div>
                         <div className="flex space-x-4">
                           <button
+                            onClick={saveAsPDF}
+                            className={`text-green-500 ${isDarkMode ? 'hover:text-green-300' : 'hover:text-green-700'}`}
+                          >
+                            Save as PDF
+                          </button>
+                          <button
                             onClick={() => handleEditClick(note)}
                             className={`text-blue-500 ${isDarkMode ? 'hover:text-blue-300' : 'hover:text-blue-700'}`}
                           >
@@ -262,6 +288,9 @@ const ViewNotes = () => {
                 Delete All Notes
               </button>
             )}
+            <Link to={`/courses/`} className="mt-4 inline-block text-gray-500">
+              Back to CourseList
+            </Link>
           </div>
         </>
       )}

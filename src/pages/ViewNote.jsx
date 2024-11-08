@@ -4,6 +4,7 @@ import { useParams, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "../context/ThemeContext";
+import jsPDF from "jspdf"; // Import jsPDF
 
 const ViewNote = () => {
   const { id } = useParams();  // Note ID for fetching specific note details
@@ -26,6 +27,22 @@ const ViewNote = () => {
     };
     fetchNote();
   }, [id]);
+
+  const saveAsPDF = () => {
+    const pdf = new jsPDF();
+
+    pdf.setFontSize(20);
+    pdf.text("Note Details", 10, 10);
+
+    pdf.setFontSize(12);
+    pdf.text(`Question: ${note.question}`, 10, 20);
+    pdf.text(`Answer: ${note.answer}`, 10, 30);
+    pdf.text(`Main Target Category: ${note.mainTargetCategory}`, 10, 40);
+    pdf.text(`Main Target Goal: ${note.mainTargetGoal}`, 10, 50);
+    pdf.text(`Sub Target Goal: ${note.subTargetGoal}`, 10, 60);
+
+    pdf.save(`note_${id}.pdf`);
+  };
 
   if (!note) {
     return <p className="text-center mt-4">Loading note details...</p>;
@@ -65,6 +82,9 @@ const ViewNote = () => {
           <Link to="/notes" className="text-gray-600 hover:underline">
             Back to Notes
           </Link>
+          <button onClick={saveAsPDF} className="bg-green-500 text-white p-2 rounded hover:bg-green-600">
+            Save as PDF
+          </button>
         </div>
       </div>
       <ToastContainer />
