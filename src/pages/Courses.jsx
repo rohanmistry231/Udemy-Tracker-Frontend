@@ -59,15 +59,16 @@ const Courses = () => {
 
   // Filter and sort courses based on search term and selected filters
   const filteredCourses = courses
-  .filter(
-    (course) =>
-      (course.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-       course.no.toString().includes(searchTerm)) && // Multi-search by name or 'no'
-      (statusFilter === "" || course.status === statusFilter) &&
-      (importantFilter === "" || course.importantStatus === importantFilter) &&
-      (categoryFilter === "" || course.category === categoryFilter) &&
-      (subCategoryFilter === "" || course.subCategory === subCategoryFilter)
-  )
+    .filter(
+      (course) =>
+        (course.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          course.no.toString().includes(searchTerm)) && // Multi-search by name or 'no'
+        (statusFilter === "" || course.status === statusFilter) &&
+        (importantFilter === "" ||
+          course.importantStatus === importantFilter) &&
+        (categoryFilter === "" || course.category === categoryFilter) &&
+        (subCategoryFilter === "" || course.subCategory === subCategoryFilter)
+    )
     .sort((a, b) => {
       if (sortOrder === "lowToHigh") {
         return a.durationInHours - b.durationInHours; // Sort from low to high

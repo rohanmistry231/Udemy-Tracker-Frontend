@@ -1,55 +1,82 @@
-const express = require('express');
-const Course = require('../models/Course'); // Import Course model
+const express = require("express");
+const Course = require("../models/Course"); // Import Course model
 
 const router = express.Router({ mergeParams: true }); // Merge params for courseId access
 
 // Fetch all notes across all courses
-router.get('/all', async (req, res) => {
+router.get("/all", async (req, res) => {
   try {
-    const courses = await Course.find({}, 'notes'); // Fetch only notes from each course
-    const allNotes = courses.flatMap(course => course.notes); // Flatten notes into a single array
-    res.json({ message: 'All notes retrieved successfully', notes: allNotes });
+    const courses = await Course.find({}, "notes"); // Fetch only notes from each course
+    const allNotes = courses.flatMap((course) => course.notes); // Flatten notes into a single array
+    res.json({ message: "All notes retrieved successfully", notes: allNotes });
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching all notes', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error fetching all notes", error: error.message });
   }
 });
 
 // Add a new note to a specific course
-router.post('/', async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const { courseId } = req.params;
-    const { question, answer, mainTargetCategory, mainTargetGoal, subTargetGoal } = req.body;
+    const {
+      question,
+      answer,
+      mainTargetCategory,
+      mainTargetGoal,
+      subTargetGoal,
+    } = req.body;
 
     const course = await Course.findById(courseId);
     if (!course) {
-      return res.status(404).json({ message: 'Course not found' });
+      return res.status(404).json({ message: "Course not found" });
     }
 
     // Create and add a new note
-    const newNote = { question, answer, mainTargetCategory, mainTargetGoal, subTargetGoal };
+    const newNote = {
+      question,
+      answer,
+      mainTargetCategory,
+      mainTargetGoal,
+      subTargetGoal,
+    };
     course.notes.push(newNote);
     await course.save();
 
-    res.status(201).json({ message: 'Note added successfully', note: course.notes.slice(-1)[0] });
+    res
+      .status(201)
+      .json({
+        message: "Note added successfully",
+        note: course.notes.slice(-1)[0],
+      });
   } catch (error) {
-    res.status(500).json({ message: 'Error adding note', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error adding note", error: error.message });
   }
 });
 
 // Update an existing note in a specific course
-router.put('/:noteId', async (req, res) => {
+router.put("/:noteId", async (req, res) => {
   try {
     const { courseId, noteId } = req.params;
-    const { question, answer, mainTargetCategory, mainTargetGoal, subTargetGoal } = req.body;
+    const {
+      question,
+      answer,
+      mainTargetCategory,
+      mainTargetGoal,
+      subTargetGoal,
+    } = req.body;
 
     const course = await Course.findById(courseId);
     if (!course) {
-      return res.status(404).json({ message: 'Course not found' });
+      return res.status(404).json({ message: "Course not found" });
     }
 
     const note = course.notes.id(noteId);
     if (!note) {
-      return res.status(404).json({ message: 'Note not found' });
+      return res.status(404).json({ message: "Note not found" });
     }
 
     // Update note fields
@@ -60,41 +87,47 @@ router.put('/:noteId', async (req, res) => {
     note.subTargetGoal = subTargetGoal || note.subTargetGoal;
 
     await course.save();
-    res.json({ message: 'Note updated successfully', note });
+    res.json({ message: "Note updated successfully", note });
   } catch (error) {
-    res.status(500).json({ message: 'Error updating note', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error updating note", error: error.message });
   }
 });
 
 // Delete a specific note from a course
-router.delete('/:noteId', async (req, res) => {
+router.delete("/:noteId", async (req, res) => {
   try {
     const { courseId, noteId } = req.params;
 
     const course = await Course.findById(courseId);
     if (!course) {
-      return res.status(404).json({ message: 'Course not found' });
+      return res.status(404).json({ message: "Course not found" });
     }
 
     // Filter out the note to delete it
-    course.notes = course.notes.filter(note => note._id.toString() !== noteId);
+    course.notes = course.notes.filter(
+      (note) => note._id.toString() !== noteId
+    );
     await course.save();
 
-    res.status(200).json({ message: 'Note deleted successfully' });
+    res.status(200).json({ message: "Note deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: 'Error deleting note', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error deleting note", error: error.message });
   }
 });
 
 // Delete a note by its ID from a specific course
-router.delete('/byNoteId/:courseId/:noteId', async (req, res) => {
+router.delete("/byNoteId/:courseId/:noteId", async (req, res) => {
   try {
     const { courseId, noteId } = req.params;
 
     // Find the course that contains the note
     const course = await Course.findById(courseId);
     if (!course) {
-      return res.status(404).json({ message: 'Course not found' });
+      return res.status(404).json({ message: "Course not found" });
     }
 
     // Use $pull to remove the note from the course's notes array
@@ -105,17 +138,24 @@ router.delete('/byNoteId/:courseId/:noteId', async (req, res) => {
 
     // Check if the note was found and removed
     if (result.modifiedCount === 0) {
-      return res.status(404).json({ message: 'Note not found' });
+      return res.status(404).json({ message: "Note not found" });
     }
 
-    res.status(200).json({ message: 'Note deleted successfully from the course' });
+    res
+      .status(200)
+      .json({ message: "Note deleted successfully from the course" });
   } catch (error) {
-    res.status(500).json({ message: 'Error deleting note from course', error: error.message });
+    res
+      .status(500)
+      .json({
+        message: "Error deleting note from course",
+        error: error.message,
+      });
   }
 });
 
 // Delete a note by its ID (without requiring courseId)
-router.delete('/deleteByNoteId/:noteId', async (req, res) => {
+router.delete("/deleteByNoteId/:noteId", async (req, res) => {
   try {
     const { noteId } = req.params;
 
@@ -127,57 +167,67 @@ router.delete('/deleteByNoteId/:noteId', async (req, res) => {
 
     // Check if the note was found and removed
     if (result.modifiedCount === 0) {
-      return res.status(404).json({ message: 'Note not found' });
+      return res.status(404).json({ message: "Note not found" });
     }
 
-    res.status(200).json({ message: 'Note deleted successfully' });
+    res.status(200).json({ message: "Note deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: 'Error deleting note', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error deleting note", error: error.message });
   }
 });
 
 // Get all notes for a specific course or a specific note by ID
-router.get('/:noteId?', async (req, res) => {
+router.get("/:noteId?", async (req, res) => {
   try {
     const { courseId, noteId } = req.params;
 
-    const course = await Course.findById(courseId).select('notes');
+    const course = await Course.findById(courseId).select("notes");
     if (!course) {
-      return res.status(404).json({ message: 'Course not found' });
+      return res.status(404).json({ message: "Course not found" });
     }
 
     // If noteId is provided, retrieve that specific note
     if (noteId) {
       const note = course.notes.id(noteId);
       if (!note) {
-        return res.status(404).json({ message: 'Note not found' });
+        return res.status(404).json({ message: "Note not found" });
       }
-      return res.json({ message: 'Note retrieved successfully', note });
+      return res.json({ message: "Note retrieved successfully", note });
     }
 
     // If no noteId, return all notes for the course
-    res.json({ message: 'Notes retrieved successfully', notes: course.notes });
+    res.json({ message: "Notes retrieved successfully", notes: course.notes });
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching notes', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error fetching notes", error: error.message });
   }
 });
 
 // Update a note by its ID (using a more focused route)
-router.put('/update/:noteId', async (req, res) => {
+router.put("/update/:noteId", async (req, res) => {
   try {
     const { noteId } = req.params;
-    const { question, answer, mainTargetCategory, mainTargetGoal, subTargetGoal } = req.body;
+    const {
+      question,
+      answer,
+      mainTargetCategory,
+      mainTargetGoal,
+      subTargetGoal,
+    } = req.body;
 
     // Find the course that contains the note using the noteId
-    const course = await Course.findOne({ 'notes._id': noteId });
+    const course = await Course.findOne({ "notes._id": noteId });
     if (!course) {
-      return res.status(404).json({ message: 'Course or note not found' });
+      return res.status(404).json({ message: "Course or note not found" });
     }
 
     // Find the specific note by its ID inside the course's notes array
     const note = course.notes.id(noteId);
     if (!note) {
-      return res.status(404).json({ message: 'Note not found' });
+      return res.status(404).json({ message: "Note not found" });
     }
 
     // Update the note fields
@@ -192,7 +242,7 @@ router.put('/update/:noteId', async (req, res) => {
 
     // Respond with the updated note data
     res.json({
-      message: 'Note updated successfully',
+      message: "Note updated successfully",
       note: {
         _id: note._id,
         question: note.question,
@@ -203,25 +253,30 @@ router.put('/update/:noteId', async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: 'Error updating note by ID', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error updating note by ID", error: error.message });
   }
 });
 
 // Find a note by its ID (without requiring courseId)
-router.get('/note/:noteId', async (req, res) => {
+router.get("/note/:noteId", async (req, res) => {
   try {
     const { noteId } = req.params;
 
     // Find the course that contains the note using the noteId
-    const course = await Course.findOne({ 'notes._id': noteId }, { 'notes.$': 1 }); // Select only the specific note with $ projection
+    const course = await Course.findOne(
+      { "notes._id": noteId },
+      { "notes.$": 1 }
+    ); // Select only the specific note with $ projection
     if (!course || course.notes.length === 0) {
-      return res.status(404).json({ message: 'Note not found' });
+      return res.status(404).json({ message: "Note not found" });
     }
 
     // Extract the note from the course's notes array
     const note = course.notes[0];
     res.json({
-      message: 'Note retrieved successfully',
+      message: "Note retrieved successfully",
       note: {
         _id: note._id,
         question: note.question,
@@ -232,28 +287,37 @@ router.get('/note/:noteId', async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching note by ID', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error fetching note by ID", error: error.message });
   }
 });
 
 // Delete all notes from a specific course
-router.delete('/deleteAllNotes/:courseId', async (req, res) => {
+router.delete("/deleteAllNotes/:courseId", async (req, res) => {
   try {
     const { courseId } = req.params;
 
     // Find the course by ID and set the notes array to an empty array
     const course = await Course.findById(courseId);
     if (!course) {
-      return res.status(404).json({ message: 'Course not found' });
+      return res.status(404).json({ message: "Course not found" });
     }
 
     // Clear the notes array
     course.notes = [];
     await course.save();
 
-    res.status(200).json({ message: 'All notes deleted successfully from the course' });
+    res
+      .status(200)
+      .json({ message: "All notes deleted successfully from the course" });
   } catch (error) {
-    res.status(500).json({ message: 'Error deleting all notes from course', error: error.message });
+    res
+      .status(500)
+      .json({
+        message: "Error deleting all notes from course",
+        error: error.message,
+      });
   }
 });
 

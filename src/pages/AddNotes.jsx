@@ -20,7 +20,7 @@ const AddNotes = () => {
   const [mainCategory, setMainCategory] = useState("");
   const [targetGoal, setTargetGoal] = useState("");
   const [subTargetGoal, setSubTargetGoal] = useState("");
-  
+
   const categories = [
     "Data Science",
     "Database",
@@ -59,7 +59,7 @@ const AddNotes = () => {
       "Web App",
       "Mathematics",
     ],
-    "Database": [
+    Database: [
       "DBMS",
       "MySQL",
       "NoSQL",
@@ -99,7 +99,7 @@ const AddNotes = () => {
       "Wordpress",
       "UIUX",
     ],
-    "Business": [
+    Business: [
       "Business Strategy",
       "Communication",
       "Consultant",
@@ -120,7 +120,7 @@ const AddNotes = () => {
       "Trading",
       "No Code Development",
     ],
-    "Filmmaking": ["Photography & Video", "Budgeting", "After Effects"],
+    Filmmaking: ["Photography & Video", "Budgeting", "After Effects"],
     "Graphics Design": [
       "Adobe Captivate",
       "Adobe Illustrator",
@@ -135,7 +135,7 @@ const AddNotes = () => {
       "Blender",
       "After Effects",
     ],
-    "Marketing": [
+    Marketing: [
       "Content Marketing",
       "Digital Marketing",
       "Test",
@@ -147,8 +147,8 @@ const AddNotes = () => {
       "Microsoft",
       "Other Office Productivity",
     ],
-    "Music": ["Drum", "Audio Production", "Song Writing", "Piano", "Guitar"],
-    "Cloud": [
+    Music: ["Drum", "Audio Production", "Song Writing", "Piano", "Guitar"],
+    Cloud: [
       "AWS",
       "Azure",
       "Cloud",
@@ -162,7 +162,7 @@ const AddNotes = () => {
       "Microservices",
       "Data Build Tool",
     ],
-    "DevOps": [
+    DevOps: [
       "Ansible",
       "Azure",
       "DevOps",
@@ -186,7 +186,7 @@ const AddNotes = () => {
       "Eye",
       "Yoga",
     ],
-    "Language": ["English", "Test", "German"],
+    Language: ["English", "Test", "German"],
     "Operating System": [
       "Linux",
       "Network & Security",
@@ -216,15 +216,21 @@ const AddNotes = () => {
   };
 
   const subGoals = {
-    "Algorithms": ["Sorting", "Graph Theory", "Dynamic Programming"],
-    "Artificial Intelligence": ["Machine Learning", "Neural Networks", "Natural Language Processing"],
+    Algorithms: ["Sorting", "Graph Theory", "Dynamic Programming"],
+    "Artificial Intelligence": [
+      "Machine Learning",
+      "Neural Networks",
+      "Natural Language Processing",
+    ],
     // Add other target goals and their sub-target goals here...
   };
 
   useEffect(() => {
     const fetchCourseName = async () => {
       try {
-        const response = await fetch(`https://udemy-tracker.vercel.app/courses/${id}`);
+        const response = await fetch(
+          `https://udemy-tracker.vercel.app/courses/${id}`
+        );
         const data = await response.json();
         setCourseName(data.name);
       } catch (error) {
@@ -268,26 +274,47 @@ const AddNotes = () => {
   };
 
   return (
-    <div className={`container mx-auto px-4 py-6 mt-10 ${isDarkMode ? "bg-gray-900" : "bg-white"}`}>
+    <div
+      className={`container mx-auto px-4 py-6 mt-10 ${
+        isDarkMode ? "bg-gray-900" : "bg-white"
+      }`}
+    >
       {!isAuthorized ? (
         <form
           onSubmit={handlePasswordSubmit}
-          className={`p-6 rounded shadow-md ${isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"}`}
+          className={`p-6 rounded shadow-md ${
+            isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+          }`}
         >
-          <label htmlFor="password" className="block mb-2">🔒 Prove You're Worthy! Enter the Secret Code:</label>
+          <label htmlFor="password" className="block mb-2">
+            🔒 Prove You're Worthy! Enter the Secret Code:
+          </label>
           <input
             type="password"
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className={`border p-2 rounded w-full ${isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`}
+            className={`border p-2 rounded w-full ${
+              isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
+            }`}
             required
           />
-          <button type="submit" className="bg-blue-500 text-white p-2 rounded mt-4">Submit</button>
+          <button
+            type="submit"
+            className="bg-blue-500 text-white p-2 rounded mt-4"
+          >
+            Submit
+          </button>
         </form>
       ) : (
-        <div className={`shadow-md rounded-lg p-6 ${isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"}`}>
-          <h2 className="text-2xl font-bold mb-4">Add Notes for {courseName}</h2>
+        <div
+          className={`shadow-md rounded-lg p-6 ${
+            isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+          }`}
+        >
+          <h2 className="text-2xl font-bold mb-4">
+            Add Notes for {courseName}
+          </h2>
 
           <form onSubmit={handleAddNote} className="space-y-4">
             <select
@@ -297,11 +324,15 @@ const AddNotes = () => {
                 setTargetGoal("");
                 setSubTargetGoal("");
               }}
-              className={`border p-2 rounded w-full ${isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`}
+              className={`border p-2 rounded w-full ${
+                isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
+              }`}
             >
               <option value="">Select Main Category</option>
               {categories.map((category) => (
-                <option key={category} value={category}>{category}</option>
+                <option key={category} value={category}>
+                  {category}
+                </option>
               ))}
             </select>
 
@@ -311,51 +342,74 @@ const AddNotes = () => {
                 setTargetGoal(e.target.value);
                 setSubTargetGoal(""); // Reset subTargetGoal when targetGoal changes
               }}
-              className={`border p-2 rounded w-full ${isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`}
+              className={`border p-2 rounded w-full ${
+                isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
+              }`}
               disabled={!mainCategory}
             >
               <option value="">Select Target Goal</option>
-              {mainCategory && targetGoals[mainCategory].map((goal) => (
-                <option key={goal} value={goal}>{goal}</option>
-              ))}
+              {mainCategory &&
+                targetGoals[mainCategory].map((goal) => (
+                  <option key={goal} value={goal}>
+                    {goal}
+                  </option>
+                ))}
             </select>
 
             <select
               value={subTargetGoal}
               onChange={(e) => setSubTargetGoal(e.target.value)}
-              className={`border p-2 rounded w-full ${isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`}
+              className={`border p-2 rounded w-full ${
+                isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
+              }`}
               disabled={!targetGoal}
             >
               <option value="">Select Sub Target Goal</option>
-              {targetGoal && subGoals[targetGoal]?.map((subGoal) => (
-                <option key={subGoal} value={subGoal}>{subGoal}</option>
-              ))}
+              {targetGoal &&
+                subGoals[targetGoal]?.map((subGoal) => (
+                  <option key={subGoal} value={subGoal}>
+                    {subGoal}
+                  </option>
+                ))}
             </select>
 
             <div>
-              <label htmlFor="question" className="block mb-1">Question:</label>
+              <label htmlFor="question" className="block mb-1">
+                Question:
+              </label>
               <input
                 type="text"
                 id="question"
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
-                className={`border p-2 rounded w-full ${isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`}
+                className={`border p-2 rounded w-full ${
+                  isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
+                }`}
                 required
               />
             </div>
 
             <div>
-              <label htmlFor="answer" className="block mb-1">Answer:</label>
+              <label htmlFor="answer" className="block mb-1">
+                Answer:
+              </label>
               <textarea
                 id="answer"
                 value={answer}
                 onChange={(e) => setAnswer(e.target.value)}
-                className={`border p-2 rounded w-full ${isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`}
+                className={`border p-2 rounded w-full ${
+                  isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
+                }`}
                 required
               />
             </div>
 
-            <button type="submit" className="bg-blue-500 text-white p-2 rounded">Add Note</button>
+            <button
+              type="submit"
+              className="bg-blue-500 text-white p-2 rounded"
+            >
+              Add Note
+            </button>
           </form>
         </div>
       )}

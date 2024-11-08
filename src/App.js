@@ -32,7 +32,9 @@ function App() {
   return (
     <Router>
       <div
-        className={`flex flex-col min-h-screen ${isDarkMode ? "dark" : "light"}`}
+        className={`flex flex-col min-h-screen ${
+          isDarkMode ? "dark" : "light"
+        }`}
       >
         <Navbar />
         <main className="flex-grow">
@@ -47,15 +49,25 @@ function App() {
             <Route path="/courses/:id/edit" element={<EditCourse />} />
             <Route path="/courses/:id/add-notes" element={<AddNotes />} />
             <Route path="/notes/:id/edit" element={<EditNote />} />
-            <Route path="courses/:courseid/notes/note/:id/edit" element={<EditNoteOfViewNotes />} />
+            <Route
+              path="courses/:courseid/notes/note/:id/edit"
+              element={<EditNoteOfViewNotes />}
+            />
             <Route path="/courses/:id/notes" element={<ViewNotes />} />
             <Route path="/notes/:id/view" element={<ViewNote />} />
-            <Route path="courses/:courseid/notes/:id/view" element={<ViewCourseNote />} />
-            <Route path="courses/:courseid/notes/note/:id/view" element={<ViewNoteOfViewNotes />} />
+            <Route
+              path="courses/:courseid/notes/:id/view"
+              element={<ViewCourseNote />}
+            />
+            <Route
+              path="courses/:courseid/notes/note/:id/view"
+              element={<ViewNoteOfViewNotes />}
+            />
             <Route path="/profile" element={<Profile />} />
             <Route path="/progress" element={<Progress />} />
             <Route path="/notes" element={<Notes />} />
-            <Route path="/add-note" element={<AddNote />} /> {/* New route for AddNote */}
+            <Route path="/add-note" element={<AddNote />} />{" "}
+            {/* New route for AddNote */}
           </Routes>
         </main>
         <Footer />

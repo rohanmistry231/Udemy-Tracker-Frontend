@@ -1,4 +1,4 @@
-const Course = require('../models/Course');
+const Course = require("../models/Course");
 
 // Create a new course
 const createCourse = async (req, res) => {
@@ -25,7 +25,7 @@ const getCourses = async (req, res) => {
 const getCourseById = async (req, res) => {
   try {
     const course = await Course.findById(req.params.id);
-    if (!course) return res.status(404).json({ message: 'Course not found' });
+    if (!course) return res.status(404).json({ message: "Course not found" });
     res.json(course);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -35,8 +35,10 @@ const getCourseById = async (req, res) => {
 // Update a course
 const updateCourse = async (req, res) => {
   try {
-    const course = await Course.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!course) return res.status(404).json({ message: 'Course not found' });
+    const course = await Course.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    if (!course) return res.status(404).json({ message: "Course not found" });
     res.json(course);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -47,8 +49,8 @@ const updateCourse = async (req, res) => {
 const deleteCourse = async (req, res) => {
   try {
     const course = await Course.findByIdAndDelete(req.params.id);
-    if (!course) return res.status(404).json({ message: 'Course not found' });
-    res.json({ message: 'Course deleted successfully' });
+    if (!course) return res.status(404).json({ message: "Course not found" });
+    res.json({ message: "Course deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -59,5 +61,5 @@ module.exports = {
   getCourses,
   getCourseById,
   updateCourse,
-  deleteCourse
+  deleteCourse,
 };

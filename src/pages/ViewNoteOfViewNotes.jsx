@@ -7,7 +7,7 @@ import { useTheme } from "../context/ThemeContext";
 import jsPDF from "jspdf"; // Import jsPDF
 
 const ViewNoteOfViewNotes = () => {
-  const { courseid, id } = useParams();  // Note ID for fetching specific note details
+  const { courseid, id } = useParams(); // Note ID for fetching specific note details
   const { theme } = useTheme();
   const isDarkMode = theme === "dark";
   const [note, setNote] = useState(null);
@@ -15,9 +15,11 @@ const ViewNoteOfViewNotes = () => {
   useEffect(() => {
     const fetchNote = async () => {
       try {
-        const response = await fetch(`https://udemy-tracker.vercel.app/notes/note/${id}`);
+        const response = await fetch(
+          `https://udemy-tracker.vercel.app/notes/note/${id}`
+        );
         if (!response.ok) throw new Error("Failed to fetch note details");
-        
+
         const data = await response.json();
         setNote(data.note); // Access the 'note' object within the response data
       } catch (error) {
@@ -50,9 +52,15 @@ const ViewNoteOfViewNotes = () => {
 
   return (
     <div
-      className={`container mx-auto px-4 py-6 mt-12 ${isDarkMode ? "bg-gray-900" : "bg-white"}`}
+      className={`container mx-auto px-4 py-6 mt-12 ${
+        isDarkMode ? "bg-gray-900" : "bg-white"
+      }`}
     >
-      <div className={`shadow-md rounded-lg p-6 ${isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"}`}>
+      <div
+        className={`shadow-md rounded-lg p-6 ${
+          isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+        }`}
+      >
         <h2 className="text-3xl font-bold mb-4">Note Details</h2>
         <div className="mb-4">
           <h3 className="font-semibold text-lg">Question:</h3>
@@ -76,13 +84,22 @@ const ViewNoteOfViewNotes = () => {
         </div>
 
         <div className="flex items-center justify-between mt-6">
-          <Link to={`/courses/${courseid}/notes/note/${id}/edit`} className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+          <Link
+            to={`/courses/${courseid}/notes/note/${id}/edit`}
+            className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+          >
             Edit Note
           </Link>
-          <Link to={`/courses/${courseid}/notes`} className="text-gray-600 hover:underline">
+          <Link
+            to={`/courses/${courseid}/notes`}
+            className="text-gray-600 hover:underline"
+          >
             Back to Course Notes
           </Link>
-          <button onClick={saveAsPDF} className="bg-green-500 text-white p-2 rounded hover:bg-green-600">
+          <button
+            onClick={saveAsPDF}
+            className="bg-green-500 text-white p-2 rounded hover:bg-green-600"
+          >
             Save as PDF
           </button>
         </div>

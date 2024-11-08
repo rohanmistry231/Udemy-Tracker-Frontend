@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useTheme } from '../context/ThemeContext'; // Import theme context
+import React, { useEffect, useState } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { useTheme } from "../context/ThemeContext"; // Import theme context
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import jsPDF from "jspdf"; // Import jsPDF
@@ -9,14 +9,14 @@ const ViewNotes = () => {
   const navigate = useNavigate();
   const { id } = useParams(); // Get course ID from URL
   const { theme } = useTheme(); // Use theme context
-  const isDarkMode = theme === 'dark'; // Check if dark mode is enabled
+  const isDarkMode = theme === "dark"; // Check if dark mode is enabled
   const [notes, setNotes] = useState([]);
   const [editingNote, setEditingNote] = useState(null); // Track the note being edited
-  const [question, setQuestion] = useState('');
-  const [answer, setAnswer] = useState('');
-  const [mainTargetCategory, setMainTargetCategory] = useState('');
-  const [mainTargetGoal, setMainTargetGoal] = useState('');
-  const [subTargetGoal, setSubTargetGoal] = useState('');
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
+  const [mainTargetCategory, setMainTargetCategory] = useState("");
+  const [mainTargetGoal, setMainTargetGoal] = useState("");
+  const [subTargetGoal, setSubTargetGoal] = useState("");
   const [password, setPassword] = useState("");
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [selectedNotes, setSelectedNotes] = useState([]); // New state to track selected notes
@@ -36,15 +36,17 @@ const ViewNotes = () => {
   useEffect(() => {
     const fetchNotes = async () => {
       try {
-        const response = await fetch(`https://udemy-tracker.vercel.app/courses/${id}/notes`);
+        const response = await fetch(
+          `https://udemy-tracker.vercel.app/courses/${id}/notes`
+        );
         if (!response.ok) {
-          throw new Error('Failed to fetch notes');
+          throw new Error("Failed to fetch notes");
         }
         const data = await response.json();
         setNotes(data.notes); // Update to use the 'notes' property from the response
       } catch (error) {
-        console.error('Error fetching notes:', error);
-        toast.error('Failed to load notes. Please try again later.');
+        console.error("Error fetching notes:", error);
+        toast.error("Failed to load notes. Please try again later.");
       }
     };
 
@@ -53,19 +55,24 @@ const ViewNotes = () => {
 
   // Delete a specific note
   const handleDelete = async (noteId) => {
-    if (window.confirm('Are you sure you want to delete this note?')) {
+    if (window.confirm("Are you sure you want to delete this note?")) {
       try {
-        const response = await fetch(`https://udemy-tracker.vercel.app/courses/${id}/notes/${noteId}`, {
-          method: 'DELETE',
-        });
+        const response = await fetch(
+          `https://udemy-tracker.vercel.app/courses/${id}/notes/${noteId}`,
+          {
+            method: "DELETE",
+          }
+        );
         if (!response.ok) {
-          throw new Error('Failed to delete note');
+          throw new Error("Failed to delete note");
         }
-        setNotes((prevNotes) => prevNotes.filter((note) => note._id !== noteId));
-        toast.success('Note deleted successfully');
+        setNotes((prevNotes) =>
+          prevNotes.filter((note) => note._id !== noteId)
+        );
+        toast.success("Note deleted successfully");
       } catch (error) {
-        console.error('Error deleting note:', error);
-        toast.error('Failed to delete note. Please try again later.');
+        console.error("Error deleting note:", error);
+        toast.error("Failed to delete note. Please try again later.");
       }
     }
   };
@@ -76,56 +83,74 @@ const ViewNotes = () => {
     setQuestion(note.question);
     setAnswer(note.answer);
     setMainTargetCategory(note.mainTargetCategory);
-    setMainTargetGoal(note.mainTargetGoal || ''); // Ensure it’s initialized
-    setSubTargetGoal(note.subTargetGoal || ''); // Ensure it’s initialized
+    setMainTargetGoal(note.mainTargetGoal || ""); // Ensure it’s initialized
+    setSubTargetGoal(note.subTargetGoal || ""); // Ensure it’s initialized
   };
 
   // Update a specific note
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`https://udemy-tracker.vercel.app/courses/${id}/notes/${editingNote}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ question, answer, mainTargetCategory, mainTargetGoal, subTargetGoal }),
-      });
+      const response = await fetch(
+        `https://udemy-tracker.vercel.app/courses/${id}/notes/${editingNote}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            question,
+            answer,
+            mainTargetCategory,
+            mainTargetGoal,
+            subTargetGoal,
+          }),
+        }
+      );
       if (!response.ok) {
-        throw new Error('Failed to update note');
+        throw new Error("Failed to update note");
       }
       const updatedNote = await response.json();
       setNotes((prevNotes) =>
-        prevNotes.map((note) => (note._id === editingNote ? updatedNote.note : note))
+        prevNotes.map((note) =>
+          note._id === editingNote ? updatedNote.note : note
+        )
       );
-      toast.success('Note updated successfully');
+      toast.success("Note updated successfully");
       setEditingNote(null); // Exit edit mode
-      setQuestion('');
-      setAnswer('');
-      setMainTargetCategory('');
-      setMainTargetGoal('');
-      setSubTargetGoal('');
+      setQuestion("");
+      setAnswer("");
+      setMainTargetCategory("");
+      setMainTargetGoal("");
+      setSubTargetGoal("");
     } catch (error) {
-      console.error('Error updating note:', error);
-      toast.error('Failed to update note. Please try again later.');
+      console.error("Error updating note:", error);
+      toast.error("Failed to update note. Please try again later.");
     }
   };
 
   // Delete all notes for this course
   const handleDeleteAllNotes = async () => {
-    if (window.confirm('Are you sure you want to delete all notes for this course?')) {
+    if (
+      window.confirm(
+        "Are you sure you want to delete all notes for this course?"
+      )
+    ) {
       try {
-        const response = await fetch(`https://udemy-tracker.vercel.app/notes/deleteAllNotes/${id}`, {
-          method: 'DELETE',
-        });
+        const response = await fetch(
+          `https://udemy-tracker.vercel.app/notes/deleteAllNotes/${id}`,
+          {
+            method: "DELETE",
+          }
+        );
         if (!response.ok) {
-          throw new Error('Failed to delete all notes');
+          throw new Error("Failed to delete all notes");
         }
         setNotes([]); // Clear the notes state
-        toast.success('All notes deleted successfully');
+        toast.success("All notes deleted successfully");
       } catch (error) {
-        console.error('Error deleting all notes:', error);
-        toast.error('Failed to delete all notes. Please try again later.');
+        console.error("Error deleting all notes:", error);
+        toast.error("Failed to delete all notes. Please try again later.");
       }
     }
   };
@@ -142,17 +167,29 @@ const ViewNotes = () => {
       yPosition += 10;
       pdf.text(`Answer: ${note.answer}`, 10, yPosition);
       yPosition += 10;
-      pdf.text(`Main Target Category: ${note.mainTargetCategory}`, 10, yPosition);
+      pdf.text(
+        `Main Target Category: ${note.mainTargetCategory}`,
+        10,
+        yPosition
+      );
       yPosition += 10;
-      pdf.text(`Main Target Goal: ${note.mainTargetGoal || 'N/A'}`, 10, yPosition);
+      pdf.text(
+        `Main Target Goal: ${note.mainTargetGoal || "N/A"}`,
+        10,
+        yPosition
+      );
       yPosition += 10;
-      pdf.text(`Sub Target Goal: ${note.subTargetGoal || 'N/A'}`, 10, yPosition);
+      pdf.text(
+        `Sub Target Goal: ${note.subTargetGoal || "N/A"}`,
+        10,
+        yPosition
+      );
       yPosition += 20;
     });
 
     pdf.save("all_notes.pdf");
   };
-  
+
   const saveSelectedNotesAsPDF = () => {
     const pdf = new jsPDF();
     pdf.setFontSize(20);
@@ -167,11 +204,23 @@ const ViewNotes = () => {
         yPosition += 10;
         pdf.text(`Answer: ${note.answer}`, 10, yPosition);
         yPosition += 10;
-        pdf.text(`Main Target Category: ${note.mainTargetCategory}`, 10, yPosition);
+        pdf.text(
+          `Main Target Category: ${note.mainTargetCategory}`,
+          10,
+          yPosition
+        );
         yPosition += 10;
-        pdf.text(`Main Target Goal: ${note.mainTargetGoal || 'N/A'}`, 10, yPosition);
+        pdf.text(
+          `Main Target Goal: ${note.mainTargetGoal || "N/A"}`,
+          10,
+          yPosition
+        );
         yPosition += 10;
-        pdf.text(`Sub Target Goal: ${note.subTargetGoal || 'N/A'}`, 10, yPosition);
+        pdf.text(
+          `Sub Target Goal: ${note.subTargetGoal || "N/A"}`,
+          10,
+          yPosition
+        );
         yPosition += 20; // Add some space before the next note
       }
     });
@@ -180,10 +229,11 @@ const ViewNotes = () => {
   };
 
   const handleSelectNote = (noteId) => {
-    setSelectedNotes((prevSelected) =>
-      prevSelected.includes(noteId)
-        ? prevSelected.filter((id) => id !== noteId) // Deselect if already selected
-        : [...prevSelected, noteId] // Select if not already selected
+    setSelectedNotes(
+      (prevSelected) =>
+        prevSelected.includes(noteId)
+          ? prevSelected.filter((id) => id !== noteId) // Deselect if already selected
+          : [...prevSelected, noteId] // Select if not already selected
     );
   };
 
@@ -203,13 +253,18 @@ const ViewNotes = () => {
     pdf.save(`note_${id}.pdf`);
   };
 
-
   return (
-    <div className={`container mx-auto px-4 py-6 mt-10 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
+    <div
+      className={`container mx-auto px-4 py-6 mt-10 ${
+        isDarkMode ? "bg-gray-900" : "bg-white"
+      }`}
+    >
       {!isAuthorized ? (
         <form
           onSubmit={handlePasswordSubmit}
-          className={`p-6 rounded shadow-md ${isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"}`}
+          className={`p-6 rounded shadow-md ${
+            isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+          }`}
         >
           <label htmlFor="password" className="block mb-2">
             🔒 Prove You're Worthy! Enter the Secret Code:
@@ -220,7 +275,9 @@ const ViewNotes = () => {
             autoFocus
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className={`border p-2 rounded w-full ${isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`}
+            className={`border p-2 rounded w-full ${
+              isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
+            }`}
             required
           />
           <button
@@ -232,41 +289,64 @@ const ViewNotes = () => {
         </form>
       ) : (
         <>
-          <div className={`shadow-md rounded-lg p-6 ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
+          <div
+            className={`shadow-md rounded-lg p-6 ${
+              isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+            }`}
+          >
             <h2 className="text-2xl mb-4">Notes</h2>
             <ul className="space-y-4">
               {notes.length > 0 ? (
                 notes.map((note) => (
                   <li
                     key={note._id}
-                    className={`border-b py-4 flex justify-between items-start ${isDarkMode ? 'border-gray-700' : 'border-gray-300'}`}
+                    className={`border-b py-4 flex justify-between items-start ${
+                      isDarkMode ? "border-gray-700" : "border-gray-300"
+                    }`}
                   >
-                    
-                
                     {editingNote === note._id ? (
                       // Edit form for the selected note
-                      <form onSubmit={handleUpdate} className={`flex flex-col space-y-2 w-full ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+                      <form
+                        onSubmit={handleUpdate}
+                        className={`flex flex-col space-y-2 w-full ${
+                          isDarkMode ? "bg-gray-800" : "bg-white"
+                        }`}
+                      >
                         <input
                           type="text"
                           value={question}
                           onChange={(e) => setQuestion(e.target.value)}
                           placeholder="Question"
-                          className={`p-2 rounded border ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
+                          className={`p-2 rounded border ${
+                            isDarkMode
+                              ? "bg-gray-700 text-white"
+                              : "bg-white text-black"
+                          }`}
                           required
                         />
                         <textarea
                           value={answer}
                           onChange={(e) => setAnswer(e.target.value)}
                           placeholder="Answer"
-                          className={`p-2 rounded border ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
+                          className={`p-2 rounded border ${
+                            isDarkMode
+                              ? "bg-gray-700 text-white"
+                              : "bg-white text-black"
+                          }`}
                           required
                         ></textarea>
                         <input
                           type="text"
                           value={mainTargetCategory}
-                          onChange={(e) => setMainTargetCategory(e.target.value)}
+                          onChange={(e) =>
+                            setMainTargetCategory(e.target.value)
+                          }
                           placeholder="Main Target Goal"
-                          className={`p-2 rounded border ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
+                          className={`p-2 rounded border ${
+                            isDarkMode
+                              ? "bg-gray-700 text-white"
+                              : "bg-white text-black"
+                          }`}
                           required
                         />
                         <input
@@ -274,18 +354,30 @@ const ViewNotes = () => {
                           value={mainTargetGoal}
                           onChange={(e) => setMainTargetGoal(e.target.value)}
                           placeholder="Target Goal"
-                          className={`p-2 rounded border ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
+                          className={`p-2 rounded border ${
+                            isDarkMode
+                              ? "bg-gray-700 text-white"
+                              : "bg-white text-black"
+                          }`}
                         />
                         <input
                           type="text"
                           value={subTargetGoal}
                           onChange={(e) => setSubTargetGoal(e.target.value)}
                           placeholder="Sub Target Goal"
-                          className={`p-2 rounded border ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-black'}`}
+                          className={`p-2 rounded border ${
+                            isDarkMode
+                              ? "bg-gray-700 text-white"
+                              : "bg-white text-black"
+                          }`}
                         />
                         <button
                           type="submit"
-                          className={`p-2 rounded ${isDarkMode ? 'bg-blue-700 hover:bg-blue-800' : 'bg-blue-500 hover:bg-blue-600'} text-white`}
+                          className={`p-2 rounded ${
+                            isDarkMode
+                              ? "bg-blue-700 hover:bg-blue-800"
+                              : "bg-blue-500 hover:bg-blue-600"
+                          } text-white`}
                         >
                           Save
                         </button>
@@ -301,34 +393,61 @@ const ViewNotes = () => {
                       // Display note and actions
                       <>
                         <div>
-                          <h3 onClick={() => navigate(`/courses/${id}/notes/note/${note._id}/view`)} className="font-bold text-lg cursor-pointer">{note.question}</h3>
+                          <h3
+                            onClick={() =>
+                              navigate(
+                                `/courses/${id}/notes/note/${note._id}/view`
+                              )
+                            }
+                            className="font-bold text-lg cursor-pointer"
+                          >
+                            {note.question}
+                          </h3>
                           <p className="text-gray-600">{note.answer}</p>
-                          <p className="text-gray-600">Main Target Goal: {note.mainTargetCategory}</p>
-                          <p className="text-gray-600">Target Goal: {note.mainTargetGoal || 'N/A'}</p>
-                          <p className="text-gray-600">Sub Target Goal: {note.subTargetGoal || 'N/A'}</p>
+                          <p className="text-gray-600">
+                            Main Target Goal: {note.mainTargetCategory}
+                          </p>
+                          <p className="text-gray-600">
+                            Target Goal: {note.mainTargetGoal || "N/A"}
+                          </p>
+                          <p className="text-gray-600">
+                            Sub Target Goal: {note.subTargetGoal || "N/A"}
+                          </p>
                         </div>
                         <div className="flex space-x-4">
-                        <input
-                        type="checkbox"
-                        checked={selectedNotes.includes(note._id)}
-                        onChange={() => handleSelectNote(note._id)}
-                        className="mr-2"
-                      />
+                          <input
+                            type="checkbox"
+                            checked={selectedNotes.includes(note._id)}
+                            onChange={() => handleSelectNote(note._id)}
+                            className="mr-2"
+                          />
                           <button
                             onClick={saveAsPDF}
-                            className={`text-green-500 ${isDarkMode ? 'hover:text-green-300' : 'hover:text-green-700'}`}
+                            className={`text-green-500 ${
+                              isDarkMode
+                                ? "hover:text-green-300"
+                                : "hover:text-green-700"
+                            }`}
                           >
                             Save as PDF
                           </button>
                           <button
                             onClick={() => handleEditClick(note)}
-                            className={`text-blue-500 ${isDarkMode ? 'hover:text-blue-300' : 'hover:text-blue-700'}`}
+                            className={`text-blue-500 ${
+                              isDarkMode
+                                ? "hover:text-blue-300"
+                                : "hover:text-blue-700"
+                            }`}
                           >
                             Edit
                           </button>
                           <button
                             onClick={() => handleDelete(note._id)}
-                            className={`text-red-500 ${isDarkMode ? 'hover:text-red-300' : 'hover:text-red-700'}`}
+                            className={`text-red-500 ${
+                              isDarkMode
+                                ? "hover:text-red-300"
+                                : "hover:text-red-700"
+                            }`}
                           >
                             Delete
                           </button>
@@ -341,7 +460,7 @@ const ViewNotes = () => {
                 <li className="text-gray-500">No notes available.</li>
               )}
             </ul>
-              {selectedNotes.length > 0 && (
+            {selectedNotes.length > 0 && (
               <button
                 onClick={saveSelectedNotesAsPDF}
                 className="mt-4 p-2 text-green-500 rounded"
@@ -355,7 +474,10 @@ const ViewNotes = () => {
             >
               Save All Notes as PDF
             </button>
-            <Link to={`/courses/${id}/add-notes`} className="mt-4 inline-block text-blue-500">
+            <Link
+              to={`/courses/${id}/add-notes`}
+              className="mt-4 inline-block text-blue-500"
+            >
               Add a new note
             </Link>
             {/* Delete All Notes button */}

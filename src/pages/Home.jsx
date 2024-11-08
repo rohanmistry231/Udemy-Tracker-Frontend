@@ -129,7 +129,7 @@ const Home = () => {
         <div className="flex justify-center items-center min-h-screen">
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
         </div>
-      )  : (
+      ) : (
         <>
           <div className="flex flex-col items-center">
             <h1 className="text-2xl font-bold text-center mb-6">
@@ -150,189 +150,198 @@ const Home = () => {
                 }`}
               >
                 <h2 className="text-lg font-medium">Total Learning Hours</h2>
-                <p className="text-3xl font-semibold mt-2">{totalHours.toFixed(2)} hrs</p>
+                <p className="text-3xl font-semibold mt-2">
+                  {totalHours.toFixed(2)} hrs
+                </p>
               </div>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
-        <div className="flex flex-col">
-          <label htmlFor="category" className="font-medium text-center">
-            Select Category:
-          </label>
-          <select
-            id="category"
-            className={`${selectClassName} mt-4`}
-            value={selectedCategory}
-            onChange={(e) => {
-              setSelectedCategory(e.target.value);
-              setSelectedSubCategory("");
-            }}
-          >
-            <option value="">All Categories</option>
-            {categories.map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
-        </div>
+            <div className="flex flex-col">
+              <label htmlFor="category" className="font-medium text-center">
+                Select Category:
+              </label>
+              <select
+                id="category"
+                className={`${selectClassName} mt-4`}
+                value={selectedCategory}
+                onChange={(e) => {
+                  setSelectedCategory(e.target.value);
+                  setSelectedSubCategory("");
+                }}
+              >
+                <option value="">All Categories</option>
+                {categories.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-        <div className="flex flex-col">
-          <label htmlFor="subCategory" className="font-medium text-center">
-            Select Sub-Category:
-          </label>
-          <select
-            id="subCategory"
-            className={`${selectClassName} mt-4`}
-            value={selectedSubCategory}
-            onChange={(e) => setSelectedSubCategory(e.target.value)}
-          >
-            <option value="">All Sub-Categories</option>
-            {subCategories.map((subCategory) => (
-              <option key={subCategory} value={subCategory}>
-                {subCategory}
-              </option>
-            ))}
-          </select>
-        </div>
+            <div className="flex flex-col">
+              <label htmlFor="subCategory" className="font-medium text-center">
+                Select Sub-Category:
+              </label>
+              <select
+                id="subCategory"
+                className={`${selectClassName} mt-4`}
+                value={selectedSubCategory}
+                onChange={(e) => setSelectedSubCategory(e.target.value)}
+              >
+                <option value="">All Sub-Categories</option>
+                {subCategories.map((subCategory) => (
+                  <option key={subCategory} value={subCategory}>
+                    {subCategory}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-        <div className="flex flex-col">
-          <label htmlFor="importantStatus" className="font-medium text-center">
-            Select Important Status:
-          </label>
-          <select
-            id="importantStatus"
-            className={`${selectClassName} mt-4`}
-            value={selectedImportantStatus}
-            onChange={(e) => setSelectedImportantStatus(e.target.value)}
-          >
-            <option value="">All Importance</option>
-            {importanceStatuses.map((status) => (
-              <option key={status} value={status}>
-                {status}
-              </option>
-            ))}
-          </select>
-        </div>
+            <div className="flex flex-col">
+              <label
+                htmlFor="importantStatus"
+                className="font-medium text-center"
+              >
+                Select Important Status:
+              </label>
+              <select
+                id="importantStatus"
+                className={`${selectClassName} mt-4`}
+                value={selectedImportantStatus}
+                onChange={(e) => setSelectedImportantStatus(e.target.value)}
+              >
+                <option value="">All Importance</option>
+                {importanceStatuses.map((status) => (
+                  <option key={status} value={status}>
+                    {status}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-        <div className="flex flex-col">
-          <label htmlFor="status" className="font-medium text-center">
-            Select Status:
-          </label>
-          <select
-            id="status"
-            className={`${selectClassName} mt-4`}
-            value={selectedStatus}
-            onChange={(e) => setSelectedStatus(e.target.value)}
-          >
-            <option value="">All Status</option>
-            {statuses.map((status) => (
-              <option key={status} value={status}>
-                {status}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
+            <div className="flex flex-col">
+              <label htmlFor="status" className="font-medium text-center">
+                Select Status:
+              </label>
+              <select
+                id="status"
+                className={`${selectClassName} mt-4`}
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+              >
+                <option value="">All Status</option>
+                {statuses.map((status) => (
+                  <option key={status} value={status}>
+                    {status}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
-        <div
-          className={`p-4 rounded-md shadow-md ${
-            isDarkMode ? "bg-gray-800" : "bg-white"
-          }`}
-        >
-          <h2 className="text-lg font-medium">Category Count</h2>
-          <p className="text-3xl font-semibold mt-2">
-            {
-              filteredData.filter(
-                (course) => course.category === selectedCategory
-              ).length
-            }
-          </p>
-        </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
+            <div
+              className={`p-4 rounded-md shadow-md ${
+                isDarkMode ? "bg-gray-800" : "bg-white"
+              }`}
+            >
+              <h2 className="text-lg font-medium">Category Count</h2>
+              <p className="text-3xl font-semibold mt-2">
+                {
+                  filteredData.filter(
+                    (course) => course.category === selectedCategory
+                  ).length
+                }
+              </p>
+            </div>
 
-        <div
-          className={`p-4 rounded-md shadow-md ${
-            isDarkMode ? "bg-gray-800" : "bg-white"
-          }`}
-        >
-          <h2 className="text-lg font-medium">Sub-Category Count</h2>
-          <p className="text-3xl font-semibold mt-2">
-            {
-              filteredData.filter(
-                (course) => course.subCategory === selectedSubCategory
-              ).length
-            }
-          </p>
-        </div>
+            <div
+              className={`p-4 rounded-md shadow-md ${
+                isDarkMode ? "bg-gray-800" : "bg-white"
+              }`}
+            >
+              <h2 className="text-lg font-medium">Sub-Category Count</h2>
+              <p className="text-3xl font-semibold mt-2">
+                {
+                  filteredData.filter(
+                    (course) => course.subCategory === selectedSubCategory
+                  ).length
+                }
+              </p>
+            </div>
 
-        <div
-          className={`p-4 rounded-md shadow-md ${
-            isDarkMode ? "bg-gray-800" : "bg-white"
-          }`}
-        >
-          <h2 className="text-lg font-medium">Important Status Count</h2>
-          <p className="text-3xl font-semibold mt-2">
-            {
-              filteredData.filter(
-                (course) => course.importantStatus === selectedImportantStatus
-              ).length
-            }
-          </p>
-        </div>
+            <div
+              className={`p-4 rounded-md shadow-md ${
+                isDarkMode ? "bg-gray-800" : "bg-white"
+              }`}
+            >
+              <h2 className="text-lg font-medium">Important Status Count</h2>
+              <p className="text-3xl font-semibold mt-2">
+                {
+                  filteredData.filter(
+                    (course) =>
+                      course.importantStatus === selectedImportantStatus
+                  ).length
+                }
+              </p>
+            </div>
 
-        <div
-          className={`p-4 rounded-md shadow-md ${
-            isDarkMode ? "bg-gray-800" : "bg-white"
-          }`}
-        >
-          <h2 className="text-lg font-medium">Status Count</h2>
-          <p className="text-3xl font-semibold mt-2">
-            {
-              filteredData.filter((course) => course.status === selectedStatus)
-                .length
-            }
-          </p>
-        </div>
-      </div>
+            <div
+              className={`p-4 rounded-md shadow-md ${
+                isDarkMode ? "bg-gray-800" : "bg-white"
+              }`}
+            >
+              <h2 className="text-lg font-medium">Status Count</h2>
+              <p className="text-3xl font-semibold mt-2">
+                {
+                  filteredData.filter(
+                    (course) => course.status === selectedStatus
+                  ).length
+                }
+              </p>
+            </div>
+          </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8 mb-10">
-        <div className="h-80 mb-4 sm:mb-0">
-          <Bar
-            data={getChartData("category", filteredData)}
-            options={categoryOptions}
-          />
-          <h3 className="text-center mt-4 font-semibold">
-            Courses by Category
-          </h3>
-        </div>
-        <div className="h-80 mb-4 sm:mb-0 sm:mt-0 mt-6">
-          <Bar
-            data={getChartData("subCategory", filteredData)}
-            options={categoryOptions}
-          />
-          <h3 className="text-center mt-4 font-semibold">
-            Courses by Sub-Category
-          </h3>
-        </div>
-        <div className="h-80 mb-4 sm:mb-0  sm:mt-0 mt-6">
-          <Bar
-            data={getChartData("importantStatus", filteredData)}
-            options={categoryOptions}
-          />
-          <h3 className="text-center mt-4 font-semibold">
-            Courses by Importance
-          </h3>
-        </div>
-        <div className="h-80 sm:mb-0  sm:mt-0 mt-6">
-          <Bar
-            data={getChartData("status", filteredData)}
-            options={categoryOptions}
-          />
-          <h3 className="text-center mt-4 font-semibold">Courses by Status</h3>
-        </div>
-      </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8 mb-10">
+            <div className="h-80 mb-4 sm:mb-0">
+              <Bar
+                data={getChartData("category", filteredData)}
+                options={categoryOptions}
+              />
+              <h3 className="text-center mt-4 font-semibold">
+                Courses by Category
+              </h3>
+            </div>
+            <div className="h-80 mb-4 sm:mb-0 sm:mt-0 mt-6">
+              <Bar
+                data={getChartData("subCategory", filteredData)}
+                options={categoryOptions}
+              />
+              <h3 className="text-center mt-4 font-semibold">
+                Courses by Sub-Category
+              </h3>
+            </div>
+            <div className="h-80 mb-4 sm:mb-0  sm:mt-0 mt-6">
+              <Bar
+                data={getChartData("importantStatus", filteredData)}
+                options={categoryOptions}
+              />
+              <h3 className="text-center mt-4 font-semibold">
+                Courses by Importance
+              </h3>
+            </div>
+            <div className="h-80 sm:mb-0  sm:mt-0 mt-6">
+              <Bar
+                data={getChartData("status", filteredData)}
+                options={categoryOptions}
+              />
+              <h3 className="text-center mt-4 font-semibold">
+                Courses by Status
+              </h3>
+            </div>
+          </div>
         </>
       )}
     </div>

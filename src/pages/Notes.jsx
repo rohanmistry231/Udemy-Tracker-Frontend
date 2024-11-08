@@ -41,7 +41,7 @@ const targetGoals = {
     "Web App",
     "Mathematics",
   ],
-  "Database": [
+  Database: [
     "DBMS",
     "MySQL",
     "NoSQL",
@@ -81,7 +81,7 @@ const targetGoals = {
     "Wordpress",
     "UIUX",
   ],
-  "Business": [
+  Business: [
     "Business Strategy",
     "Communication",
     "Consultant",
@@ -102,7 +102,7 @@ const targetGoals = {
     "Trading",
     "No Code Development",
   ],
-  "Filmmaking": ["Photography & Video", "Budgeting", "After Effects"],
+  Filmmaking: ["Photography & Video", "Budgeting", "After Effects"],
   "Graphics Design": [
     "Adobe Captivate",
     "Adobe Illustrator",
@@ -117,7 +117,7 @@ const targetGoals = {
     "Blender",
     "After Effects",
   ],
-  "Marketing": [
+  Marketing: [
     "Content Marketing",
     "Digital Marketing",
     "Test",
@@ -129,8 +129,8 @@ const targetGoals = {
     "Microsoft",
     "Other Office Productivity",
   ],
-  "Music": ["Drum", "Audio Production", "Song Writing", "Piano", "Guitar"],
-  "Cloud": [
+  Music: ["Drum", "Audio Production", "Song Writing", "Piano", "Guitar"],
+  Cloud: [
     "AWS",
     "Azure",
     "Cloud",
@@ -144,7 +144,7 @@ const targetGoals = {
     "Microservices",
     "Data Build Tool",
   ],
-  "DevOps": [
+  DevOps: [
     "Ansible",
     "Azure",
     "DevOps",
@@ -168,7 +168,7 @@ const targetGoals = {
     "Eye",
     "Yoga",
   ],
-  "Language": ["English", "Test", "German"],
+  Language: ["English", "Test", "German"],
   "Operating System": [
     "Linux",
     "Network & Security",
@@ -215,7 +215,9 @@ const Notes = () => {
     const fetchNotes = async () => {
       setLoading(true);
       try {
-        const response = await fetch("https://udemy-tracker.vercel.app/notes/all");
+        const response = await fetch(
+          "https://udemy-tracker.vercel.app/notes/all"
+        );
         const data = await response.json();
         setNotes(data.notes); // Ensure the notes are being set correctly
       } catch (error) {
@@ -229,16 +231,23 @@ const Notes = () => {
 
   const deleteNote = async (noteId) => {
     // Show confirmation dialog
-    const isConfirmed = window.confirm("Are you sure you want to delete this note?");
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete this note?"
+    );
     if (!isConfirmed) return; // If the user cancels, exit the function
-    
+
     try {
-      const response = await fetch(`https://udemy-tracker.vercel.app/notes/deleteByNoteId/${noteId}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `https://udemy-tracker.vercel.app/notes/deleteByNoteId/${noteId}`,
+        {
+          method: "DELETE",
+        }
+      );
       if (response.ok) {
         // Update the state by removing the deleted note from the list
-        setNotes((prevNotes) => prevNotes.filter(note => note._id !== noteId));
+        setNotes((prevNotes) =>
+          prevNotes.filter((note) => note._id !== noteId)
+        );
       } else {
         console.error("Failed to delete the note.");
       }
@@ -246,10 +255,10 @@ const Notes = () => {
       console.error("Error deleting the note:", error);
     }
   };
-  
+
   const saveNoteAsPDF = (note) => {
     const doc = new jsPDF();
-    
+
     doc.setFontSize(18);
     doc.text("Note Details", 10, 10);
 
@@ -268,16 +277,19 @@ const Notes = () => {
   };
 
   const getSubTargetGoals = () => {
-    const selectedNotes = notes.filter(note => note.mainTargetGoal === targetGoalFilter);
-    return [...new Set(selectedNotes.map(note => note.subTargetGoal))];
+    const selectedNotes = notes.filter(
+      (note) => note.mainTargetGoal === targetGoalFilter
+    );
+    return [...new Set(selectedNotes.map((note) => note.subTargetGoal))];
   };
 
-  const filteredNotes = notes.filter(note => 
-    (note.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    note.answer.toLowerCase().includes(searchTerm.toLowerCase())) &&
-    (mainGoalFilter === "" || note.mainTargetCategory === mainGoalFilter) &&
-    (targetGoalFilter === "" || note.mainTargetGoal === targetGoalFilter) &&
-    (subTargetGoalFilter === "" || note.subTargetGoal === subTargetGoalFilter)
+  const filteredNotes = notes.filter(
+    (note) =>
+      (note.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        note.answer.toLowerCase().includes(searchTerm.toLowerCase())) &&
+      (mainGoalFilter === "" || note.mainTargetCategory === mainGoalFilter) &&
+      (targetGoalFilter === "" || note.mainTargetGoal === targetGoalFilter) &&
+      (subTargetGoalFilter === "" || note.subTargetGoal === subTargetGoalFilter)
   );
 
   const indexOfLastNote = currentPage * notesPerPage;
@@ -286,8 +298,16 @@ const Notes = () => {
   const totalPages = Math.ceil(filteredNotes.length / notesPerPage);
 
   return (
-    <div className={`container mx-auto px-4 py-6 mt-12 ${isDarkMode ? "bg-gray-900" : "bg-white"}`}>
-      <h2 className={`text-3xl font-semibold mb-6 text-center ${isDarkMode ? "text-white" : "text-gray-800"}`}>
+    <div
+      className={`container mx-auto px-4 py-6 mt-12 ${
+        isDarkMode ? "bg-gray-900" : "bg-white"
+      }`}
+    >
+      <h2
+        className={`text-3xl font-semibold mb-6 text-center ${
+          isDarkMode ? "text-white" : "text-gray-800"
+        }`}
+      >
         📝 Notes List 📝
       </h2>
 
@@ -301,12 +321,16 @@ const Notes = () => {
             <input
               type="text"
               placeholder="Search notes by title or content..."
-              className={`border p-2 rounded w-full sm:w-1/3 h-12 ${isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"}`}
+              className={`border p-2 rounded w-full sm:w-1/3 h-12 ${
+                isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+              }`}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             <select
-              className={`border p-2 rounded w-full sm:w-1/6 h-12 ${isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"}`}
+              className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
+                isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+              }`}
               value={mainGoalFilter}
               onChange={(e) => {
                 setMainGoalFilter(e.target.value);
@@ -316,11 +340,15 @@ const Notes = () => {
             >
               <option value="">All Main Goals</option>
               {categories.map((category) => (
-                <option key={category} value={category}>{category}</option>
+                <option key={category} value={category}>
+                  {category}
+                </option>
               ))}
             </select>
             <select
-              className={`border p-2 rounded w-full sm:w-1/6 h-12 ${isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"}`}
+              className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
+                isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+              }`}
               value={targetGoalFilter}
               onChange={(e) => {
                 setTargetGoalFilter(e.target.value);
@@ -330,22 +358,34 @@ const Notes = () => {
             >
               <option value="">All Target Goals</option>
               {getTargetGoals().map((goal) => (
-                <option key={goal} value={goal}>{goal}</option>
+                <option key={goal} value={goal}>
+                  {goal}
+                </option>
               ))}
             </select>
             <select
-              className={`border p-2 rounded w-full sm:w-1/6 h-12 ${isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"}`}
+              className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
+                isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+              }`}
               value={subTargetGoalFilter}
               onChange={(e) => setSubTargetGoalFilter(e.target.value)}
               disabled={!targetGoalFilter}
             >
               <option value="">All Sub Goals</option>
               {getSubTargetGoals().map((subGoal) => (
-                <option key={subGoal} value={subGoal}>{subGoal}</option>
+                <option key={subGoal} value={subGoal}>
+                  {subGoal}
+                </option>
               ))}
             </select>
             <Link to="/add-note" className="w-full sm:w-auto">
-              <button className={`rounded h-12 w-full sm:w-32 transition duration-200 flex items-center justify-center ${isDarkMode ? "bg-blue-600 hover:bg-blue-700 text-white" : "bg-blue-500 hover:bg-blue-600 text-white"}`}>
+              <button
+                className={`rounded h-12 w-full sm:w-32 transition duration-200 flex items-center justify-center ${
+                  isDarkMode
+                    ? "bg-blue-600 hover:bg-blue-700 text-white"
+                    : "bg-blue-500 hover:bg-blue-600 text-white"
+                }`}
+              >
                 Add Note
               </button>
             </Link>
@@ -353,24 +393,87 @@ const Notes = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
             {currentNotes.map((note) => (
-              <div key={note._id} onClick={() => navigate(`/notes/${note._id}/view`)} className={`shadow-md rounded-lg p-4 cursor-pointer ${isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"}`}>
+              <div
+                key={note._id}
+                onClick={() => navigate(`/notes/${note._id}/view`)}
+                className={`shadow-md rounded-lg p-4 cursor-pointer ${
+                  isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+                }`}
+              >
                 <h3 className="font-bold text-lg">{note.title}</h3>
-                <p className={`font-bold ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>Question: {note.question}</p>
-                <p className={`${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>Main Goal: {note.mainTargetCategory}</p>
-                <p className={`${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>Target Goal: {note.mainTargetGoal}</p>
-                <p className={`${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>Sub Goal: {note.subTargetGoal}</p>
-                <p className={`${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>Answer: {note.answer}</p>
+                <p
+                  className={`font-bold ${
+                    isDarkMode ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
+                  Question: {note.question}
+                </p>
+                <p
+                  className={`${
+                    isDarkMode ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
+                  Main Goal: {note.mainTargetCategory}
+                </p>
+                <p
+                  className={`${
+                    isDarkMode ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
+                  Target Goal: {note.mainTargetGoal}
+                </p>
+                <p
+                  className={`${
+                    isDarkMode ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
+                  Sub Goal: {note.subTargetGoal}
+                </p>
+                <p
+                  className={`${
+                    isDarkMode ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
+                  Answer: {note.answer}
+                </p>
                 <div className="flex flex-wrap gap-2 mt-4">
-                <button onClick={(e) => { e.stopPropagation(); saveNoteAsPDF(note); }} className={`p-2 rounded ${isDarkMode ? "bg-green-700 hover:bg-green-800" : "bg-green-500 hover:bg-green-600"} text-white`}>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      saveNoteAsPDF(note);
+                    }}
+                    className={`p-2 rounded ${
+                      isDarkMode
+                        ? "bg-green-700 hover:bg-green-800"
+                        : "bg-green-500 hover:bg-green-600"
+                    } text-white`}
+                  >
                     Save as PDF
                   </button>
-                  <button onClick={(e) => { e.stopPropagation(); navigate(`/notes/${note._id}/edit`); }} className={`p-2 rounded ${isDarkMode ? "bg-blue-700 hover:bg-blue-800" : "bg-blue-500 hover:bg-blue-600"} text-white`}>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/notes/${note._id}/edit`);
+                    }}
+                    className={`p-2 rounded ${
+                      isDarkMode
+                        ? "bg-blue-700 hover:bg-blue-800"
+                        : "bg-blue-500 hover:bg-blue-600"
+                    } text-white`}
+                  >
                     Edit Note
                   </button>
-                  <button onClick={(e) => {
-    e.stopPropagation(); // Prevent triggering the navigation when clicking delete
-    deleteNote(note._id); // Call deleteNote with the note ID
-  }} className={`p-2 rounded ${isDarkMode ? "bg-red-700 hover:bg-red-800" : "bg-red-500 hover:bg-red-600"} text-white`}>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent triggering the navigation when clicking delete
+                      deleteNote(note._id); // Call deleteNote with the note ID
+                    }}
+                    className={`p-2 rounded ${
+                      isDarkMode
+                        ? "bg-red-700 hover:bg-red-800"
+                        : "bg-red-500 hover:bg-red-600"
+                    } text-white`}
+                  >
                     Delete
                   </button>
                 </div>
@@ -379,13 +482,25 @@ const Notes = () => {
           </div>
 
           <div className="flex justify-between items-center mt-6">
-            <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} className={`p-2 rounded ${isDarkMode ? "bg-gray-700" : "bg-gray-300"}`}>
+            <button
+              onClick={() => setCurrentPage(currentPage - 1)}
+              disabled={currentPage === 1}
+              className={`p-2 rounded ${
+                isDarkMode ? "bg-gray-700" : "bg-gray-300"
+              }`}
+            >
               Previous
             </button>
             <span className={`${isDarkMode ? "text-white" : "text-black"}`}>
               Page {currentPage} of {totalPages}
             </span>
-            <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages} className={`p-2 rounded ${isDarkMode ? "bg-gray-700" : "bg-gray-300"}`}>
+            <button
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className={`p-2 rounded ${
+                isDarkMode ? "bg-gray-700" : "bg-gray-300"
+              }`}
+            >
               Next
             </button>
           </div>

@@ -1,20 +1,26 @@
 // controllers/noteController.js
-const Course = require('../models/Course');
+const Course = require("../models/Course");
 
 // Add a note to a course
 const addNote = async (req, res) => {
   try {
     const { courseId } = req.params;
-    const { question, answer, mainTargetCategory, mainTargetGoal, subTargetGoal } = req.body;
+    const {
+      question,
+      answer,
+      mainTargetCategory,
+      mainTargetGoal,
+      subTargetGoal,
+    } = req.body;
 
     // Validate required fields
     if (!question || !answer || !mainTargetCategory || !mainTargetGoal) {
-      return res.status(400).json({ message: 'Missing required fields' });
+      return res.status(400).json({ message: "Missing required fields" });
     }
 
     const course = await Course.findById(courseId);
     if (!course) {
-      return res.status(404).json({ message: 'Course not found' });
+      return res.status(404).json({ message: "Course not found" });
     }
 
     // Create a new note object
@@ -23,16 +29,23 @@ const addNote = async (req, res) => {
       answer,
       mainTargetCategory,
       mainTargetGoal,
-      subTargetGoal
+      subTargetGoal,
     };
 
     // Add the new note to the notes array
     course.notes.push(newNote);
     await course.save();
 
-    res.status(201).json({ message: 'Note added successfully', note: course.notes.slice(-1)[0] });
+    res
+      .status(201)
+      .json({
+        message: "Note added successfully",
+        note: course.notes.slice(-1)[0],
+      });
   } catch (error) {
-    res.status(500).json({ message: 'Error adding note', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error adding note", error: error.message });
   }
 };
 
@@ -40,16 +53,22 @@ const addNote = async (req, res) => {
 const updateNote = async (req, res) => {
   try {
     const { courseId, noteId } = req.params;
-    const { question, answer, mainTargetCategory, mainTargetGoal, subTargetGoal } = req.body;
+    const {
+      question,
+      answer,
+      mainTargetCategory,
+      mainTargetGoal,
+      subTargetGoal,
+    } = req.body;
 
     const course = await Course.findById(courseId);
     if (!course) {
-      return res.status(404).json({ message: 'Course not found' });
+      return res.status(404).json({ message: "Course not found" });
     }
 
     const note = course.notes.id(noteId);
     if (!note) {
-      return res.status(404).json({ message: 'Note not found' });
+      return res.status(404).json({ message: "Note not found" });
     }
 
     // Update note fields
@@ -61,9 +80,11 @@ const updateNote = async (req, res) => {
 
     await course.save();
 
-    res.json({ message: 'Note updated successfully', note });
+    res.json({ message: "Note updated successfully", note });
   } catch (error) {
-    res.status(500).json({ message: 'Error updating note', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error updating note", error: error.message });
   }
 };
 
@@ -74,26 +95,28 @@ const deleteNote = async (req, res) => {
 
     const course = await Course.findById(courseId);
     if (!course) {
-      return res.status(404).json({ message: 'Course not found' });
+      return res.status(404).json({ message: "Course not found" });
     }
 
     const note = course.notes.id(noteId);
     if (!note) {
-      return res.status(404).json({ message: 'Note not found' });
+      return res.status(404).json({ message: "Note not found" });
     }
 
     // Remove the note using Mongoose's remove method
     note.remove();
     await course.save();
 
-    res.status(200).json({ message: 'Note deleted successfully' });
+    res.status(200).json({ message: "Note deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: 'Error deleting note', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error deleting note", error: error.message });
   }
 };
 
 module.exports = {
   addNote,
   updateNote,
-  deleteNote
+  deleteNote,
 };

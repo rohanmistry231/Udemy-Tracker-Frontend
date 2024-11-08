@@ -296,7 +296,7 @@ const EditCourse = () => {
           }`}
         >
           <label htmlFor="password" className="block mb-2">
-          🔒 Prove You're Worthy! Enter the Secret Code:
+            🔒 Prove You're Worthy! Enter the Secret Code:
           </label>
           <input
             type="password"

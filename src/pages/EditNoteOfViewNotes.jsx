@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -6,11 +5,11 @@ import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "../context/ThemeContext";
 
 const EditNoteOfViewNotes = () => {
-  const { courseid, id } = useParams();  // Note ID for fetching/updating specific note
+  const { courseid, id } = useParams(); // Note ID for fetching/updating specific note
   const navigate = useNavigate();
   const { theme } = useTheme();
   const isDarkMode = theme === "dark";
-  
+
   const [note, setNote] = useState({
     question: "",
     answer: "",
@@ -18,7 +17,7 @@ const EditNoteOfViewNotes = () => {
     mainTargetGoal: "",
     subTargetGoal: "",
   });
-  
+
   // Main Target Goals, Target Goals, Sub Target Goals should be defined similarly to EditCourse
   const mainTargetCategories = [
     "Data Science",
@@ -38,7 +37,7 @@ const EditNoteOfViewNotes = () => {
     "Operating System",
     "Personal Development",
     "Version Control",
-  ];  // Example options
+  ]; // Example options
   const targetGoals = {
     "Data Science": [
       "Algorithms",
@@ -57,7 +56,7 @@ const EditNoteOfViewNotes = () => {
       "Web App",
       "Mathematics",
     ],
-    "Database": [
+    Database: [
       "DBMS",
       "MySQL",
       "NoSQL",
@@ -97,7 +96,7 @@ const EditNoteOfViewNotes = () => {
       "Wordpress",
       "UIUX",
     ],
-    "Business": [
+    Business: [
       "Business Strategy",
       "Communication",
       "Consultant",
@@ -118,7 +117,7 @@ const EditNoteOfViewNotes = () => {
       "Trading",
       "No Code Development",
     ],
-    "Filmmaking": ["Photography & Video", "Budgeting", "After Effects"],
+    Filmmaking: ["Photography & Video", "Budgeting", "After Effects"],
     "Graphics Design": [
       "Adobe Captivate",
       "Adobe Illustrator",
@@ -133,7 +132,7 @@ const EditNoteOfViewNotes = () => {
       "Blender",
       "After Effects",
     ],
-    "Marketing": [
+    Marketing: [
       "Content Marketing",
       "Digital Marketing",
       "Test",
@@ -145,8 +144,8 @@ const EditNoteOfViewNotes = () => {
       "Microsoft",
       "Other Office Productivity",
     ],
-    "Music": ["Drum", "Audio Production", "Song Writing", "Piano", "Guitar"],
-    "Cloud": [
+    Music: ["Drum", "Audio Production", "Song Writing", "Piano", "Guitar"],
+    Cloud: [
       "AWS",
       "Azure",
       "Cloud",
@@ -160,7 +159,7 @@ const EditNoteOfViewNotes = () => {
       "Microservices",
       "Data Build Tool",
     ],
-    "DevOps": [
+    DevOps: [
       "Ansible",
       "Azure",
       "DevOps",
@@ -184,7 +183,7 @@ const EditNoteOfViewNotes = () => {
       "Eye",
       "Yoga",
     ],
-    "Language": ["English", "Test", "German"],
+    Language: ["English", "Test", "German"],
     "Operating System": [
       "Linux",
       "Network & Security",
@@ -212,13 +211,21 @@ const EditNoteOfViewNotes = () => {
     ],
     "Version Control": ["Git and Github", "Test"],
   };
-  const subTargetGoals = { "Algorithms": ["Sorting", "Graph Theory", "Dynamic Programming"],
-    "Artificial Intelligence": ["Machine Learning", "Neural Networks", "Natural Language Processing"] };
+  const subTargetGoals = {
+    Algorithms: ["Sorting", "Graph Theory", "Dynamic Programming"],
+    "Artificial Intelligence": [
+      "Machine Learning",
+      "Neural Networks",
+      "Natural Language Processing",
+    ],
+  };
 
   useEffect(() => {
     const fetchNote = async () => {
       try {
-        const response = await fetch(`https://udemy-tracker.vercel.app/notes/note/${id}`);
+        const response = await fetch(
+          `https://udemy-tracker.vercel.app/notes/note/${id}`
+        );
         if (!response.ok) throw new Error("Failed to fetch note data");
 
         const data = await response.json();
@@ -257,11 +264,14 @@ const EditNoteOfViewNotes = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`https://udemy-tracker.vercel.app/notes/update/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(note),
-      });
+      const response = await fetch(
+        `https://udemy-tracker.vercel.app/notes/update/${id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(note),
+        }
+      );
       if (!response.ok) throw new Error("Failed to update note");
 
       toast.success("Note updated successfully!");
@@ -273,86 +283,135 @@ const EditNoteOfViewNotes = () => {
   };
 
   return (
-    <div className={`container mx-auto px-4 py-6 mt-12 ${isDarkMode ? "bg-gray-900" : "bg-white"}`}>
-      <div className={`shadow-md rounded-lg p-6 ${isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"}`}>
+    <div
+      className={`container mx-auto px-4 py-6 mt-12 ${
+        isDarkMode ? "bg-gray-900" : "bg-white"
+      }`}
+    >
+      <div
+        className={`shadow-md rounded-lg p-6 ${
+          isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+        }`}
+      >
         <h2 className="text-3xl font-bold mb-4">Edit Note</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="mb-4">
-            <label htmlFor="question" className="block mb-2">Question:</label>
+            <label htmlFor="question" className="block mb-2">
+              Question:
+            </label>
             <input
               type="text"
               id="question"
               name="question"
               value={note.question}
               onChange={handleChange}
-              className={`border p-2 w-full ${isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`}
+              className={`border p-2 w-full ${
+                isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
+              }`}
               required
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="answer" className="block mb-2">Answer:</label>
+            <label htmlFor="answer" className="block mb-2">
+              Answer:
+            </label>
             <textarea
               id="answer"
               name="answer"
               value={note.answer}
               onChange={handleChange}
-              className={`border p-2 w-full ${isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`}
+              className={`border p-2 w-full ${
+                isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
+              }`}
               required
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="mainTargetCategory" className="block mb-2">Main Target Category:</label>
+            <label htmlFor="mainTargetCategory" className="block mb-2">
+              Main Target Category:
+            </label>
             <select
               id="mainTargetCategory"
               name="mainTargetCategory"
               value={note.mainTargetCategory}
               onChange={handleCategoryChange}
-              className={`border p-2 w-full ${isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`}
+              className={`border p-2 w-full ${
+                isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
+              }`}
               required
             >
               <option value="">Select a main target category</option>
               {mainTargetCategories.map((category) => (
-                <option key={category} value={category}>{category}</option>
+                <option key={category} value={category}>
+                  {category}
+                </option>
               ))}
             </select>
           </div>
           <div className="mb-4">
-            <label htmlFor="mainTargetGoal" className="block mb-2">Main Target Goal:</label>
+            <label htmlFor="mainTargetGoal" className="block mb-2">
+              Main Target Goal:
+            </label>
             <select
               id="mainTargetGoal"
               name="mainTargetGoal"
               value={note.mainTargetGoal}
               onChange={handleChange}
-              className={`border p-2 w-full ${isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`}
+              className={`border p-2 w-full ${
+                isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
+              }`}
               required
             >
               <option value="">Select a main target goal</option>
-              {note.mainTargetCategory && targetGoals[note.mainTargetCategory]?.map((goal) => (
-                <option key={goal} value={goal}>{goal}</option>
-              ))}
+              {note.mainTargetCategory &&
+                targetGoals[note.mainTargetCategory]?.map((goal) => (
+                  <option key={goal} value={goal}>
+                    {goal}
+                  </option>
+                ))}
             </select>
           </div>
           <div className="mb-4">
-            <label htmlFor="subTargetGoal" className="block mb-2">Sub Target Goal:</label>
+            <label htmlFor="subTargetGoal" className="block mb-2">
+              Sub Target Goal:
+            </label>
             <select
               id="subTargetGoal"
               name="subTargetGoal"
               value={note.subTargetGoal}
               onChange={handleChange}
-              className={`border p-2 w-full ${isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`}
+              className={`border p-2 w-full ${
+                isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
+              }`}
             >
               <option value="">Select a sub target goal</option>
-              {note.mainTargetGoal && subTargetGoals[note.mainTargetGoal]?.map((subGoal) => (
-                <option key={subGoal} value={subGoal}>{subGoal}</option>
-              ))}
+              {note.mainTargetGoal &&
+                subTargetGoals[note.mainTargetGoal]?.map((subGoal) => (
+                  <option key={subGoal} value={subGoal}>
+                    {subGoal}
+                  </option>
+                ))}
             </select>
           </div>
           <div className="flex items-center justify-between">
-            <button type="submit" className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+            <button
+              type="submit"
+              className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+            >
               Update Note
             </button>
-            <Link to={`/courses/${courseid}/notes/note/${id}/view`} className="text-red-600 hover:underline">Cancel</Link>
-            <Link to={`/courses/${courseid}/notes`} className="text-gray-600 hover:underline">Back to Couse Notes</Link>
+            <Link
+              to={`/courses/${courseid}/notes/note/${id}/view`}
+              className="text-red-600 hover:underline"
+            >
+              Cancel
+            </Link>
+            <Link
+              to={`/courses/${courseid}/notes`}
+              className="text-gray-600 hover:underline"
+            >
+              Back to Couse Notes
+            </Link>
           </div>
         </form>
       </div>
