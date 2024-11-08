@@ -1,3 +1,4 @@
+// Import the Course model
 const Course = require('../models/Course');
 
 // Create a new course
@@ -54,10 +55,40 @@ const deleteCourse = async (req, res) => {
   }
 };
 
+// Sync data from frontend (local storage) to MongoDB
+const syncData = async (req, res) => {
+  const { data } = req.body;
+
+  if (!data || !Array.isArray(data)) {
+    return res.status(400).json({ success: false, message: 'Invalid data format' });
+  }
+
+  try {
+    for (const course of data) {
+      // Check if the course already exists by a unique identifier (e.g., name or ID)
+      const existingCourse = await Course.findOne({ name: course.name });
+
+      if (existingCourse) {
+        // Update the existing course if found
+        await Course.findByIdAndUpdate(existingCourse._id, course, { new: true });
+      } else {
+        // Create a new course if not found
+        const newCourse = new Course(course);
+        await newCourse.save();
+      }
+    }
+
+    res.status(200).json({ success: true, message: 'Data synced successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
 module.exports = {
   createCourse,
   getCourses,
   getCourseById,
   updateCourse,
-  deleteCourse
+  deleteCourse,
+  syncData, // Export syncData function
 };

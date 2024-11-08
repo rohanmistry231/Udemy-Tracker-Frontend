@@ -257,4 +257,44 @@ router.delete('/deleteAllNotes/:courseId', async (req, res) => {
   }
 });
 
+// Sync notes for a specific course
+router.post('/sync/:courseId', async (req, res) => {
+  try {
+    const { courseId } = req.params;
+    const { notes } = req.body; // Notes to sync
+
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ message: 'Course not found' });
+    }
+
+    // Replace notes only if there are differences
+    course.notes = notes;
+    await course.save();
+
+    res.json({ message: 'Notes for the course synced successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error syncing notes for the course', error: error.message });
+  }
+});
+
+// Sync notes across all courses
+router.post('/sync/all', async (req, res) => {
+  try {
+    const { courses } = req.body; // Array of course objects with updated notes
+
+    for (const courseData of courses) {
+      const course = await Course.findById(courseData._id);
+      if (course) {
+        course.notes = courseData.notes;
+        await course.save();
+      }
+    }
+
+    res.json({ message: 'All notes synced successfully across courses' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error syncing notes across all courses', error: error.message });
+  }
+});
+
 module.exports = router;

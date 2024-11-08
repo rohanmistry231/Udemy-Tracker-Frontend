@@ -4,7 +4,8 @@ const {
   getCourses, 
   getCourseById, 
   updateCourse, 
-  deleteCourse 
+  deleteCourse, 
+  syncData // Import syncData function
 } = require('../controller/courseController');
 const noteRoutes = require('./noteRoutes'); // Import note routes
 
@@ -16,6 +17,9 @@ router.get('/', getCourses);                 // Get all courses
 router.get('/:id', getCourseById);           // Get a single course by ID
 router.put('/:id', updateCourse);            // Update a course by ID
 router.delete('/:id', deleteCourse);         // Delete a course by ID
+
+// Sync data route
+router.post('/sync', syncData);              // Sync courses data
 
 // Mount the notes routes under the course's notes path
 router.use('/:courseId/notes', noteRoutes);  // Handles all /courses/:courseId/notes operations
