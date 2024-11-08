@@ -180,7 +180,7 @@ const ViewNotes = () => {
               {notes.length > 0 ? (
                 notes.map((note) => (
                   <li
-                  onClick={() => navigate(`/notes/${note._id}/view`)}
+                  onClick={() => navigate(`/courses/${id}/notes/note/${note._id}/view`)}
                     key={note._id}
                     className={`border-b py-4 flex justify-between items-start ${isDarkMode ? 'border-gray-700' : 'border-gray-300'}`}
                   >

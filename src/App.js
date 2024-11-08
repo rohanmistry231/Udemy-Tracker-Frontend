@@ -18,6 +18,8 @@ import Notes from "./pages/Notes";
 import EditNote from "./pages/EditNote";
 import ViewNote from "./pages/ViewNote";
 import ViewCourseNote from "./pages/ViewCourseNote";
+import ViewNoteOfViewNotes from "./pages/ViewNoteOfViewNotes";
+import EditNoteOfViewNotes from "./pages/EditNoteOfViewNotes";
 
 function App() {
   const { isDarkMode } = useTheme();
@@ -45,9 +47,11 @@ function App() {
             <Route path="/courses/:id/edit" element={<EditCourse />} />
             <Route path="/courses/:id/add-notes" element={<AddNotes />} />
             <Route path="/notes/:id/edit" element={<EditNote />} />
+            <Route path="courses/:courseid/notes/note/:id/edit" element={<EditNoteOfViewNotes />} />
             <Route path="/courses/:id/notes" element={<ViewNotes />} />
             <Route path="/notes/:id/view" element={<ViewNote />} />
             <Route path="courses/:courseid/notes/:id/view" element={<ViewCourseNote />} />
+            <Route path="courses/:courseid/notes/note/:id/view" element={<ViewNoteOfViewNotes />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/progress" element={<Progress />} />
             <Route path="/notes" element={<Notes />} />
