@@ -257,38 +257,4 @@ router.delete('/deleteAllNotes/:courseId', async (req, res) => {
   }
 });
 
-// Fetch a specific note from a specific course
-router.get('/:courseId/notes/:noteId', async (req, res) => {
-  try {
-    const { courseId, noteId } = req.params;
-
-    // Find the course by courseId and select only the notes array
-    const course = await Course.findById(courseId).select('notes');
-    if (!course) {
-      return res.status(404).json({ message: 'Course not found' });
-    }
-
-    // Find the specific note by noteId in the course's notes array
-    const note = course.notes.id(noteId);
-    if (!note) {
-      return res.status(404).json({ message: 'Note not found' });
-    }
-
-    res.json({
-      message: 'Note retrieved successfully',
-      note: {
-        _id: note._id,
-        question: note.question,
-        answer: note.answer,
-        mainTargetCategory: note.mainTargetCategory,
-        mainTargetGoal: note.mainTargetGoal,
-        subTargetGoal: note.subTargetGoal,
-      },
-    });
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching specific note', error: error.message });
-  }
-});
-
-
 module.exports = router;
