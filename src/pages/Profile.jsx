@@ -55,18 +55,18 @@ const Profile = () => {
         isDarkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"
       }`}
     >
-      {isLoading ? (
-        <div className="flex justify-center items-center min-h-screen">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
-        </div>
-      ) : (
-        <>
           {/* Profile Card */}
           <div
             className={`max-w-8xl mx-auto rounded-lg shadow-lg p-6 ${
               isDarkMode ? "bg-gray-800" : "bg-white"
             }`}
           >
+            {isLoading ? (
+              <div className="flex justify-center items-center min-h-screen">
+                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
+              </div>
+            ) : (
+              <>
             {/* Profile Header */}
             <div className="flex items-center space-x-4">
               <img
@@ -178,9 +178,9 @@ const Profile = () => {
                 </a>
               </div>
             </div>
+            </>
+          )}
           </div>
-        </>
-      )}
     </div>
   );
 };

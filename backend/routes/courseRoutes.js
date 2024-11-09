@@ -5,12 +5,14 @@ const {
   getCourseById,
   updateCourse,
   deleteCourse,
+  syncCourses
 } = require("../controller/courseController");
 const noteRoutes = require("./noteRoutes"); // Import note routes
 
 const router = express.Router();
 
 // Main course routes
+router.post('/sync', syncCourses);
 router.post("/", createCourse); // Create a course
 router.get("/", getCourses); // Get all courses
 router.get("/:id", getCourseById); // Get a single course by ID
