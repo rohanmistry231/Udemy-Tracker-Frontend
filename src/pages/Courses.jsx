@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "../context/ThemeContext"; // Import theme context
+import { getCourses, updateCourse } from "./dataService";
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
@@ -30,15 +31,23 @@ const Courses = () => {
     const fetchCourses = async () => {
       setLoading(true);
       try {
-        const response = await fetch(
-          "https://udemy-tracker.vercel.app/courses"
-        );
-        let data = await response.json();
-
-        // Sort courses by 'no' field
-        data = data.sort((a, b) => a.no - b.no);
-
-        setCourses(data);
+        // Get courses from localStorage or fetch from backend if not present
+        const coursesData = getCourses(); // This will get the courses from localStorage (or backend if not cached)
+        if (!coursesData) {
+          // If no courses in localStorage, fetch from backend and store them
+          const response = await fetch("https://udemy-tracker.vercel.app/courses");
+          const data = await response.json();
+  
+          // Sort courses by 'no' field
+          const sortedData = data.sort((a, b) => a.no - b.no);
+  
+          setCourses(sortedData);
+          localStorage.setItem("udemyCourses", JSON.stringify(sortedData));
+        } else {
+          // If courses are available in localStorage, use them
+          setCourses(coursesData.sort((a, b) => a.no - b.no)); // Sort as well
+        }
+        
         localStorage.setItem("currentPage", currentPage);
       } catch (error) {
         console.error("Error fetching courses:", error);
@@ -46,16 +55,16 @@ const Courses = () => {
         setLoading(false);
       }
     };
-
+  
     fetchCourses();
-
+  
     // Clear currentPage from localStorage on page reload
     const handlePageReload = () => {
       localStorage.removeItem("currentPage");
     };
-
+  
     window.addEventListener("beforeunload", handlePageReload);
-
+  
     // Cleanup event listener on component unmount
     return () => {
       window.removeEventListener("beforeunload", handlePageReload);
@@ -94,21 +103,25 @@ const Courses = () => {
       return 0; // No sorting
     });
 
-  // Handle course deletion
-  const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this course?")) {
-      try {
-        await fetch(`https://udemy-tracker.vercel.app/courses/${id}`, {
-          method: "DELETE",
-        });
-        setCourses((prevCourses) =>
-          prevCourses.filter((course) => course._id !== id)
-        );
-      } catch (error) {
-        console.error("Error deleting course:", error);
+    const handleDelete = async (id) => {
+      if (window.confirm("Are you sure you want to delete this course?")) {
+        try {
+          // Remove course from localStorage
+          const updatedCourses = getCourses().filter((course) => course._id !== id);
+          localStorage.setItem("udemyCourses", JSON.stringify(updatedCourses)); // Save updated courses to localStorage
+    
+          // Delete course from backend
+          await fetch(`https://udemy-tracker.vercel.app/courses/${id}`, {
+            method: "DELETE",
+          });
+    
+          // Update the state to reflect the changes
+          setCourses(updatedCourses);
+        } catch (error) {
+          console.error("Error deleting course:", error);
+        }
       }
-    }
-  };
+    };
 
   // Calculate the index of the first course on the current page
   // Calculate pagination details

@@ -56,10 +56,26 @@ const deleteCourse = async (req, res) => {
   }
 };
 
+// Sync all courses and notes from frontend to backend (called every hour)
+const syncCourses = async (req, res) => {
+  try {
+    const coursesData = req.body; // Data sent from the frontend
+    // Update each course in the database (you can replace this logic with bulk operations as needed)
+    for (const courseData of coursesData) {
+      const { _id, ...courseDetails } = courseData;
+      await Course.findByIdAndUpdate(_id, courseDetails, { new: true, upsert: true });
+    }
+    res.json({ message: "Courses synced successfully!" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   createCourse,
   getCourses,
   getCourseById,
   updateCourse,
   deleteCourse,
+  syncCourses
 };
