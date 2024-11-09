@@ -28,7 +28,7 @@ const Progress = () => {
 
   const targetGoals = {
     "Data Science": ["Algorithms", "Artificial Intelligence"],
-    "Database": ["DBMS", "MySQL", "NoSQL", "SQL"],
+    Database: ["DBMS", "MySQL", "NoSQL", "SQL"],
     "IT & Software": [
       "API",
       "Artificial Intelligence",
@@ -36,16 +36,36 @@ const Progress = () => {
       "Network & Security",
     ],
     "Web Development": ["API", "Backend", "Frontend", "Full Stack"],
-    "Business": ["Business Strategy", "Digital Marketing", "E-Commerce"],
+    Business: ["Business Strategy", "Digital Marketing", "E-Commerce"],
   };
 
   const subGoals = {
-    "Algorithms": ["Sorting", "Graph Theory", "Dynamic Programming"],
+    Algorithms: ["Sorting", "Graph Theory", "Dynamic Programming"],
     "Artificial Intelligence": [
       "Machine Learning",
       "Neural Networks",
       "Natural Language Processing",
     ],
+  };
+
+  const categoryPriorities = {
+    "Data Science": "High priority",
+    "Database": "High priority",
+    "IT & Software": "High priority",
+    "Web Development": "High priority",
+    "Business": "Low priority",
+    "Filmmaking": "Low priority",
+    "Graphics Design": "Low priority",
+    "Marketing": "Low priority",
+    "Office Productivity": "Low priority",
+    "Music": "Low priority",
+    "Cloud": "Medium priority",
+    "DevOps": "Medium priority",
+    "Health & Fitness": "Parallel priority",
+    "Language": "Parallel priority",
+    "Operating System": "Parallel priority",
+    "Personal Development": "Parallel priority",
+    "Version Control": "Parallel priority",
   };
 
   const [checkedCategories, setCheckedCategories] = useState(() => {
@@ -182,6 +202,15 @@ const Progress = () => {
     return checked ? "text-green-500" : ""; // Apply green text if checked
   };
 
+  // Add filter states
+  const [priorityFilter, setPriorityFilter] = useState("");
+
+  const filteredCategories = categories.filter(
+    (category) =>
+      (priorityFilter === "" ||
+        categoryPriorities[category] === priorityFilter)
+  );
+
   return (
     <div
       className={isDarkMode ? "bg-gray-900 text-white" : "bg-white text-black"}
@@ -189,6 +218,24 @@ const Progress = () => {
       <h2 className="text-3xl font-semibold text-center py-4 mt-14 flex justify-center items-center">
         📈 Progress Tracker 📈
       </h2>
+
+      <div className="flex flex-col sm:flex-row justify-center my-4 space-y-4 sm:space-x-4 sm:space-y-0 px-4">
+        <select
+          value={priorityFilter}
+          onChange={(e) => setPriorityFilter(e.target.value)}
+          className={`px-4 py-2 rounded ${
+            isDarkMode
+              ? "bg-gray-700 text-white placeholder-gray-400"
+              : "border bg-white text-black placeholder-gray-600"
+          }`}
+        >
+          <option value="">All Priorities</option>
+          <option value="High priority">High Priority</option>
+          <option value="Medium priority">Medium Priority</option>
+          <option value="Low priority">Low Priority</option>
+          <option value="Parallel priority">Parallel Priority</option>
+        </select>
+      </div>
 
       <div
         className={`my-2 mx-4 ${
@@ -222,7 +269,7 @@ const Progress = () => {
         </div>
       </div>
 
-      {categories.map((category) => (
+      {filteredCategories.map((category) => (
         <div key={category} className="my-6 mx-4">
           <div
             className={

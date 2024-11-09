@@ -11,7 +11,9 @@ const Courses = () => {
   const [statusFilter, setStatusFilter] = useState(""); // Filter by course status
   const [importantFilter, setImportantFilter] = useState(""); // Filter by important status
   const [sortOrder, setSortOrder] = useState(""); // Sorting order
-  const [currentPage, setCurrentPage] = useState(1); // Current page state
+  const [currentPage, setCurrentPage] = useState(
+    parseInt(localStorage.getItem('currentPage')) || 1
+  );
   const [categoryFilter, setCategoryFilter] = useState(""); // Filter by category
   const [subCategoryFilter, setSubCategoryFilter] = useState(""); // Filter by sub-category
   const coursesPerPage = 12; // Number of courses to display per page
@@ -32,19 +34,33 @@ const Courses = () => {
           "https://udemy-tracker.vercel.app/courses"
         );
         let data = await response.json();
-
+  
         // Sort courses by 'no' field
         data = data.sort((a, b) => a.no - b.no);
-
+  
         setCourses(data);
+        localStorage.setItem('currentPage', currentPage);
       } catch (error) {
         console.error("Error fetching courses:", error);
       } finally {
         setLoading(false);
       }
     };
+  
     fetchCourses();
-  }, []);
+  
+    // Clear currentPage from localStorage on page reload
+    const handlePageReload = () => {
+      localStorage.removeItem('currentPage');
+    };
+  
+    window.addEventListener("beforeunload", handlePageReload);
+  
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener("beforeunload", handlePageReload);
+    };
+  }, [currentPage]);
 
   // Filtered list of sub-categories based on selected category
   const getSubCategories = () => {
@@ -95,16 +111,13 @@ const Courses = () => {
   };
 
   // Calculate the index of the first course on the current page
+  // Calculate pagination details
   const indexOfLastCourse = currentPage * coursesPerPage;
   const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;
-
-  // Get current courses
   const currentCourses = filteredCourses.slice(
     indexOfFirstCourse,
     indexOfLastCourse
   );
-
-  // Calculate total pages
   const totalPages = Math.ceil(filteredCourses.length / coursesPerPage);
 
   // Function to handle page change and scroll to top
@@ -245,8 +258,8 @@ const Courses = () => {
                 type="button"
                 className={`rounded h-12 w-full sm:w-32 transition duration-200 flex items-center justify-center ${
                   isDarkMode
-                    ? "bg-blue-600 hover:bg-blue-700 text-white"
-                    : "bg-blue-500 hover:bg-blue-600 text-white"
+                    ? "bg-green-600 hover:bg-green-700 text-white"
+                    : "bg-green-500 hover:bg-green-600 text-white"
                 }`}
               >
                 Add Course
@@ -384,7 +397,7 @@ const Courses = () => {
                         : "bg-blue-500 hover:bg-blue-600"
                     } text-white`}
                   >
-                    Update Course
+                    Edit Course
                   </button>
                   <button
                     onClick={(e) => {
@@ -393,8 +406,8 @@ const Courses = () => {
                     }}
                     className={`p-2 rounded ${
                       isDarkMode
-                        ? "bg-purple-700 hover:bg-purple-800"
-                        : "bg-purple-500 hover:bg-purple-600"
+                        ? "bg-yellow-700 hover:bg-yellow-800"
+                        : "bg-yellow-500 hover:bg-yellow-600"
                     } text-white`}
                   >
                     View Notes
@@ -406,8 +419,8 @@ const Courses = () => {
                     }}
                     className={`p-2 rounded ${
                       isDarkMode
-                        ? "bg-yellow-700 hover:bg-yellow-800"
-                        : "bg-yellow-500 hover:bg-yellow-600"
+                        ? "bg-green-700 hover:bg-green-800"
+                        : "bg-green-500 hover:bg-green-600"
                     } text-white`}
                   >
                     Add Notes
