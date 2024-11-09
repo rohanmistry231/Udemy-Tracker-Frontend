@@ -254,7 +254,7 @@ const AddNotes = () => {
           subTargetGoal,
         }),
       });
-      navigate(`/courses/${id}/view`);
+      navigate(`/courses/${id}/notes`);
       toast.success("Note added successfully!");
     } catch (error) {
       console.error("Error adding note:", error);

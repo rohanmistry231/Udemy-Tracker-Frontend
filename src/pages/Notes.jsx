@@ -204,30 +204,45 @@ const Notes = () => {
   const [mainGoalFilter, setMainGoalFilter] = useState("");
   const [targetGoalFilter, setTargetGoalFilter] = useState("");
   const [subTargetGoalFilter, setSubTargetGoalFilter] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const notesPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(
+    parseInt(localStorage.getItem('notesCurrentPage')) || 1
+  );
+  const notesPerPage = 12;
 
   const navigate = useNavigate();
   const { theme } = useTheme();
   const isDarkMode = theme === "dark";
 
   useEffect(() => {
-    const fetchNotes = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(
-          "https://udemy-tracker.vercel.app/notes/all"
-        );
-        const data = await response.json();
-        setNotes(data.notes); // Ensure the notes are being set correctly
-      } catch (error) {
-        console.error("Error fetching notes:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchNotes();
-  }, []);
+  const fetchNotes = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("https://udemy-tracker.vercel.app/notes/all");
+      const data = await response.json();
+      setNotes(data.notes);
+      localStorage.setItem("notesCurrentPage", currentPage);
+    } catch (error) {
+      console.error("Error fetching notes:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchNotes();
+
+  // Clear currentPage from localStorage on page reload
+  const handlePageReload = () => {
+    localStorage.removeItem("currentPage");
+  };
+
+  window.addEventListener("beforeunload", handlePageReload);
+
+  // Cleanup event listener on component unmount
+  return () => {
+    window.removeEventListener("beforeunload", handlePageReload);
+  };
+}, [currentPage]);
+
 
   const deleteNote = async (noteId) => {
     // Show confirmation dialog
@@ -297,6 +312,12 @@ const Notes = () => {
   const currentNotes = filteredNotes.slice(indexOfFirstNote, indexOfLastNote);
   const totalPages = Math.ceil(filteredNotes.length / notesPerPage);
 
+  // Function to handle page change and scroll to top
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    window.scrollTo(0, 0); // Scroll to the top of the page
+  };
+
   return (
     <div
       className={`container mx-auto px-4 py-6 mt-12 ${
@@ -310,13 +331,6 @@ const Notes = () => {
       >
         📝 Notes List 📝
       </h2>
-
-      {loading ? (
-        <div className="flex justify-center items-center min-h-screen">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
-        </div>
-      ) : (
-        <>
           <div className="flex flex-col sm:flex-row justify-between items-center mb-4 space-y-4 sm:space-y-0">
             <input
               type="text"
@@ -391,6 +405,12 @@ const Notes = () => {
             </Link>
           </div>
 
+          {loading ? (
+        <div className="flex justify-center items-center md:min-h-screen lg:min-h-screen max-h-screen mt-10 mb-10">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
+        </div>
+      ) : (
+        <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
             {currentNotes.map((note) => (
               <div
@@ -481,9 +501,12 @@ const Notes = () => {
             ))}
           </div>
 
+        </>)}
+
+          {/* Pagination Controls */}
           <div className="flex justify-between items-center mt-6">
             <button
-              onClick={() => setCurrentPage(currentPage - 1)}
+              onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
               className={`p-2 rounded ${
                 isDarkMode ? "bg-gray-700" : "bg-gray-300"
@@ -495,7 +518,7 @@ const Notes = () => {
               Page {currentPage} of {totalPages}
             </span>
             <button
-              onClick={() => setCurrentPage(currentPage + 1)}
+              onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
               className={`p-2 rounded ${
                 isDarkMode ? "bg-gray-700" : "bg-gray-300"
@@ -504,8 +527,6 @@ const Notes = () => {
               Next
             </button>
           </div>
-        </>
-      )}
     </div>
   );
 };

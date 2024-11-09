@@ -1,12 +1,13 @@
 // src/pages/ViewNote.js
 import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "../context/ThemeContext";
 import jsPDF from "jspdf"; // Import jsPDF
 
 const ViewNote = () => {
+  const navigate = useNavigate();
   const { id } = useParams(); // Note ID for fetching specific note details
   const { theme } = useTheme();
   const isDarkMode = theme === "dark";
@@ -90,9 +91,9 @@ const ViewNote = () => {
           >
             Edit Note
           </Link>
-          <Link to="/notes" className="text-gray-600 hover:underline">
+          <button onClick={()=> navigate(-1)} to="/notes" className="text-gray-600 hover:underline">
             Back to Notes
-          </Link>
+          </button>
           <button
             onClick={saveAsPDF}
             className="bg-green-500 text-white p-2 rounded hover:bg-green-600"
