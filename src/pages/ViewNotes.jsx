@@ -36,20 +36,33 @@ const ViewNotes = () => {
   useEffect(() => {
     const fetchNotes = async () => {
       try {
-        const response = await fetch(
-          `https://udemy-tracker.vercel.app/courses/${id}/notes`
-        );
+        const response = await fetch(`https://udemy-tracker.vercel.app/courses/${id}/notes`);
+
+        // Check if the response status is ok (200-299 range)
         if (!response.ok) {
-          throw new Error("Failed to fetch notes");
+          throw new Error(`Failed to fetch notes. Status: ${response.status}`);
         }
+
+        // Parse the JSON response
         const data = await response.json();
-        setNotes(data.notes); // Update to use the 'notes' property from the response
+
+        // Check if the 'notes' field exists in the response and update state
+        if (data && data.notes) {
+          setNotes(data.notes);
+        } else {
+          throw new Error("Notes field is missing in the response.");
+        }
+
       } catch (error) {
+        // Log error details for debugging
         console.error("Error fetching notes:", error);
+
+        // Display an error message to the user
         toast.error("Failed to load notes. Please try again later.");
       }
     };
 
+    // Call fetchNotes whenever 'id' changes
     fetchNotes();
   }, [id]);
 

@@ -5,6 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "../context/ThemeContext";
 import jsPDF from "jspdf"; // Import jsPDF
+import { fetchNoteById } from '../dataService';
 
 const ViewNoteOfViewNotes = () => {
   const { courseid, id } = useParams(); // Note ID for fetching specific note details
@@ -13,21 +14,19 @@ const ViewNoteOfViewNotes = () => {
   const [note, setNote] = useState(null);
 
   useEffect(() => {
-    const fetchNote = async () => {
+    const fetchNoteDetails = async () => {
       try {
-        const response = await fetch(
-          `https://udemy-tracker.vercel.app/notes/note/${id}`
-        );
-        if (!response.ok) throw new Error("Failed to fetch note details");
-
-        const data = await response.json();
-        setNote(data.note); // Access the 'note' object within the response data
+        const data = await fetchNoteById(id);  // Call the service function to fetch the note
+        setNote(data.note);  // Update state with the fetched note
       } catch (error) {
         console.error("Error fetching note:", error);
         toast.error("Error fetching note details");
       }
     };
-    fetchNote();
+
+    if (id) {
+      fetchNoteDetails();  // Fetch the note details when the component mounts or id changes
+    }
   }, [id]);
 
   const saveAsPDF = () => {

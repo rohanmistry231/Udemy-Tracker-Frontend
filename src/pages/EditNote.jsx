@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "../context/ThemeContext";
+import { fetchNoteById } from '../dataService';
 
 const EditNote = () => {
   const { id } = useParams(); // Note ID for fetching/updating specific note
@@ -221,27 +222,25 @@ const EditNote = () => {
   };
 
   useEffect(() => {
-    const fetchNote = async () => {
+    const fetchNoteDetails = async () => {
       try {
-        const response = await fetch(
-          `https://udemy-tracker.vercel.app/notes/note/${id}`
-        );
-        if (!response.ok) throw new Error("Failed to fetch note data");
-
-        const data = await response.json();
+        const data = await fetchNoteById(id);  // Call the service function to fetch the note data
         setNote({
-          question: data.note.question || "",
-          answer: data.note.answer || "",
-          mainTargetCategory: data.note.mainTargetCategory || "",
-          mainTargetGoal: data.note.mainTargetGoal || "",
-          subTargetGoal: data.note.subTargetGoal || "",
+          question: data.note?.question || "",
+          answer: data.note?.answer || "",
+          mainTargetCategory: data.note?.mainTargetCategory || "",
+          mainTargetGoal: data.note?.mainTargetGoal || "",
+          subTargetGoal: data.note?.subTargetGoal || "",
         });
       } catch (error) {
         console.error("Error fetching note:", error);
         toast.error("Error fetching note data");
       }
     };
-    fetchNote();
+
+    if (id) {
+      fetchNoteDetails();  // Fetch the note details when the component mounts or id changes
+    }
   }, [id]);
 
   const handleChange = (e) => {

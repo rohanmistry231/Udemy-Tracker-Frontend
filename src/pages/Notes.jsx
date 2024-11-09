@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext"; // Import theme context
 import jsPDF from "jspdf";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { getNotesFromLocalStorage, saveNotesToLocalStorage, syncNotesWithBackend } from '../dataService';
 
 const categories = [
   "Data Science",
@@ -208,40 +211,73 @@ const Notes = () => {
     parseInt(localStorage.getItem('notesCurrentPage')) || 1
   );
   const notesPerPage = 12;
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [syncMessage, setSyncMessage] = useState('');  // State to show a message after syncing
 
   const navigate = useNavigate();
   const { theme } = useTheme();
   const isDarkMode = theme === "dark";
 
   useEffect(() => {
-  const fetchNotes = async () => {
-    setLoading(true);
+    const fetchNotes = async () => {
+      setLoading(true);
+      try {
+        // Try to get notes from localStorage first
+        const storedNotes = getNotesFromLocalStorage();
+
+        if (storedNotes.length > 0) {
+          // If notes exist in localStorage, use them
+          setNotes(storedNotes);
+        } else {
+          // If no notes in localStorage, fetch from the backend
+          const response = await fetch("https://udemy-tracker.vercel.app/notes/all");
+          const data = await response.json();
+          setNotes(data.notes);
+
+          // Save fetched notes to localStorage for future use
+          saveNotesToLocalStorage(data.notes);
+        }
+
+        // Store currentPage in localStorage
+        localStorage.setItem("notesCurrentPage", currentPage);
+      } catch (error) {
+        console.error("Error fetching notes:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNotes();
+
+    // Clear currentPage from localStorage on page reload
+    const handlePageReload = () => {
+      localStorage.removeItem("notesCurrentPage");
+    };
+
+    window.addEventListener("beforeunload", handlePageReload);
+
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener("beforeunload", handlePageReload);
+    };
+  }, [currentPage]);
+
+  // Function to handle button click
+  const handleSyncClick = async () => {
     try {
-      const response = await fetch("https://udemy-tracker.vercel.app/notes/all");
-      const data = await response.json();
-      setNotes(data.notes);
-      localStorage.setItem("notesCurrentPage", currentPage);
+      // Call the sync function
+      const updatedNotes = await syncNotesWithBackend();
+      
+      // Update your state or UI accordingly with the updated notes
+      setNotes(updatedNotes);
+      setSyncMessage("Notes successfully synced with the backend!");
     } catch (error) {
-      console.error("Error fetching notes:", error);
-    } finally {
-      setLoading(false);
+      console.error("Error during sync:", error);
+      toast.error("Error syncing notes. Please try again.");
+    }finally{
+      setIsSyncing(false);
     }
   };
-
-  fetchNotes();
-
-  // Clear currentPage from localStorage on page reload
-  const handlePageReload = () => {
-    localStorage.removeItem("currentPage");
-  };
-
-  window.addEventListener("beforeunload", handlePageReload);
-
-  // Cleanup event listener on component unmount
-  return () => {
-    window.removeEventListener("beforeunload", handlePageReload);
-  };
-}, [currentPage]);
 
 
   const deleteNote = async (noteId) => {
@@ -324,6 +360,16 @@ const Notes = () => {
         isDarkMode ? "bg-gray-900" : "bg-white"
       }`}
     >
+       <div>
+      <button
+        onClick={handleSyncClick}
+        disabled={isSyncing}  // Disable button while syncing
+        className="sync-button"
+      >
+        {isSyncing ? 'Syncing...' : 'Sync Notes'}
+      </button>
+      {syncMessage && <p>{syncMessage}</p>}  {/* Display sync message */}
+      </div>
       <h2
         className={`text-3xl font-semibold mb-6 text-center ${
           isDarkMode ? "text-white" : "text-gray-800"
@@ -331,6 +377,7 @@ const Notes = () => {
       >
         📝 Notes List 📝
       </h2>
+      
           <div className="flex flex-col sm:flex-row justify-between items-center mb-4 space-y-4 sm:space-y-0">
             <input
               type="text"

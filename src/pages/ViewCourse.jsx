@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
+import { getCourseById } from '../dataService';
 
 const ViewCourse = () => {
   const { id } = useParams(); // Get course ID from URL params
@@ -14,19 +15,16 @@ const ViewCourse = () => {
   const [mainTargetGoal, setMainTargetGoal] = useState("");
   const [subTargetGoal, setSubTargetGoal] = useState("");
 
-  // Fetch course details on component mount
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const response = await fetch(
-          `https://udemy-tracker.vercel.app/courses/${id}`
-        );
-        const data = await response.json();
+        const data = await getCourseById(id);
         setCourse(data);
       } catch (error) {
         console.error("Error fetching course:", error);
       }
     };
+
     fetchCourse();
   }, [id]);
 

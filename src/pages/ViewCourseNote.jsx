@@ -23,21 +23,29 @@ const ViewCourseNote = () => {
         const response = await fetch(
           `https://udemy-tracker.vercel.app/notes/note/${id}`
         );
-        if (!response.ok) throw new Error("Failed to fetch note details");
+        if (!response.ok) {
+          throw new Error("Failed to fetch note details");
+        }
 
         const data = await response.json();
+        
+        // Set note state
         setNote(data.note);
+
         // Initialize form values with the fetched note data
-        setQuestion(data.note.question);
-        setAnswer(data.note.answer);
-        setMainTargetCategory(data.note.mainTargetCategory);
-        setMainTargetGoal(data.note.mainTargetGoal);
-        setSubTargetGoal(data.note.subTargetGoal);
+        setQuestion(data.note.question || "");
+        setAnswer(data.note.answer || "");
+        setMainTargetCategory(data.note.mainTargetCategory || "");
+        setMainTargetGoal(data.note.mainTargetGoal || "");
+        setSubTargetGoal(data.note.subTargetGoal || "");
+        
       } catch (error) {
         console.error("Error fetching note:", error);
         toast.error("Error fetching note details");
       }
     };
+
+    // Fetch note when component is mounted or when 'id' changes
     fetchNote();
   }, [id]);
 

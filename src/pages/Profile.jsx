@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useTheme } from "../context/ThemeContext";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import { getCoursesFromLocalStorage } from '../dataService';
 
 const Profile = () => {
   const { theme } = useTheme();
@@ -23,14 +23,27 @@ const Profile = () => {
 
   useEffect(() => {
     setIsLoading(true); // Set loading to true when fetching starts
-    axios
-      .get("https://udemy-tracker.vercel.app/courses/")
-      .then((response) => {
-        const data = response.data;
-        setCourses(data);
-      })
-      .catch((error) => console.error("Error fetching courses:", error))
-      .finally(() => setIsLoading(false)); // Set loading to false when fetching completes
+    
+    // Function to get courses from localStorage
+    const fetchCoursesFromLocalStorage = () => {
+      try {
+        const storedCourses = getCoursesFromLocalStorage(); // Get courses from localStorage
+
+        if (storedCourses.length > 0) {
+          // If courses are found in localStorage, update state
+          setCourses(storedCourses);
+        } else {
+          console.error("No courses found in localStorage.");
+        }
+      } catch (error) {
+        console.error("Error fetching courses from localStorage:", error);
+      } finally {
+        setIsLoading(false); // Set loading to false when fetching completes
+      }
+    };
+
+    fetchCoursesFromLocalStorage(); // Call function to fetch data from localStorage
+
   }, []);
 
   useEffect(() => {

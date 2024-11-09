@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "../context/ThemeContext"; // Import theme context
+import { createCourse  } from '../dataService';
 
 const AddCourse = ({ onAdd }) => {
   const { theme } = useTheme(); // Use theme context
@@ -273,53 +274,44 @@ const AddCourse = ({ onAdd }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Convert 'durationInHours' to number if it's not empty
+  
+    // Prepare the course data with 'durationInHours' converted to a number
     const preparedData = {
       ...courseData,
       durationInHours: courseData.durationInHours
         ? parseFloat(courseData.durationInHours)
         : "",
     };
-
+  
     try {
-      const response = await fetch("https://udemy-tracker.vercel.app/courses", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(preparedData),
+      // Call the createCourse function from dataService to handle the course creation
+      const newCourse = await createCourse(preparedData);
+  
+      // On successful course creation, update the state with the new course
+      onAdd(newCourse);
+  
+      // Show success toast
+      toast.success("Course added successfully!", {
+        position: "bottom-right",
+        autoClose: 3000,
       });
-
-      if (response.ok) {
-        const newCourse = await response.json();
-        onAdd(newCourse);
-
-        // Show success toast
-        toast.success("Course added successfully!", {
-          position: "bottom-right",
-          autoClose: 3000,
-        });
-
-        // Reset form
-        setCourseData({
-          no: "", // Reset to default or adjust
-          name: "",
-          category: "",
-          categoryPriority: "", // Reset to default value
-          subCategory: "",
-          subSubCategory: "",
-          importantStatus: "",
-          status: "",
-          durationInHours: "",
-          subLearningSkillsSet: [],
-          learningSkillsSet: "",
-        });
-      } else {
-        console.error("Failed to add course:", response.statusText);
-        toast.error("Failed to add course!", { position: "bottom-right" });
-      }
+  
+      // Reset form after successful course addition
+      setCourseData({
+        no: "", 
+        name: "",
+        category: "",
+        categoryPriority: "", 
+        subCategory: "",
+        subSubCategory: "",
+        importantStatus: "",
+        status: "",
+        durationInHours: "",
+        subLearningSkillsSet: [],
+        learningSkillsSet: "",
+      });
     } catch (error) {
+      // If there is an error, show the error toast
       console.error("Error adding course:", error);
       toast.error("Error adding course!", { position: "bottom-right" });
     }

@@ -226,21 +226,28 @@ const EditNoteOfViewNotes = () => {
         const response = await fetch(
           `https://udemy-tracker.vercel.app/notes/note/${id}`
         );
-        if (!response.ok) throw new Error("Failed to fetch note data");
+        
+        if (!response.ok) {
+          throw new Error("Failed to fetch note data");
+        }
 
         const data = await response.json();
+
+        // Safely updating the note state
         setNote({
-          question: data.note.question || "",
-          answer: data.note.answer || "",
-          mainTargetCategory: data.note.mainTargetCategory || "",
-          mainTargetGoal: data.note.mainTargetGoal || "",
-          subTargetGoal: data.note.subTargetGoal || "",
+          question: data.note?.question || "",
+          answer: data.note?.answer || "",
+          mainTargetCategory: data.note?.mainTargetCategory || "",
+          mainTargetGoal: data.note?.mainTargetGoal || "",
+          subTargetGoal: data.note?.subTargetGoal || "",
         });
       } catch (error) {
         console.error("Error fetching note:", error);
         toast.error("Error fetching note data");
       }
     };
+
+    // Trigger fetch when `id` changes
     fetchNote();
   }, [id]);
 
@@ -262,25 +269,40 @@ const EditNoteOfViewNotes = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault();  // Prevent the default form submission behavior
+  
     try {
+      // Ensure that the note object is correctly structured
       const response = await fetch(
         `https://udemy-tracker.vercel.app/notes/update/${id}`,
         {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(note),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(note),  // Send the 'note' object as JSON
         }
       );
-      if (!response.ok) throw new Error("Failed to update note");
-
+  
+      // Check if the response is successful
+      if (!response.ok) {
+        throw new Error("Failed to update note");
+      }
+  
+      // Show success message
       toast.success("Note updated successfully!");
+  
+      // Redirect to the view page after successful update
       navigate(`/courses/${courseid}/notes/note/${id}/view`);
     } catch (error) {
+      // Log the error for debugging
       console.error("Error updating note:", error);
-      toast.error("Error updating note data");
+  
+      // Show error message to the user
+      toast.error("Error updating note data. Please try again.");
     }
   };
+
 
   return (
     <div

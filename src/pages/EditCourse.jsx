@@ -4,6 +4,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "../context/ThemeContext";
+import { updateCourse } from '../dataService';
 
 const EditCourse = () => {
   const { id } = useParams();
@@ -223,17 +224,32 @@ const EditCourse = () => {
 
   useEffect(() => {
     const fetchCourse = async () => {
-      try {
-        const response = await fetch(
-          `https://udemy-tracker.vercel.app/courses/${id}`
-        );
-        const data = await response.json();
-        setCourse(data);
-      } catch (error) {
-        console.error("Error fetching course:", error);
-        toast.error("Error fetching course data");
+      // Check if the course data exists in localStorage
+      const storedCourses = JSON.parse(localStorage.getItem("courses")) || [];
+      const courseFromLocalStorage = storedCourses.find(course => course.id === id);
+  
+      if (courseFromLocalStorage) {
+        // If the course is found in localStorage, use it
+        setCourse(courseFromLocalStorage);
+      } else {
+        // If the course is not found, fetch it from the API
+        try {
+          const response = await fetch(
+            `https://udemy-tracker.vercel.app/courses/${id}`
+          );
+          const data = await response.json();
+          setCourse(data);
+          
+          // After fetching from the API, save it in localStorage
+          storedCourses.push(data);
+          localStorage.setItem("courses", JSON.stringify(storedCourses));
+        } catch (error) {
+          console.error("Error fetching course:", error);
+          toast.error("Error fetching course data");
+        }
       }
     };
+  
     fetchCourse();
   }, [id]);
 
@@ -258,12 +274,13 @@ const EditCourse = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await fetch(`https://udemy-tracker.vercel.app/courses/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(course),
-      });
+      // Call the updateCourse function from dataService without assigning it to a variable
+      await updateCourse(id, course);
+  
+      // Show success toast
       toast.success("Course updated successfully!");
+  
+      // Navigate to the course view page
       navigate(`/courses/${id}/view`);
     } catch (error) {
       console.error("Error updating course:", error);

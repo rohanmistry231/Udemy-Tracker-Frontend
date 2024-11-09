@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { useTheme } from "../context/ThemeContext";
-import axios from "axios";
+import { getCoursesFromLocalStorage } from '../dataService';
 
 import {
   Chart as ChartJS,
@@ -27,21 +27,29 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setIsLoading(true); // Set loading to true when fetching starts
-    axios
-      .get("https://udemy-tracker.vercel.app/courses/")
-      .then((response) => {
-        const data = response.data;
-        setCourses(data);
+    // Function to fetch courses from localStorage
+    const fetchCourses = () => {
+      try {
+        // Get courses from localStorage
+        const storedCourses = getCoursesFromLocalStorage(); 
 
-        const hours = data.reduce(
-          (acc, course) => acc + course.durationInHours,
-          0
-        );
-        setTotalHours(hours);
-      })
-      .catch((error) => console.error("Error fetching courses:", error))
-      .finally(() => setIsLoading(false)); // Set loading to false when fetching completes
+        if (storedCourses) {
+          // If courses are in localStorage, use them
+          setCourses(storedCourses);
+          const hours = storedCourses.reduce(
+            (acc, course) => acc + course.durationInHours,
+            0
+          );
+          setTotalHours(hours);
+        }
+        setIsLoading(false); // Set loading to false once fetching is complete
+      } catch (error) {
+        console.error("Error fetching courses from localStorage:", error);
+        setIsLoading(false); // Stop loading even if there's an error
+      }
+    };
+
+    fetchCourses(); // Call fetchCourses to load data from localStorage
   }, []);
 
   const groupBy = (array, key) => {

@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "../context/ThemeContext"; // Import theme context
+import { getCourseName, addNoteToCourse } from '../dataService';
 
 const AddNotes = () => {
   const { id } = useParams();
@@ -228,32 +229,33 @@ const AddNotes = () => {
   useEffect(() => {
     const fetchCourseName = async () => {
       try {
-        const response = await fetch(
-          `https://udemy-tracker.vercel.app/courses/${id}`
-        );
-        const data = await response.json();
-        setCourseName(data.name);
+        const name = await getCourseName(id);  // Call the service function
+        setCourseName(name);  // Set the course name in the state
       } catch (error) {
         console.error("Error fetching course name:", error);
+        setCourseName("Error fetching course name");  // Optional fallback
       }
     };
+
     fetchCourseName();
   }, [id]);
 
   const handleAddNote = async (e) => {
     e.preventDefault();
+
+    const noteData = {
+      question,
+      answer,
+      mainTargetCategory: mainCategory,
+      mainTargetGoal: targetGoal,
+      subTargetGoal,
+    };
+
     try {
-      await fetch(`https://udemy-tracker.vercel.app/courses/${id}/notes`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          question,
-          answer,
-          mainTargetCategory: mainCategory,
-          mainTargetGoal: targetGoal, // Updated to match the expected backend field
-          subTargetGoal,
-        }),
-      });
+      // Call the service function to add the note
+      await addNoteToCourse(id, noteData);
+
+      // Navigate to the notes page after successful addition
       navigate(`/courses/${id}/notes`);
       toast.success("Note added successfully!");
     } catch (error) {
