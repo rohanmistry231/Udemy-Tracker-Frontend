@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { useTheme } from "../context/ThemeContext";
-import { getCoursesFromLocalStorage } from '../dataService';
+import { getCoursesFromLocalStorage } from "../dataService";
 
 import {
   Chart as ChartJS,
@@ -31,7 +31,7 @@ const Home = () => {
     const fetchCourses = () => {
       try {
         // Get courses from localStorage
-        const storedCourses = getCoursesFromLocalStorage(); 
+        const storedCourses = getCoursesFromLocalStorage();
 
         if (storedCourses) {
           // If courses are in localStorage, use them

@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "../context/ThemeContext"; // Import theme context
-import { getCoursesFromBackend, syncCoursesWithBackend } from '../dataService';
+import { getCoursesFromBackend, syncCoursesWithBackend } from "../dataService";
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
@@ -34,14 +34,14 @@ const Courses = () => {
       try {
         // Check if courses are already in localStorage
         const storedCourses = localStorage.getItem("courses");
-        
+
         if (storedCourses) {
           // If courses are found in localStorage, use them
           setCourses(JSON.parse(storedCourses));
         } else {
           // If no courses in localStorage, fetch from backend
           const data = await getCoursesFromBackend();
-          
+
           // Sort courses by the 'no' field
           const sortedCourses = data.sort((a, b) => a.no - b.no);
 
@@ -171,11 +171,11 @@ const Courses = () => {
         📚 Courses List 📚
       </h2>
       <div>
-      <button onClick={handleSyncClick} disabled={isSyncing}>
-        {isSyncing ? "Syncing..." : "Sync Courses"}
-      </button>
-      {syncStatus && <p>{syncStatus}</p>}
-    </div>
+        <button onClick={handleSyncClick} disabled={isSyncing}>
+          {isSyncing ? "Syncing..." : "Sync Courses"}
+        </button>
+        {syncStatus && <p>{syncStatus}</p>}
+      </div>
       {/* Search and Filters */}
       <div className="flex flex-col sm:flex-row justify-between items-center mb-4 space-y-4 sm:space-y-0">
         <input

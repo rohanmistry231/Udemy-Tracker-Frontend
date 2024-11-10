@@ -44,12 +44,10 @@ router.post("/", async (req, res) => {
     course.notes.push(newNote);
     await course.save();
 
-    res
-      .status(201)
-      .json({
-        message: "Note added successfully",
-        note: course.notes.slice(-1)[0],
-      });
+    res.status(201).json({
+      message: "Note added successfully",
+      note: course.notes.slice(-1)[0],
+    });
   } catch (error) {
     res
       .status(500)
@@ -145,12 +143,10 @@ router.delete("/byNoteId/:courseId/:noteId", async (req, res) => {
       .status(200)
       .json({ message: "Note deleted successfully from the course" });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "Error deleting note from course",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Error deleting note from course",
+      error: error.message,
+    });
   }
 });
 
@@ -312,12 +308,10 @@ router.delete("/deleteAllNotes/:courseId", async (req, res) => {
       .status(200)
       .json({ message: "All notes deleted successfully from the course" });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "Error deleting all notes from course",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Error deleting all notes from course",
+      error: error.message,
+    });
   }
 });
 

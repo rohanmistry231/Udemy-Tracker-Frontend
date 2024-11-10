@@ -5,7 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "../context/ThemeContext";
 import jsPDF from "jspdf"; // Import jsPDF
-import { fetchNoteById } from '../dataService';
+import { fetchNoteById } from "../dataService";
 
 const ViewNote = () => {
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ const ViewNote = () => {
   useEffect(() => {
     const fetchNoteDetails = async () => {
       try {
-        const data = await fetchNoteById(id);  // Call the service function
+        const data = await fetchNoteById(id); // Call the service function
         setNote(data.note); // Set the note details from the response
       } catch (error) {
         console.error("Error fetching note:", error);
@@ -25,7 +25,7 @@ const ViewNote = () => {
       }
     };
 
-    fetchNoteDetails();  // Fetch the note details when the component mounts or id changes
+    fetchNoteDetails(); // Fetch the note details when the component mounts or id changes
   }, [id]);
 
   const saveAsPDF = () => {
@@ -88,7 +88,11 @@ const ViewNote = () => {
           >
             Edit Note
           </Link>
-          <button onClick={()=> navigate(-1)} to="/notes" className="text-gray-600 hover:underline">
+          <button
+            onClick={() => navigate(-1)}
+            to="/notes"
+            className="text-gray-600 hover:underline"
+          >
             Back to Notes
           </button>
           <button

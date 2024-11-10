@@ -5,7 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "../context/ThemeContext";
 import jsPDF from "jspdf"; // Import jsPDF
-import { fetchNoteById } from '../dataService';
+import { fetchNoteById } from "../dataService";
 
 const ViewNoteOfViewNotes = () => {
   const { courseid, id } = useParams(); // Note ID for fetching specific note details
@@ -16,8 +16,8 @@ const ViewNoteOfViewNotes = () => {
   useEffect(() => {
     const fetchNoteDetails = async () => {
       try {
-        const data = await fetchNoteById(id);  // Call the service function to fetch the note
-        setNote(data.note);  // Update state with the fetched note
+        const data = await fetchNoteById(id); // Call the service function to fetch the note
+        setNote(data.note); // Update state with the fetched note
       } catch (error) {
         console.error("Error fetching note:", error);
         toast.error("Error fetching note details");
@@ -25,7 +25,7 @@ const ViewNoteOfViewNotes = () => {
     };
 
     if (id) {
-      fetchNoteDetails();  // Fetch the note details when the component mounts or id changes
+      fetchNoteDetails(); // Fetch the note details when the component mounts or id changes
     }
   }, [id]);
 

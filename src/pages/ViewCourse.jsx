@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
-import { getCourseById } from '../dataService';
+import { getCourseById } from "../dataService";
 
 const ViewCourse = () => {
   const { id } = useParams(); // Get course ID from URL params

@@ -79,7 +79,7 @@ const syncCourses = async (req, res) => {
 
     res.status(200).json({ message: "Courses synced successfully" });
   } catch (error) {
-    console.error('Error syncing courses:', error);
+    console.error("Error syncing courses:", error);
     res.status(500).json({ error: error.message });
   }
 };

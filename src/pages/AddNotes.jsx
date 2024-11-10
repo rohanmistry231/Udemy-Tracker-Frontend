@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "../context/ThemeContext"; // Import theme context
-import { getCourseName, addNoteToCourse } from '../dataService';
+import { getCourseName, addNoteToCourse } from "../dataService";
 
 const AddNotes = () => {
   const { id } = useParams();
@@ -229,11 +229,11 @@ const AddNotes = () => {
   useEffect(() => {
     const fetchCourseName = async () => {
       try {
-        const name = await getCourseName(id);  // Call the service function
-        setCourseName(name);  // Set the course name in the state
+        const name = await getCourseName(id); // Call the service function
+        setCourseName(name); // Set the course name in the state
       } catch (error) {
         console.error("Error fetching course name:", error);
-        setCourseName("Error fetching course name");  // Optional fallback
+        setCourseName("Error fetching course name"); // Optional fallback
       }
     };
 

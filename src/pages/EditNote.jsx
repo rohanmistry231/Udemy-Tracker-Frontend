@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "../context/ThemeContext";
-import { fetchNoteById } from '../dataService';
+import { fetchNoteById } from "../dataService";
 
 const EditNote = () => {
   const { id } = useParams(); // Note ID for fetching/updating specific note
@@ -224,7 +224,7 @@ const EditNote = () => {
   useEffect(() => {
     const fetchNoteDetails = async () => {
       try {
-        const data = await fetchNoteById(id);  // Call the service function to fetch the note data
+        const data = await fetchNoteById(id); // Call the service function to fetch the note data
         setNote({
           question: data.note?.question || "",
           answer: data.note?.answer || "",
@@ -239,7 +239,7 @@ const EditNote = () => {
     };
 
     if (id) {
-      fetchNoteDetails();  // Fetch the note details when the component mounts or id changes
+      fetchNoteDetails(); // Fetch the note details when the component mounts or id changes
     }
   }, [id]);
 

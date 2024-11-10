@@ -5,7 +5,11 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "../context/ThemeContext";
 import Select from "react-select";
-import { getCoursesFromLocalStorage, getNotesFromLocalStorage, saveNotesToLocalStorage } from '../dataService';
+import {
+  getCoursesFromLocalStorage,
+  getNotesFromLocalStorage,
+  saveNotesToLocalStorage,
+} from "../dataService";
 
 const AddNote = () => {
   const navigate = useNavigate();
@@ -227,31 +231,31 @@ const AddNote = () => {
       try {
         // Fetch courses from localStorage
         const storedCourses = getCoursesFromLocalStorage();
-  
+
         // If courses are found in localStorage, format them accordingly
         const formattedCourses = storedCourses.map((course) => ({
           value: course._id,
           label: course.name,
         }));
-  
+
         // Set the courses in the state
         setCourses(formattedCourses);
       } catch (error) {
         console.error("Error fetching courses from localStorage:", error);
       }
     };
-  
+
     fetchCourses();
   }, []);
 
   const handleAddNote = async (e) => {
     e.preventDefault();
-  
+
     if (!selectedCourse) {
       toast.error("Please select a course.");
       return;
     }
-  
+
     try {
       // Prepare the note object to be added
       const newNote = {
@@ -261,7 +265,7 @@ const AddNote = () => {
         mainTargetGoal: targetGoal,
         subTargetGoal,
       };
-  
+
       // POST the new note to the backend
       const response = await fetch(
         `https://udemy-tracker.vercel.app/courses/${selectedCourse.value}/notes`,
@@ -271,27 +275,27 @@ const AddNote = () => {
           body: JSON.stringify(newNote),
         }
       );
-  
+
       if (!response.ok) {
-        throw new Error('Failed to add note');
+        throw new Error("Failed to add note");
       }
-  
+
       // Add the new note to localStorage if the backend request succeeds
       const newNoteData = await response.json();
-  
+
       // Assuming the localStorage already contains notes for the course, update them
       let storedNotes = getNotesFromLocalStorage();
       storedNotes = storedNotes || {}; // Initialize an empty object if no notes exist
       if (!storedNotes[selectedCourse.value]) {
         storedNotes[selectedCourse.value] = []; // Create an empty array for the course if it doesn't exist
       }
-  
+
       // Add the newly created note to the specific course's notes
       storedNotes[selectedCourse.value].push(newNoteData);
-  
+
       // Save the updated notes back to localStorage
       saveNotesToLocalStorage(storedNotes);
-  
+
       toast.success("Note added successfully!");
       navigate(`/courses/${selectedCourse.value}/view`);
     } catch (error) {

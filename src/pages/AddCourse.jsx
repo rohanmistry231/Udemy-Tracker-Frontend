@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "../context/ThemeContext"; // Import theme context
-import { createCourse  } from '../dataService';
+import { createCourse } from "../dataService";
 
 const AddCourse = ({ onAdd }) => {
   const { theme } = useTheme(); // Use theme context
@@ -47,19 +47,19 @@ const AddCourse = ({ onAdd }) => {
 
   const categoryPriorities = {
     "Data Science": "High priority",
-    "Database": "High priority",
+    Database: "High priority",
     "IT & Software": "High priority",
     "Web Development": "High priority",
-    "Business": "Low priority",
-    "Filmmaking": "Low priority",
+    Business: "Low priority",
+    Filmmaking: "Low priority",
     "Graphics Design": "Low priority",
-    "Marketing": "Low priority",
+    Marketing: "Low priority",
     "Office Productivity": "Low priority",
-    "Music": "Low priority",
-    "Cloud": "Medium priority",
-    "DevOps": "Medium priority",
+    Music: "Low priority",
+    Cloud: "Medium priority",
+    DevOps: "Medium priority",
     "Health & Fitness": "Parallel priority",
-    "Language": "Parallel priority",
+    Language: "Parallel priority",
     "Operating System": "Parallel priority",
     "Personal Development": "Parallel priority",
     "Version Control": "Parallel priority",
@@ -274,7 +274,7 @@ const AddCourse = ({ onAdd }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     // Prepare the course data with 'durationInHours' converted to a number
     const preparedData = {
       ...courseData,
@@ -282,26 +282,26 @@ const AddCourse = ({ onAdd }) => {
         ? parseFloat(courseData.durationInHours)
         : "",
     };
-  
+
     try {
       // Call the createCourse function from dataService to handle the course creation
       const newCourse = await createCourse(preparedData);
-  
+
       // On successful course creation, update the state with the new course
       onAdd(newCourse);
-  
+
       // Show success toast
       toast.success("Course added successfully!", {
         position: "bottom-right",
         autoClose: 3000,
       });
-  
+
       // Reset form after successful course addition
       setCourseData({
-        no: "", 
+        no: "",
         name: "",
         category: "",
-        categoryPriority: "", 
+        categoryPriority: "",
         subCategory: "",
         subSubCategory: "",
         importantStatus: "",

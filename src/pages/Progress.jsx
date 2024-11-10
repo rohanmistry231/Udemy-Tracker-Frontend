@@ -50,19 +50,19 @@ const Progress = () => {
 
   const categoryPriorities = {
     "Data Science": "High priority",
-    "Database": "High priority",
+    Database: "High priority",
     "IT & Software": "High priority",
     "Web Development": "High priority",
-    "Business": "Low priority",
-    "Filmmaking": "Low priority",
+    Business: "Low priority",
+    Filmmaking: "Low priority",
     "Graphics Design": "Low priority",
-    "Marketing": "Low priority",
+    Marketing: "Low priority",
     "Office Productivity": "Low priority",
-    "Music": "Low priority",
-    "Cloud": "Medium priority",
-    "DevOps": "Medium priority",
+    Music: "Low priority",
+    Cloud: "Medium priority",
+    DevOps: "Medium priority",
     "Health & Fitness": "Parallel priority",
-    "Language": "Parallel priority",
+    Language: "Parallel priority",
     "Operating System": "Parallel priority",
     "Personal Development": "Parallel priority",
     "Version Control": "Parallel priority",
@@ -207,8 +207,7 @@ const Progress = () => {
 
   const filteredCategories = categories.filter(
     (category) =>
-      (priorityFilter === "" ||
-        categoryPriorities[category] === priorityFilter)
+      priorityFilter === "" || categoryPriorities[category] === priorityFilter
   );
 
   return (

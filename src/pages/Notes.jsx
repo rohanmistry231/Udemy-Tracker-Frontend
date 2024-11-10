@@ -4,7 +4,11 @@ import { useTheme } from "../context/ThemeContext"; // Import theme context
 import jsPDF from "jspdf";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { getNotesFromLocalStorage, saveNotesToLocalStorage, syncNotesWithBackend } from '../dataService';
+import {
+  getNotesFromLocalStorage,
+  saveNotesToLocalStorage,
+  syncNotesWithBackend,
+} from "../dataService";
 
 const categories = [
   "Data Science",
@@ -208,11 +212,11 @@ const Notes = () => {
   const [targetGoalFilter, setTargetGoalFilter] = useState("");
   const [subTargetGoalFilter, setSubTargetGoalFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(
-    parseInt(localStorage.getItem('notesCurrentPage')) || 1
+    parseInt(localStorage.getItem("notesCurrentPage")) || 1
   );
   const notesPerPage = 12;
   const [isSyncing, setIsSyncing] = useState(false);
-  const [syncMessage, setSyncMessage] = useState('');  // State to show a message after syncing
+  const [syncMessage, setSyncMessage] = useState(""); // State to show a message after syncing
 
   const navigate = useNavigate();
   const { theme } = useTheme();
@@ -230,7 +234,9 @@ const Notes = () => {
           setNotes(storedNotes);
         } else {
           // If no notes in localStorage, fetch from the backend
-          const response = await fetch("https://udemy-tracker.vercel.app/notes/all");
+          const response = await fetch(
+            "https://udemy-tracker.vercel.app/notes/all"
+          );
           const data = await response.json();
           setNotes(data.notes);
 
@@ -267,18 +273,17 @@ const Notes = () => {
     try {
       // Call the sync function
       const updatedNotes = await syncNotesWithBackend();
-      
+
       // Update your state or UI accordingly with the updated notes
       setNotes(updatedNotes);
       setSyncMessage("Notes successfully synced with the backend!");
     } catch (error) {
       console.error("Error during sync:", error);
       toast.error("Error syncing notes. Please try again.");
-    }finally{
+    } finally {
       setIsSyncing(false);
     }
   };
-
 
   const deleteNote = async (noteId) => {
     // Show confirmation dialog
@@ -360,15 +365,15 @@ const Notes = () => {
         isDarkMode ? "bg-gray-900" : "bg-white"
       }`}
     >
-       <div>
-      <button
-        onClick={handleSyncClick}
-        disabled={isSyncing}  // Disable button while syncing
-        className="sync-button"
-      >
-        {isSyncing ? 'Syncing...' : 'Sync Notes'}
-      </button>
-      {syncMessage && <p>{syncMessage}</p>}  {/* Display sync message */}
+      <div>
+        <button
+          onClick={handleSyncClick}
+          disabled={isSyncing} // Disable button while syncing
+          className="sync-button"
+        >
+          {isSyncing ? "Syncing..." : "Sync Notes"}
+        </button>
+        {syncMessage && <p>{syncMessage}</p>} {/* Display sync message */}
       </div>
       <h2
         className={`text-3xl font-semibold mb-6 text-center ${
@@ -377,82 +382,82 @@ const Notes = () => {
       >
         📝 Notes List 📝
       </h2>
-      
-          <div className="flex flex-col sm:flex-row justify-between items-center mb-4 space-y-4 sm:space-y-0">
-            <input
-              type="text"
-              placeholder="Search notes by title or content..."
-              className={`border p-2 rounded w-full sm:w-1/3 h-12 ${
-                isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
-              }`}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <select
-              className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
-                isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
-              }`}
-              value={mainGoalFilter}
-              onChange={(e) => {
-                setMainGoalFilter(e.target.value);
-                setTargetGoalFilter("");
-                setSubTargetGoalFilter("");
-              }}
-            >
-              <option value="">All Main Goals</option>
-              {categories.map((category) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
-            <select
-              className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
-                isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
-              }`}
-              value={targetGoalFilter}
-              onChange={(e) => {
-                setTargetGoalFilter(e.target.value);
-                setSubTargetGoalFilter("");
-              }}
-              disabled={!mainGoalFilter}
-            >
-              <option value="">All Target Goals</option>
-              {getTargetGoals().map((goal) => (
-                <option key={goal} value={goal}>
-                  {goal}
-                </option>
-              ))}
-            </select>
-            <select
-              className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
-                isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
-              }`}
-              value={subTargetGoalFilter}
-              onChange={(e) => setSubTargetGoalFilter(e.target.value)}
-              disabled={!targetGoalFilter}
-            >
-              <option value="">All Sub Goals</option>
-              {getSubTargetGoals().map((subGoal) => (
-                <option key={subGoal} value={subGoal}>
-                  {subGoal}
-                </option>
-              ))}
-            </select>
-            <Link to="/add-note" className="w-full sm:w-auto">
-              <button
-                className={`rounded h-12 w-full sm:w-32 transition duration-200 flex items-center justify-center ${
-                  isDarkMode
-                    ? "bg-blue-600 hover:bg-blue-700 text-white"
-                    : "bg-blue-500 hover:bg-blue-600 text-white"
-                }`}
-              >
-                Add Note
-              </button>
-            </Link>
-          </div>
 
-          {loading ? (
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-4 space-y-4 sm:space-y-0">
+        <input
+          type="text"
+          placeholder="Search notes by title or content..."
+          className={`border p-2 rounded w-full sm:w-1/3 h-12 ${
+            isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+          }`}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <select
+          className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
+            isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+          }`}
+          value={mainGoalFilter}
+          onChange={(e) => {
+            setMainGoalFilter(e.target.value);
+            setTargetGoalFilter("");
+            setSubTargetGoalFilter("");
+          }}
+        >
+          <option value="">All Main Goals</option>
+          {categories.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
+        <select
+          className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
+            isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+          }`}
+          value={targetGoalFilter}
+          onChange={(e) => {
+            setTargetGoalFilter(e.target.value);
+            setSubTargetGoalFilter("");
+          }}
+          disabled={!mainGoalFilter}
+        >
+          <option value="">All Target Goals</option>
+          {getTargetGoals().map((goal) => (
+            <option key={goal} value={goal}>
+              {goal}
+            </option>
+          ))}
+        </select>
+        <select
+          className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
+            isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+          }`}
+          value={subTargetGoalFilter}
+          onChange={(e) => setSubTargetGoalFilter(e.target.value)}
+          disabled={!targetGoalFilter}
+        >
+          <option value="">All Sub Goals</option>
+          {getSubTargetGoals().map((subGoal) => (
+            <option key={subGoal} value={subGoal}>
+              {subGoal}
+            </option>
+          ))}
+        </select>
+        <Link to="/add-note" className="w-full sm:w-auto">
+          <button
+            className={`rounded h-12 w-full sm:w-32 transition duration-200 flex items-center justify-center ${
+              isDarkMode
+                ? "bg-blue-600 hover:bg-blue-700 text-white"
+                : "bg-blue-500 hover:bg-blue-600 text-white"
+            }`}
+          >
+            Add Note
+          </button>
+        </Link>
+      </div>
+
+      {loading ? (
         <div className="flex justify-center items-center md:min-h-screen lg:min-h-screen max-h-screen mt-10 mb-10">
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
         </div>
@@ -547,33 +552,33 @@ const Notes = () => {
               </div>
             ))}
           </div>
+        </>
+      )}
 
-        </>)}
-
-          {/* Pagination Controls */}
-          <div className="flex justify-between items-center mt-6">
-            <button
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className={`p-2 rounded ${
-                isDarkMode ? "bg-gray-700" : "bg-gray-300"
-              }`}
-            >
-              Previous
-            </button>
-            <span className={`${isDarkMode ? "text-white" : "text-black"}`}>
-              Page {currentPage} of {totalPages}
-            </span>
-            <button
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className={`p-2 rounded ${
-                isDarkMode ? "bg-gray-700" : "bg-gray-300"
-              }`}
-            >
-              Next
-            </button>
-          </div>
+      {/* Pagination Controls */}
+      <div className="flex justify-between items-center mt-6">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className={`p-2 rounded ${
+            isDarkMode ? "bg-gray-700" : "bg-gray-300"
+          }`}
+        >
+          Previous
+        </button>
+        <span className={`${isDarkMode ? "text-white" : "text-black"}`}>
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className={`p-2 rounded ${
+            isDarkMode ? "bg-gray-700" : "bg-gray-300"
+          }`}
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };

@@ -28,7 +28,7 @@ const ViewCourseNote = () => {
         }
 
         const data = await response.json();
-        
+
         // Set note state
         setNote(data.note);
 
@@ -38,7 +38,6 @@ const ViewCourseNote = () => {
         setMainTargetCategory(data.note.mainTargetCategory || "");
         setMainTargetGoal(data.note.mainTargetGoal || "");
         setSubTargetGoal(data.note.subTargetGoal || "");
-        
       } catch (error) {
         console.error("Error fetching note:", error);
         toast.error("Error fetching note details");

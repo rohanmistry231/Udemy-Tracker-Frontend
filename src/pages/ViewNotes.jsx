@@ -36,7 +36,9 @@ const ViewNotes = () => {
   useEffect(() => {
     const fetchNotes = async () => {
       try {
-        const response = await fetch(`https://udemy-tracker.vercel.app/courses/${id}/notes`);
+        const response = await fetch(
+          `https://udemy-tracker.vercel.app/courses/${id}/notes`
+        );
 
         // Check if the response status is ok (200-299 range)
         if (!response.ok) {
@@ -52,7 +54,6 @@ const ViewNotes = () => {
         } else {
           throw new Error("Notes field is missing in the response.");
         }
-
       } catch (error) {
         // Log error details for debugging
         console.error("Error fetching notes:", error);

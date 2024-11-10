@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useTheme } from "../context/ThemeContext";
 import { Link } from "react-router-dom";
-import { getCoursesFromLocalStorage } from '../dataService';
+import { getCoursesFromLocalStorage } from "../dataService";
 
 const Profile = () => {
   const { theme } = useTheme();
@@ -23,7 +23,7 @@ const Profile = () => {
 
   useEffect(() => {
     setIsLoading(true); // Set loading to true when fetching starts
-    
+
     // Function to get courses from localStorage
     const fetchCoursesFromLocalStorage = () => {
       try {
@@ -43,7 +43,6 @@ const Profile = () => {
     };
 
     fetchCoursesFromLocalStorage(); // Call function to fetch data from localStorage
-
   }, []);
 
   useEffect(() => {
@@ -68,18 +67,18 @@ const Profile = () => {
         isDarkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"
       }`}
     >
-          {/* Profile Card */}
-          <div
-            className={`max-w-8xl mx-auto rounded-lg shadow-lg p-6 ${
-              isDarkMode ? "bg-gray-800" : "bg-white"
-            }`}
-          >
-            {isLoading ? (
-              <div className="flex justify-center items-center min-h-screen">
-                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
-              </div>
-            ) : (
-              <>
+      {/* Profile Card */}
+      <div
+        className={`max-w-8xl mx-auto rounded-lg shadow-lg p-6 ${
+          isDarkMode ? "bg-gray-800" : "bg-white"
+        }`}
+      >
+        {isLoading ? (
+          <div className="flex justify-center items-center min-h-screen">
+            <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
+          </div>
+        ) : (
+          <>
             {/* Profile Header */}
             <div className="flex items-center space-x-4">
               <img
@@ -191,9 +190,9 @@ const Profile = () => {
                 </a>
               </div>
             </div>
-            </>
-          )}
-          </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };

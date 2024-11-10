@@ -226,7 +226,7 @@ const EditNoteOfViewNotes = () => {
         const response = await fetch(
           `https://udemy-tracker.vercel.app/notes/note/${id}`
         );
-        
+
         if (!response.ok) {
           throw new Error("Failed to fetch note data");
         }
@@ -269,8 +269,8 @@ const EditNoteOfViewNotes = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();  // Prevent the default form submission behavior
-  
+    e.preventDefault(); // Prevent the default form submission behavior
+
     try {
       // Ensure that the note object is correctly structured
       const response = await fetch(
@@ -280,29 +280,28 @@ const EditNoteOfViewNotes = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(note),  // Send the 'note' object as JSON
+          body: JSON.stringify(note), // Send the 'note' object as JSON
         }
       );
-  
+
       // Check if the response is successful
       if (!response.ok) {
         throw new Error("Failed to update note");
       }
-  
+
       // Show success message
       toast.success("Note updated successfully!");
-  
+
       // Redirect to the view page after successful update
       navigate(`/courses/${courseid}/notes/note/${id}/view`);
     } catch (error) {
       // Log the error for debugging
       console.error("Error updating note:", error);
-  
+
       // Show error message to the user
       toast.error("Error updating note data. Please try again.");
     }
   };
-
 
   return (
     <div

@@ -36,12 +36,10 @@ const addNote = async (req, res) => {
     course.notes.push(newNote);
     await course.save();
 
-    res
-      .status(201)
-      .json({
-        message: "Note added successfully",
-        note: course.notes.slice(-1)[0],
-      });
+    res.status(201).json({
+      message: "Note added successfully",
+      note: course.notes.slice(-1)[0],
+    });
   } catch (error) {
     res
       .status(500)
