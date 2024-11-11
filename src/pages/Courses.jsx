@@ -442,7 +442,7 @@ const Courses = () => {
                     }}
                     className={`p-2 rounded ${
                       isDarkMode
-                        ? "bg-yellow-700 hover:bg-yellow-800"
+                        ? "bg-yellow-600 hover:bg-yellow-700"
                         : "bg-yellow-500 hover:bg-yellow-600"
                     } text-white`}
                   >

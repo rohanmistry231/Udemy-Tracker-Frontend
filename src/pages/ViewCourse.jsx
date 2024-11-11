@@ -210,13 +210,20 @@ const ViewCourse = () => {
 
         {/* Notes Section */}
         <div className="mt-4">
-          <h3
-            className={`text-2xl font-bold mb-4 ${
-              isDarkMode ? "text-white" : "text-black"
-            }`}
-          >
-            Notes
-          </h3>
+          <div className="flex justify-between">
+            <h3
+              className={`text-2xl font-bold mb-4 ${
+                isDarkMode ? "text-white" : "text-black"
+              }`}
+            >
+              Notes
+            </h3>
+            <div>
+              <Link to={`/courses/${id}/notes`} className="text-gray-500">
+                View All Notes
+              </Link>
+            </div>
+          </div>
           {course.notes.length > 0 ? (
             <ul className="space-y-4">
               {course.notes.map((note) => (
