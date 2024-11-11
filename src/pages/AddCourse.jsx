@@ -1,11 +1,13 @@
 // src/pages/AddCourse.js
 import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "../context/ThemeContext"; // Import theme context
 import { createCourse } from "../dataService";
 
 const AddCourse = ({ onAdd }) => {
+  const navigate = useNavigate();
   const correctPassword = "12345";
   const { theme } = useTheme(); // Use theme context
   const [password, setPassword] = useState("");
@@ -319,6 +321,7 @@ const AddCourse = ({ onAdd }) => {
         subLearningSkillsSet: [],
         learningSkillsSet: "",
       });
+      navigate('/courses/');
     } catch (error) {
       // If there is an error, show the error toast
       console.error("Error adding course:", error);

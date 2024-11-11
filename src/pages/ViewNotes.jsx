@@ -59,6 +59,9 @@ const ViewNotes = () => {
     if (storedPassword === correctPassword) {
       setIsAuthorized(true);
     }
+    // Extract unique subTargetGoals for filter dropdown
+    const uniqueSubTargetGoals = [...new Set(data.notes.map(note => note.subTargetGoal).filter(goal => goal))];
+    setSubTargetGoalOptions(uniqueSubTargetGoals);
       } catch (error) {
         // Log error details for debugging
         console.error("Error fetching notes:", error);
@@ -272,6 +275,14 @@ const ViewNotes = () => {
     pdf.save(`note_${id}.pdf`);
   };
 
+  const [filterSubTargetGoal, setFilterSubTargetGoal] = useState(''); // For filtering
+  const [subTargetGoalOptions, setSubTargetGoalOptions] = useState([]); // Store unique subTargetGoals
+
+  // Filter notes by selected subTargetGoal
+  const filteredNotes = filterSubTargetGoal
+    ? notes.filter(note => note.subTargetGoal === filterSubTargetGoal)
+    : notes;
+
   return (
     <div
       className={`container mx-auto px-4 py-6 mt-10 ${
@@ -313,9 +324,27 @@ const ViewNotes = () => {
             }`}
           >
             <h2 className="text-2xl mb-4">Notes</h2>
+            {/* Filter dropdown */}
+            <div className="flex flex-col sm:flex-row justify-center py-2 space-y-4 sm:space-x-4 sm:space-y-0 px-4">
+            <select
+              id="filter"
+              value={filterSubTargetGoal}
+              onChange={(e) => setFilterSubTargetGoal(e.target.value)}
+              className={`px-4 py-2 rounded ${
+                isDarkMode
+                  ? "bg-gray-700 text-white placeholder-gray-400"
+                  : "border bg-white text-black placeholder-gray-600"
+              }`}
+            >
+              <option value="">All Sub Target Goals</option>
+              {subTargetGoalOptions.map((goal) => (
+                <option key={goal} value={goal}>{goal}</option>
+              ))}
+            </select>
+            </div>
             <ul className="space-y-4">
-              {notes.length > 0 ? (
-                notes.map((note) => (
+              {filteredNotes.length > 0 ? (
+                filteredNotes.map((note) => (
                   <li
                     key={note._id}
                     className={`border-b py-4 flex justify-between items-start ${
