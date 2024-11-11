@@ -7,6 +7,7 @@ import { useTheme } from "../context/ThemeContext";
 import { updateCourse } from "../dataService";
 
 const EditCourse = () => {
+  const correctPassword = "12345";
   const { id } = useParams();
   const navigate = useNavigate();
   const { theme } = useTheme();
@@ -245,6 +246,10 @@ const EditCourse = () => {
           // After fetching from the API, save it in localStorage
           storedCourses.push(data);
           localStorage.setItem("courses", JSON.stringify(storedCourses));
+          const storedPassword = localStorage.getItem("password");
+    if (storedPassword === correctPassword) {
+      setIsAuthorized(true);
+    }
         } catch (error) {
           console.error("Error fetching course:", error);
           toast.error("Error fetching course data");
@@ -292,9 +297,9 @@ const EditCourse = () => {
 
   const handlePasswordSubmit = (e) => {
     e.preventDefault();
-    const correctPassword = "12345"; // Define the correct password here
     if (password === correctPassword) {
       setIsAuthorized(true);
+      localStorage.setItem("password", password); // Store the password in localStorage
       toast.success("Access granted!");
     } else {
       toast.error("Incorrect password. Please try again.");
@@ -320,7 +325,7 @@ const EditCourse = () => {
           <input
             type="password"
             id="password"
-            autoFocus // Add autofocus here
+            autoFocus
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className={`border p-2 rounded w-full ${

@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import jsPDF from "jspdf"; // Import jsPDF
 
 const ViewNotes = () => {
+  const correctPassword = "12345";
   const navigate = useNavigate();
   const { id } = useParams(); // Get course ID from URL
   const { theme } = useTheme(); // Use theme context
@@ -54,6 +55,10 @@ const ViewNotes = () => {
         } else {
           throw new Error("Notes field is missing in the response.");
         }
+        const storedPassword = localStorage.getItem("password");
+    if (storedPassword === correctPassword) {
+      setIsAuthorized(true);
+    }
       } catch (error) {
         // Log error details for debugging
         console.error("Error fetching notes:", error);
@@ -286,7 +291,6 @@ const ViewNotes = () => {
           <input
             type="password"
             id="password"
-            autoFocus
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className={`border p-2 rounded w-full ${

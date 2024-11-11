@@ -408,6 +408,11 @@ const ViewCourse = () => {
             </button>
           </div>
         </div>
+        <div className="flex justify-center items-center mt-2">
+          <Link to={`/courses/`} className="mt-4 inline-block text-gray-500">
+            Back to CourseList
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -8,16 +8,23 @@ import jsPDF from "jspdf"; // Import jsPDF
 import { fetchNoteById } from "../dataService";
 
 const ViewNoteOfViewNotes = () => {
+  const correctPassword = "12345";
   const { courseid, id } = useParams(); // Note ID for fetching specific note details
   const { theme } = useTheme();
   const isDarkMode = theme === "dark";
   const [note, setNote] = useState(null);
+  const [password, setPassword] = useState("");
+  const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
     const fetchNoteDetails = async () => {
       try {
         const data = await fetchNoteById(id); // Call the service function to fetch the note
         setNote(data.note); // Update state with the fetched note
+        const storedPassword = localStorage.getItem("password");
+    if (storedPassword === correctPassword) {
+      setIsAuthorized(true);
+    }
       } catch (error) {
         console.error("Error fetching note:", error);
         toast.error("Error fetching note details");
@@ -45,9 +52,17 @@ const ViewNoteOfViewNotes = () => {
     pdf.save(`note_${id}.pdf`);
   };
 
-  if (!note) {
-    return <p className="text-center mt-4">Loading note details...</p>;
-  }
+  const handlePasswordSubmit = (e) => {
+    e.preventDefault();
+    const correctPassword = "12345";
+    if (password === correctPassword) {
+      setIsAuthorized(true);
+      localStorage.setItem("password", password); // Store the password in localStorage
+      toast.success("Access granted!");
+    } else {
+      toast.error("Incorrect password. Please try again.");
+    }
+  };
 
   return (
     <div
@@ -55,6 +70,35 @@ const ViewNoteOfViewNotes = () => {
         isDarkMode ? "bg-gray-900" : "bg-white"
       }`}
     >
+      {!isAuthorized ? (
+        <form
+          onSubmit={handlePasswordSubmit}
+          className={`p-6 rounded shadow-md ${
+            isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+          }`}
+        >
+          <label htmlFor="password" className="block mb-2">
+            🔒 Prove You're Worthy! Enter the Secret Code:
+          </label>
+          <input
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className={`border p-2 rounded w-full ${
+              isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
+            }`}
+            required
+          />
+          <button
+            type="submit"
+            className="bg-blue-500 text-white p-2 rounded mt-4"
+          >
+            Submit
+          </button>
+        </form>
+      ) : (
+        <>
       <div
         className={`shadow-md rounded-lg p-6 ${
           isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
@@ -103,6 +147,7 @@ const ViewNoteOfViewNotes = () => {
           </button>
         </div>
       </div>
+      </>)}
       <ToastContainer />
     </div>
   );

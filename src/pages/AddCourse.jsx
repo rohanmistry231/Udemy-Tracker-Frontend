@@ -1,11 +1,12 @@
 // src/pages/AddCourse.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "../context/ThemeContext"; // Import theme context
 import { createCourse } from "../dataService";
 
 const AddCourse = ({ onAdd }) => {
+  const correctPassword = "12345";
   const { theme } = useTheme(); // Use theme context
   const [password, setPassword] = useState("");
   const [isAuthorized, setIsAuthorized] = useState(false);
@@ -239,11 +240,19 @@ const AddCourse = ({ onAdd }) => {
     "Version Control": ["Git and Github", "Test"],
   };
 
+  useEffect(() => {
+    const storedPassword = localStorage.getItem("password");
+    if (storedPassword === correctPassword) {
+      setIsAuthorized(true);
+    }
+  }, []);
+
   const handlePasswordSubmit = (e) => {
     e.preventDefault();
     const correctPassword = "12345"; // Define the correct password here
     if (password === correctPassword) {
       setIsAuthorized(true);
+      localStorage.setItem("password", password); // Store the password in localStorage
       toast.success("Access granted!");
     } else {
       toast.error("Incorrect password. Please try again.");

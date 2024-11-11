@@ -114,8 +114,26 @@ async function getCourseById(courseId) {
   }
 }
 
-// Function to update a course in the backend
+// Function to update a course in local storage and sync with the backend
 async function updateCourse(courseId, courseData) {
+  let courses = getCoursesFromLocalStorage();
+  const courseIndex = courses.findIndex((course) => course._id === courseId);
+
+  if (courseIndex !== -1) {
+    // Update the course in local storage
+    courses[courseIndex] = { ...courses[courseIndex], ...courseData };
+  } else {
+    // Add course only if it doesn't already exist
+    courses.push({ _id: courseId, ...courseData });
+  }
+
+  // Remove any duplicate entries by creating a Set based on `_id`
+  const uniqueCourses = Array.from(new Map(courses.map((course) => [course._id, course])).values());
+
+  // Save the unique courses back to local storage
+  saveCoursesToLocalStorage(uniqueCourses);
+
+  // Sync the updated course with the backend
   const url = `${BASE_URL}/${courseId}`;
   try {
     const response = await fetch(url, {
@@ -125,20 +143,24 @@ async function updateCourse(courseId, courseData) {
       },
       body: JSON.stringify(courseData),
     });
-    const data = await response.json();
-    // Update the course in local storage after sync
-    let courses = getCoursesFromLocalStorage();
-    const index = courses.findIndex((course) => course._id === courseId);
-    if (index !== -1) {
-      courses[index] = data;
-      saveCoursesToLocalStorage(courses);
+
+    if (!response.ok) {
+      throw new Error("Failed to update course in backend");
     }
-    return data;
+
+    const updatedCourse = await response.json();
+
+    // Update local storage with the backend response to ensure consistency
+    uniqueCourses[courseIndex] = updatedCourse;
+    saveCoursesToLocalStorage(uniqueCourses);
+
+    return updatedCourse;
   } catch (error) {
     console.error("Error updating course:", error);
     throw error;
   }
 }
+
 
 // Function to sync courses between local storage and the backend
 async function syncCoursesWithBackend() {

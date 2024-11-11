@@ -12,6 +12,7 @@ import {
 } from "../dataService";
 
 const AddNote = () => {
+  const correctPassword = "12345";
   const navigate = useNavigate();
   const { theme } = useTheme();
   const isDarkMode = theme === "dark";
@@ -23,6 +24,8 @@ const AddNote = () => {
   const [mainCategory, setMainCategory] = useState("");
   const [targetGoal, setTargetGoal] = useState("");
   const [subTargetGoal, setSubTargetGoal] = useState("");
+  const [password, setPassword] = useState("");
+  const [isAuthorized, setIsAuthorized] = useState(false);
 
   const categories = [
     "Data Science",
@@ -240,6 +243,10 @@ const AddNote = () => {
 
         // Set the courses in the state
         setCourses(formattedCourses);
+        const storedPassword = localStorage.getItem("password");
+    if (storedPassword === correctPassword) {
+      setIsAuthorized(true);
+    }
       } catch (error) {
         console.error("Error fetching courses from localStorage:", error);
       }
@@ -304,12 +311,54 @@ const AddNote = () => {
     }
   };
 
+  const handlePasswordSubmit = (e) => {
+    e.preventDefault();
+    const correctPassword = "12345"; // Define the correct password here
+    if (password === correctPassword) {
+      setIsAuthorized(true);
+      localStorage.setItem("password", password); // Store the password in localStorage
+      toast.success("Access granted!");
+    } else {
+      toast.error("Incorrect password. Please try again.");
+    }
+  };
+
   return (
     <div
       className={`container mx-auto px-4 py-6 mt-12 ${
         isDarkMode ? "bg-gray-900" : "bg-white"
       }`}
     >
+      {!isAuthorized ? (
+        <form
+          onSubmit={handlePasswordSubmit}
+          className={`p-6 rounded shadow-md mt-12 ${
+            isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+          }`}
+        >
+          <label htmlFor="password" className="block mb-2">
+            🔒 Prove You're Worthy! Enter the Secret Code:
+          </label>
+          <input
+            type="password"
+            id="password"
+            autoFocus // Add autofocus here
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className={`border p-2 rounded w-full ${
+              isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
+            }`}
+            required
+          />
+          <button
+            type="submit"
+            className="bg-blue-500 text-white p-2 rounded mt-4"
+          >
+            Submit
+          </button>
+        </form>
+      ) : (
+        <>
       <div
         className={`shadow-md rounded-lg p-6 ${
           isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
@@ -433,6 +482,7 @@ const AddNote = () => {
           </button>
         </form>
       </div>
+      </> )}
     </div>
   );
 };

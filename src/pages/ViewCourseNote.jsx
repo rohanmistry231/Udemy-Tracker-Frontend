@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "../context/ThemeContext";
 
 const ViewCourseNote = () => {
+  const correctPassword = "12345";
   const { courseid, id } = useParams();
   const { theme } = useTheme();
   const isDarkMode = theme === "dark";
@@ -16,6 +17,9 @@ const ViewCourseNote = () => {
   const [mainTargetCategory, setMainTargetCategory] = useState("");
   const [mainTargetGoal, setMainTargetGoal] = useState("");
   const [subTargetGoal, setSubTargetGoal] = useState("");
+  const [password, setPassword] = useState("");
+  const [isAuthorized, setIsAuthorized] = useState(false);
+
 
   useEffect(() => {
     const fetchNote = async () => {
@@ -38,6 +42,10 @@ const ViewCourseNote = () => {
         setMainTargetCategory(data.note.mainTargetCategory || "");
         setMainTargetGoal(data.note.mainTargetGoal || "");
         setSubTargetGoal(data.note.subTargetGoal || "");
+        const storedPassword = localStorage.getItem("password");
+    if (storedPassword === correctPassword) {
+      setIsAuthorized(true);
+    }
       } catch (error) {
         console.error("Error fetching note:", error);
         toast.error("Error fetching note details");
@@ -96,9 +104,17 @@ const ViewCourseNote = () => {
     }
   };
 
-  if (!note) {
-    return <p className="text-center mt-4">Loading note details...</p>;
-  }
+  const handlePasswordSubmit = (e) => {
+    e.preventDefault();
+    const correctPassword = "12345";
+    if (password === correctPassword) {
+      setIsAuthorized(true);
+      localStorage.setItem("password", password); // Store the password in localStorage
+      toast.success("Access granted!");
+    } else {
+      toast.error("Incorrect password. Please try again.");
+    }
+  };
 
   return (
     <div
@@ -106,6 +122,35 @@ const ViewCourseNote = () => {
         isDarkMode ? "bg-gray-900" : "bg-white"
       }`}
     >
+      {!isAuthorized ? (
+        <form
+          onSubmit={handlePasswordSubmit}
+          className={`p-6 rounded shadow-md ${
+            isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+          }`}
+        >
+          <label htmlFor="password" className="block mb-2">
+            🔒 Prove You're Worthy! Enter the Secret Code:
+          </label>
+          <input
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className={`border p-2 rounded w-full ${
+              isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
+            }`}
+            required
+          />
+          <button
+            type="submit"
+            className="bg-blue-500 text-white p-2 rounded mt-4"
+          >
+            Submit
+          </button>
+        </form>
+      ) : (
+        <>
       <div
         className={`shadow-md rounded-lg p-6 ${
           isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
@@ -229,6 +274,7 @@ const ViewCourseNote = () => {
           </>
         )}
       </div>
+      </>)}
       <ToastContainer />
     </div>
   );

@@ -7,6 +7,7 @@ import { useTheme } from "../context/ThemeContext"; // Import theme context
 import { getCourseName, addNoteToCourse } from "../dataService";
 
 const AddNotes = () => {
+  const correctPassword = "12345";
   const { id } = useParams();
   const navigate = useNavigate();
   const { theme } = useTheme(); // Use theme context
@@ -231,6 +232,10 @@ const AddNotes = () => {
       try {
         const name = await getCourseName(id); // Call the service function
         setCourseName(name); // Set the course name in the state
+        const storedPassword = localStorage.getItem("password");
+    if (storedPassword === correctPassword) {
+      setIsAuthorized(true);
+    }
       } catch (error) {
         console.error("Error fetching course name:", error);
         setCourseName("Error fetching course name"); // Optional fallback
@@ -269,6 +274,7 @@ const AddNotes = () => {
     const correctPassword = "12345";
     if (password === correctPassword) {
       setIsAuthorized(true);
+      localStorage.setItem("password", password); // Store the password in localStorage
       toast.success("Access granted!");
     } else {
       toast.error("Incorrect password. Please try again.");
@@ -309,6 +315,7 @@ const AddNotes = () => {
           </button>
         </form>
       ) : (
+        <>
         <div
           className={`shadow-md rounded-lg p-6 ${
             isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
@@ -414,6 +421,7 @@ const AddNotes = () => {
             </button>
           </form>
         </div>
+        </>
       )}
     </div>
   );
