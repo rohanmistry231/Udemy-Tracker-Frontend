@@ -221,7 +221,7 @@ const AddNote = () => {
     "Version Control": ["Git and Github", "Test"],
   };
   const subGoals = {
-    Algorithms: ["Sorting", "Graph Theory", "Dynamic Programming"],
+    "Algorithms": ["Sorting", "Graph Theory", "Dynamic Programming"],
     "Artificial Intelligence": [
       "Machine Learning",
       "Neural Networks",
