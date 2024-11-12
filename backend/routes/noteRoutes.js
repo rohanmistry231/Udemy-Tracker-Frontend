@@ -4,16 +4,17 @@ const Course = require("../models/Course"); // Import Course model
 const router = express.Router({ mergeParams: true }); // Merge params for courseId access
 
 // Fetch all notes across all courses with their respective course IDs
+// Fetch all notes across all courses with their respective course IDs and names
 router.get("/all", async (req, res) => {
   try {
-    const courses = await Course.find({}, "_id notes"); // Fetch course ID and notes only
+    const courses = await Course.find({}, "_id name notes"); // Fetch course ID, name, and notes
 
-    // Flatten notes array and include course ID with each note
-    const allNotes = courses.flatMap((course) => 
+    // Flatten notes array and include course ID and name with each note
+    const allNotes = courses.flatMap((course) =>
       course.notes.map((note) => ({
         ...note.toObject(), // Convert Mongoose document to plain object
         courseId: course._id, // Add course ID to each note
-        courseName: course.name // Add course name to each note
+        courseName: course.name, // Add course name to each note
       }))
     );
 
