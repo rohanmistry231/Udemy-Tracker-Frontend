@@ -292,6 +292,13 @@ const Notes = () => {
                     isDarkMode ? "text-gray-400" : "text-gray-600"
                   }`}
                 >
+                  Answer: {note.answer}
+                </p>
+                <p
+                  className={`${
+                    isDarkMode ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
                   Main Goal: {note.mainTargetCategory}
                 </p>
                 <p
@@ -307,13 +314,6 @@ const Notes = () => {
                   }`}
                 >
                   Sub Goal: {note.subTargetGoal}
-                </p>
-                <p
-                  className={`${
-                    isDarkMode ? "text-gray-400" : "text-gray-600"
-                  }`}
-                >
-                  Answer: {note.answer}
                 </p>
                 <div className="flex flex-wrap gap-2 mt-4">
                   <button

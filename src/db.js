@@ -2025,6 +2025,9 @@ export const subGoals = {
     "GitHub Pages for Hosting Static Sites",
     "Security Best Practices for Git and GitHub",
   ],
+  "Test": [
+    "Test"
+  ]
 };
 
 export const categoryPriorities = {
@@ -2045,4 +2048,4 @@ export const categoryPriorities = {
     "Operating System": "Parallel priority",
     "Personal Development": "Parallel priority",
     "Version Control": "Parallel priority",
-  };
+};
