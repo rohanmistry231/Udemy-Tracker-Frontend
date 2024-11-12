@@ -282,7 +282,7 @@ const Notes = () => {
                 <h3 className="font-bold text-lg">{note.title}</h3>
                 <p
                   className={`font-bold ${
-                    isDarkMode ? "text-gray-400" : "text-gray-600"
+                    isDarkMode ? "text-purple-400" : "text-purple-600"
                   }`}
                 >
                   Question: {note.question}
