@@ -189,6 +189,7 @@ const AddNotes = () => {
                   Question:
                 </label>
                 <input
+                  placeholder="Question..."
                   type="text"
                   id="question"
                   value={question}
