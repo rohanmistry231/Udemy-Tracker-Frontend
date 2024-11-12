@@ -9,9 +9,11 @@ import {
   getNotesFromLocalStorage,
   saveNotesToLocalStorage,
 } from "../dataService";
-import { categories, targetGoals, subGoals } from '../db';
+import { categories, targetGoals, subGoals } from "../db";
+import { Editor } from "@tinymce/tinymce-react";
 
 const AddNote = () => {
+  const handleEditorChange = (content) => setAnswer(content);
   const correctPassword = "12345";
   const navigate = useNavigate();
   const { theme } = useTheme();
@@ -34,8 +36,8 @@ const AddNote = () => {
         const formattedCourses = storedCourses.map((course) => ({
           value: course._id,
           label: course.name,
-          mainCategory: course.category, // Ensure mainCategory is in course data
-          targetGoal: course.subCategory,      // Ensure targetGoal is in course data
+          mainCategory: course.category,
+          targetGoal: course.subCategory,
         }));
         setCourses(formattedCourses);
 
@@ -54,9 +56,9 @@ const AddNote = () => {
   const handleCourseChange = (selectedOption) => {
     setSelectedCourse(selectedOption);
     if (selectedOption) {
-      setMainCategory(selectedOption.mainCategory || ""); // Auto-set mainCategory
-      setTargetGoal(selectedOption.targetGoal || "");     // Auto-set targetGoal
-      setSubTargetGoal("");                               // Reset subTargetGoal if needed
+      setMainCategory(selectedOption.mainCategory || "");
+      setTargetGoal(selectedOption.targetGoal || "");
+      setSubTargetGoal("");
     } else {
       setMainCategory("");
       setTargetGoal("");
@@ -147,7 +149,10 @@ const AddNote = () => {
             }`}
             required
           />
-          <button type="submit" className="bg-blue-500 text-white p-2 rounded mt-4">
+          <button
+            type="submit"
+            className="bg-blue-500 text-white p-2 rounded mt-4"
+          >
             Submit
           </button>
         </form>
@@ -180,10 +185,11 @@ const AddNote = () => {
 
             <select
               value={mainCategory}
+              onChange={(e) => setMainCategory(e.target.value)}
               className={`border p-2 rounded w-full ${
                 isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
               }`}
-              disabled={Boolean(mainCategory)} // Disable if auto-filled
+              disabled={Boolean(mainCategory)}
             >
               <option value="">Select Main Category</option>
               {categories.map((category) => (
@@ -195,10 +201,11 @@ const AddNote = () => {
 
             <select
               value={targetGoal}
+              onChange={(e) => setTargetGoal(e.target.value)}
               className={`border p-2 rounded w-full ${
                 isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
               }`}
-              disabled={Boolean(targetGoal)} // Disable if auto-filled
+              disabled={Boolean(targetGoal)}
             >
               <option value="">Select Target Goal</option>
               {mainCategory &&
@@ -229,6 +236,7 @@ const AddNote = () => {
             <input
               type="text"
               id="question"
+              placeholder="Question..."
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
               className={`border p-2 rounded w-full ${
@@ -237,17 +245,93 @@ const AddNote = () => {
               required
             />
 
-            <textarea
-              id="answer"
-              value={answer}
-              onChange={(e) => setAnswer(e.target.value)}
-              className={`border p-2 rounded w-full ${
-                isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
-              }`}
-              required
+            <Editor
+              onEditorChange={handleEditorChange}
+              apiKey="tbfczm3qaa8n4zsi2ru3iiemt1loveg07jq70ahk7isz17zx"
+              init={{
+                plugins: [
+                  // Core editing features
+                  "anchor",
+                  "autolink",
+                  "charmap",
+                  "codesample",
+                  "emoticons",
+                  "image",
+                  "link",
+                  "lists",
+                  "media",
+                  "searchreplace",
+                  "table",
+                  "visualblocks",
+                  "wordcount",
+                  // Your account includes a free trial of TinyMCE premium features
+                  // Try the most popular premium features until Nov 26, 2024:
+                  "checklist",
+                  "mediaembed",
+                  "casechange",
+                  "export",
+                  "formatpainter",
+                  "pageembed",
+                  "a11ychecker",
+                  "tinymcespellchecker",
+                  "permanentpen",
+                  "powerpaste",
+                  "advtable",
+                  "advcode",
+                  "editimage",
+                  "advtemplate",
+                  "ai",
+                  "mentions",
+                  "tinycomments",
+                  "tableofcontents",
+                  "footnotes",
+                  "mergetags",
+                  "autocorrect",
+                  "typography",
+                  "inlinecss",
+                  "markdown",
+                  // Early access to document converters
+                  "importword",
+                  "exportword",
+                  "exportpdf",
+                ],
+                toolbar:
+                  "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
+                tinycomments_mode: "embedded",
+                tinycomments_author: "Author name",
+                mergetags_list: [
+                  { value: "First.Name", title: "First Name" },
+                  { value: "Email", title: "Email" },
+                ],
+                ai_request: (request, respondWith) =>
+                  respondWith.string(() =>
+                    Promise.reject("See docs to implement AI Assistant")
+                  ),
+                exportpdf_converter_options: {
+                  format: "Letter",
+                  margin_top: "1in",
+                  margin_right: "1in",
+                  margin_bottom: "1in",
+                  margin_left: "1in",
+                },
+                exportword_converter_options: { document: { size: "Letter" } },
+                importword_converter_options: {
+                  formatting: {
+                    styles: "inline",
+                    resets: "inline",
+                    defaults: "inline",
+                  },
+                },
+                placeholder: "Answer...",
+                skin: isDarkMode ? "oxide-dark" : "oxide",
+                content_css: isDarkMode ? "dark" : "default",
+              }}
             />
 
-            <button type="submit" className="bg-blue-500 text-white p-2 rounded">
+            <button
+              type="submit"
+              className="bg-blue-500 text-white p-2 rounded"
+            >
               Add Note
             </button>
           </form>

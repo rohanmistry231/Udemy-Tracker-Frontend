@@ -324,9 +324,8 @@ const ViewCourse = () => {
                           <p>
                             <strong>Question:</strong> {note.question}
                           </p>
-                          <p>
-                            <strong>Answer:</strong> {note.answer}
-                          </p>
+                            <strong>Answer:</strong>
+                          <div className="text-ellipsis overflow-hidden line-clamp-2" dangerouslySetInnerHTML={{ __html: note.answer }} />
                           <p>
                             <strong>Sub Target Goal:</strong>{" "}
                             {note.subTargetGoal}

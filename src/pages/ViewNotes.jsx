@@ -455,7 +455,7 @@ const ViewNotes = () => {
                           >
                             {note.question}
                           </h3>
-                          <p className="text-gray-600">{note.answer}</p>
+                          <div className="text-gray-600 text-ellipsis overflow-hidden line-clamp-2" dangerouslySetInnerHTML={{ __html: note.answer }} />
                           <p className="text-gray-600">
                             Sub Target Goal: {note.subTargetGoal || "N/A"}
                           </p>

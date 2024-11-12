@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "../context/ThemeContext";
 import { fetchNoteById } from "../dataService";
 import { categories as mainTargetCategories, targetGoals, subGoals as subTargetGoals } from '../db';
+import { Editor } from "@tinymce/tinymce-react";
 
 const EditNote = () => {
   const correctPassword = "12345";
@@ -99,6 +100,13 @@ const EditNote = () => {
     }
   };
 
+  const handleEditorChange = (content) => {
+    setNote((prevNote) => ({
+      ...prevNote,
+      answer: content, // Update the answer with the editor content
+    }));
+  };
+
   return (
     <div
       className={`container mx-auto px-4 py-6 mt-12 ${
@@ -161,16 +169,91 @@ const EditNote = () => {
             <label htmlFor="answer" className="block mb-2">
               Answer:
             </label>
-            <textarea
-              id="answer"
-              name="answer"
-              value={note.answer}
-              onChange={handleChange}
-              className={`border p-2 w-full ${
-                isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
-              }`}
-              required
-            />
+            <Editor
+                  initialValue={note.answer}
+                  onEditorChange={handleEditorChange}
+                  apiKey="tbfczm3qaa8n4zsi2ru3iiemt1loveg07jq70ahk7isz17zx"
+                  init={{
+                    plugins: [
+                      // Core editing features
+                      "anchor",
+                      "autolink",
+                      "charmap",
+                      "codesample",
+                      "emoticons",
+                      "image",
+                      "link",
+                      "lists",
+                      "media",
+                      "searchreplace",
+                      "table",
+                      "visualblocks",
+                      "wordcount",
+                      // Your account includes a free trial of TinyMCE premium features
+                      // Try the most popular premium features until Nov 26, 2024:
+                      "checklist",
+                      "mediaembed",
+                      "casechange",
+                      "export",
+                      "formatpainter",
+                      "pageembed",
+                      "a11ychecker",
+                      "tinymcespellchecker",
+                      "permanentpen",
+                      "powerpaste",
+                      "advtable",
+                      "advcode",
+                      "editimage",
+                      "advtemplate",
+                      "ai",
+                      "mentions",
+                      "tinycomments",
+                      "tableofcontents",
+                      "footnotes",
+                      "mergetags",
+                      "autocorrect",
+                      "typography",
+                      "inlinecss",
+                      "markdown",
+                      // Early access to document converters
+                      "importword",
+                      "exportword",
+                      "exportpdf",
+                    ],
+                    toolbar:
+                      "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
+                    tinycomments_mode: "embedded",
+                    tinycomments_author: "Author name",
+                    mergetags_list: [
+                      { value: "First.Name", title: "First Name" },
+                      { value: "Email", title: "Email" },
+                    ],
+                    ai_request: (request, respondWith) =>
+                      respondWith.string(() =>
+                        Promise.reject("See docs to implement AI Assistant")
+                      ),
+                    exportpdf_converter_options: {
+                      format: "Letter",
+                      margin_top: "1in",
+                      margin_right: "1in",
+                      margin_bottom: "1in",
+                      margin_left: "1in",
+                    },
+                    exportword_converter_options: {
+                      document: { size: "Letter" },
+                    },
+                    importword_converter_options: {
+                      formatting: {
+                        styles: "inline",
+                        resets: "inline",
+                        defaults: "inline",
+                      },
+                    },
+                    placeholder: "Answer...",
+                    skin: isDarkMode ? "oxide-dark" : "oxide",
+                    content_css: isDarkMode ? "dark" : "default",
+                  }}
+                />
           </div>
           <div className="mb-4">
             <label htmlFor="mainTargetCategory" className="block mb-2">

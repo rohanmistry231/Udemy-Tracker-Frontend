@@ -111,7 +111,7 @@ const ViewNoteOfViewNotes = () => {
         </div>
         <div className="mb-4">
           <h3 className="font-semibold text-lg">Answer:</h3>
-          <p className="mt-2">{note.answer}</p>
+          <div dangerouslySetInnerHTML={{ __html: note.answer }} />
         </div>
         <div className="mb-4">
           <h3 className="font-semibold text-lg">Main Target Category:</h3>

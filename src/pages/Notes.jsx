@@ -9,7 +9,7 @@ import {
   saveNotesToLocalStorage,
   syncNotesWithBackend,
 } from "../dataService";
-import { categories, targetGoals } from '../db';
+import { categories, targetGoals } from "../db";
 
 const Notes = () => {
   const [notes, setNotes] = useState([]);
@@ -287,13 +287,17 @@ const Notes = () => {
                 >
                   Question: {note.question}
                 </p>
-                <p
+                <div
                   className={`${
                     isDarkMode ? "text-gray-400" : "text-gray-600"
                   }`}
                 >
-                  Answer: {note.answer}
-                </p>
+                  Answer:{" "}
+                  <div
+                    className="text-ellipsis overflow-hidden line-clamp-2"
+                    dangerouslySetInnerHTML={{ __html: note.answer }}
+                  />
+                </div>
                 <p
                   className={`${
                     isDarkMode ? "text-gray-400" : "text-gray-600"
