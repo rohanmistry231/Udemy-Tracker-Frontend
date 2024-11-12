@@ -1,4 +1,3 @@
-// src/pages/AddNote.js
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -31,21 +30,19 @@ const AddNote = () => {
   useEffect(() => {
     const fetchCourses = () => {
       try {
-        // Fetch courses from localStorage
         const storedCourses = getCoursesFromLocalStorage();
-
-        // If courses are found in localStorage, format them accordingly
         const formattedCourses = storedCourses.map((course) => ({
           value: course._id,
           label: course.name,
+          mainCategory: course.category, // Ensure mainCategory is in course data
+          targetGoal: course.subCategory,      // Ensure targetGoal is in course data
         }));
-
-        // Set the courses in the state
         setCourses(formattedCourses);
+
         const storedPassword = localStorage.getItem("password");
-    if (storedPassword === correctPassword) {
-      setIsAuthorized(true);
-    }
+        if (storedPassword === correctPassword) {
+          setIsAuthorized(true);
+        }
       } catch (error) {
         console.error("Error fetching courses from localStorage:", error);
       }
@@ -54,16 +51,27 @@ const AddNote = () => {
     fetchCourses();
   }, []);
 
+  const handleCourseChange = (selectedOption) => {
+    setSelectedCourse(selectedOption);
+    if (selectedOption) {
+      setMainCategory(selectedOption.mainCategory || ""); // Auto-set mainCategory
+      setTargetGoal(selectedOption.targetGoal || "");     // Auto-set targetGoal
+      setSubTargetGoal("");                               // Reset subTargetGoal if needed
+    } else {
+      setMainCategory("");
+      setTargetGoal("");
+      setSubTargetGoal("");
+    }
+  };
+
   const handleAddNote = async (e) => {
     e.preventDefault();
-
     if (!selectedCourse) {
       toast.error("Please select a course.");
       return;
     }
 
     try {
-      // Prepare the note object to be added
       const newNote = {
         question,
         answer,
@@ -72,7 +80,6 @@ const AddNote = () => {
         subTargetGoal,
       };
 
-      // POST the new note to the backend
       const response = await fetch(
         `https://udemy-tracker.vercel.app/courses/${selectedCourse.value}/notes`,
         {
@@ -86,20 +93,12 @@ const AddNote = () => {
         throw new Error("Failed to add note");
       }
 
-      // Add the new note to localStorage if the backend request succeeds
       const newNoteData = await response.json();
-
-      // Assuming the localStorage already contains notes for the course, update them
-      let storedNotes = getNotesFromLocalStorage();
-      storedNotes = storedNotes || {}; // Initialize an empty object if no notes exist
+      let storedNotes = getNotesFromLocalStorage() || {};
       if (!storedNotes[selectedCourse.value]) {
-        storedNotes[selectedCourse.value] = []; // Create an empty array for the course if it doesn't exist
+        storedNotes[selectedCourse.value] = [];
       }
-
-      // Add the newly created note to the specific course's notes
       storedNotes[selectedCourse.value].push(newNoteData);
-
-      // Save the updated notes back to localStorage
       saveNotesToLocalStorage(storedNotes);
 
       toast.success("Note added successfully!");
@@ -112,10 +111,9 @@ const AddNote = () => {
 
   const handlePasswordSubmit = (e) => {
     e.preventDefault();
-    const correctPassword = "12345"; // Define the correct password here
     if (password === correctPassword) {
       setIsAuthorized(true);
-      localStorage.setItem("password", password); // Store the password in localStorage
+      localStorage.setItem("password", password);
       toast.success("Access granted!");
     } else {
       toast.error("Incorrect password. Please try again.");
@@ -141,7 +139,7 @@ const AddNote = () => {
           <input
             type="password"
             id="password"
-            autoFocus // Add autofocus here
+            autoFocus
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className={`border p-2 rounded w-full ${
@@ -149,106 +147,85 @@ const AddNote = () => {
             }`}
             required
           />
-          <button
-            type="submit"
-            className="bg-blue-500 text-white p-2 rounded mt-4"
-          >
+          <button type="submit" className="bg-blue-500 text-white p-2 rounded mt-4">
             Submit
           </button>
         </form>
       ) : (
-        <>
-      <div
-        className={`shadow-md rounded-lg p-6 ${
-          isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
-        }`}
-      >
-        <h2 className="text-2xl font-bold mb-4">Add Note</h2>
+        <div
+          className={`shadow-md rounded-lg p-6 ${
+            isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+          }`}
+        >
+          <h2 className="text-2xl font-bold mb-4">Add Note</h2>
 
-        <form onSubmit={handleAddNote} className="space-y-4">
-          {/* Searchable Course Dropdown */}
-          <Select
-            options={courses}
-            value={selectedCourse}
-            onChange={(selectedOption) => setSelectedCourse(selectedOption)}
-            placeholder="Select Course"
-            className="w-full"
-            theme={(theme) => ({
-              ...theme,
-              colors: {
-                ...theme.colors,
-                primary: isDarkMode ? "#1f2937" : "#fff",
-                primary25: isDarkMode ? "#4b5563" : "#e2e8f0",
-                neutral0: isDarkMode ? "#1f2937" : "#fff", // Background color
-                neutral80: isDarkMode ? "#fff" : "#000", // Text color in the input area
-              },
-            })}
-          />
+          <form onSubmit={handleAddNote} className="space-y-4">
+            <Select
+              options={courses}
+              value={selectedCourse}
+              onChange={handleCourseChange}
+              placeholder="Select Course"
+              className="w-full"
+              theme={(theme) => ({
+                ...theme,
+                colors: {
+                  ...theme.colors,
+                  primary: isDarkMode ? "#1f2937" : "#fff",
+                  primary25: isDarkMode ? "#4b5563" : "#e2e8f0",
+                  neutral0: isDarkMode ? "#1f2937" : "#fff",
+                  neutral80: isDarkMode ? "#fff" : "#000",
+                },
+              })}
+            />
 
-          {/* Main Category Dropdown */}
-          <select
-            value={mainCategory}
-            onChange={(e) => {
-              setMainCategory(e.target.value);
-              setTargetGoal("");
-              setSubTargetGoal("");
-            }}
-            className={`border p-2 rounded w-full ${
-              isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
-            }`}
-          >
-            <option value="">Select Main Category</option>
-            {categories.map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
-
-          {/* Target Goal Dropdown */}
-          <select
-            value={targetGoal}
-            onChange={(e) => {
-              setTargetGoal(e.target.value);
-              setSubTargetGoal("");
-            }}
-            className={`border p-2 rounded w-full ${
-              isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
-            }`}
-            disabled={!mainCategory}
-          >
-            <option value="">Select Target Goal</option>
-            {mainCategory &&
-              targetGoals[mainCategory]?.map((goal) => (
-                <option key={goal} value={goal}>
-                  {goal}
+            <select
+              value={mainCategory}
+              className={`border p-2 rounded w-full ${
+                isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
+              }`}
+              disabled={Boolean(mainCategory)} // Disable if auto-filled
+            >
+              <option value="">Select Main Category</option>
+              {categories.map((category) => (
+                <option key={category} value={category}>
+                  {category}
                 </option>
               ))}
-          </select>
+            </select>
 
-          {/* Sub Target Goal Dropdown */}
-          <select
-            value={subTargetGoal}
-            onChange={(e) => setSubTargetGoal(e.target.value)}
-            className={`border p-2 rounded w-full ${
-              isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
-            }`}
-            disabled={!targetGoal}
-          >
-            <option value="">Select Sub Target Goal</option>
-            {targetGoal &&
-              subGoals[targetGoal]?.map((subGoal) => (
-                <option key={subGoal} value={subGoal}>
-                  {subGoal}
-                </option>
-              ))}
-          </select>
+            <select
+              value={targetGoal}
+              className={`border p-2 rounded w-full ${
+                isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
+              }`}
+              disabled={Boolean(targetGoal)} // Disable if auto-filled
+            >
+              <option value="">Select Target Goal</option>
+              {mainCategory &&
+                targetGoals[mainCategory]?.map((goal) => (
+                  <option key={goal} value={goal}>
+                    {goal}
+                  </option>
+                ))}
+            </select>
 
-          {/* Question and Answer Fields */}
-          <div>
-            <label htmlFor="question" className="block mb-1">
-              Question:
-            </label>
+            <select
+              value={subTargetGoal}
+              onChange={(e) => setSubTargetGoal(e.target.value)}
+              className={`border p-2 rounded w-full ${
+                isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
+              }`}
+              disabled={!targetGoal}
+            >
+              <option value="">Select Sub Target Goal</option>
+              {targetGoal &&
+                subGoals[targetGoal]?.map((subGoal) => (
+                  <option key={subGoal} value={subGoal}>
+                    {subGoal}
+                  </option>
+                ))}
+            </select>
+
             <input
               type="text"
               id="question"
@@ -259,12 +236,7 @@ const AddNote = () => {
               }`}
               required
             />
-          </div>
 
-          <div>
-            <label htmlFor="answer" className="block mb-1">
-              Answer:
-            </label>
             <textarea
               id="answer"
               value={answer}
@@ -274,14 +246,13 @@ const AddNote = () => {
               }`}
               required
             />
-          </div>
 
-          <button type="submit" className="bg-blue-500 text-white p-2 rounded">
-            Add Note
-          </button>
-        </form>
-      </div>
-      </> )}
+            <button type="submit" className="bg-blue-500 text-white p-2 rounded">
+              Add Note
+            </button>
+          </form>
+        </div>
+      )}
     </div>
   );
 };

@@ -394,6 +394,7 @@ const ViewNotes = () => {
                               ? "bg-gray-700 text-white"
                               : "bg-white text-black"
                           }`}
+                          disabled
                           required
                         />
                         <input
@@ -406,6 +407,8 @@ const ViewNotes = () => {
                               ? "bg-gray-700 text-white"
                               : "bg-white text-black"
                           }`}
+                          disabled
+                          required
                         />
                         <input
                           type="text"
@@ -417,6 +420,8 @@ const ViewNotes = () => {
                               ? "bg-gray-700 text-white"
                               : "bg-white text-black"
                           }`}
+                          disabled
+                          required
                         />
                         <button
                           type="submit"
@@ -451,12 +456,6 @@ const ViewNotes = () => {
                             {note.question}
                           </h3>
                           <p className="text-gray-600">{note.answer}</p>
-                          <p className="text-gray-600">
-                            Main Target Goal: {note.mainTargetCategory}
-                          </p>
-                          <p className="text-gray-600">
-                            Target Goal: {note.mainTargetGoal || "N/A"}
-                          </p>
                           <p className="text-gray-600">
                             Sub Target Goal: {note.subTargetGoal || "N/A"}
                           </p>

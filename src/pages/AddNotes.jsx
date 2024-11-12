@@ -1,10 +1,9 @@
-// src/pages/AddNotes.js
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "../context/ThemeContext"; // Import theme context
-import { getCourseName, addNoteToCourse } from "../dataService";
+import { addNoteToCourse, getCourseDetails } from "../dataService";
 import { categories, targetGoals, subGoals } from '../db';
 
 const AddNotes = () => {
@@ -25,21 +24,26 @@ const AddNotes = () => {
   const [subTargetGoal, setSubTargetGoal] = useState("");
 
   useEffect(() => {
-    const fetchCourseName = async () => {
+    const fetchCourseData = async () => {
       try {
-        const name = await getCourseName(id); // Call the service function
-        setCourseName(name); // Set the course name in the state
+        // Fetch course name and category details
+        const courseDetails = getCourseDetails(id);
+        setCourseName(courseDetails.name); // Assuming courseDetails contains name
+        setMainCategory(courseDetails.mainCategory);
+        setTargetGoal(courseDetails.targetGoal);
+
+        // Check if user is already authorized
         const storedPassword = localStorage.getItem("password");
-    if (storedPassword === correctPassword) {
-      setIsAuthorized(true);
-    }
+        if (storedPassword === correctPassword) {
+          setIsAuthorized(true);
+        }
       } catch (error) {
-        console.error("Error fetching course name:", error);
+        console.error("Error fetching course data:", error);
         setCourseName("Error fetching course name"); // Optional fallback
       }
     };
 
-    fetchCourseName();
+    fetchCourseData();
   }, [id]);
 
   const handleAddNote = async (e) => {
@@ -121,18 +125,17 @@ const AddNotes = () => {
           <h2 className="text-2xl font-bold mb-4">
             Add Notes for {courseName}
           </h2>
-
+{ console.log(mainCategory)}
+{ console.log(targetGoal)}
           <form onSubmit={handleAddNote} className="space-y-4">
+            {/* Main Category Select */}
             <select
               value={mainCategory}
-              onChange={(e) => {
-                setMainCategory(e.target.value);
-                setTargetGoal("");
-                setSubTargetGoal("");
-              }}
+              onChange={(e) => setMainCategory(mainCategory)}
               className={`border p-2 rounded w-full ${
                 isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
               }`}
+              disabled
             >
               <option value="">Select Main Category</option>
               {categories.map((category) => (
@@ -142,26 +145,25 @@ const AddNotes = () => {
               ))}
             </select>
 
+            {/* Target Goal Select */}
             <select
               value={targetGoal}
-              onChange={(e) => {
-                setTargetGoal(e.target.value);
-                setSubTargetGoal(""); // Reset subTargetGoal when targetGoal changes
-              }}
+              onChange={(e) => setTargetGoal(e.target.value)}
               className={`border p-2 rounded w-full ${
                 isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
               }`}
-              disabled={!mainCategory}
+              disabled
             >
               <option value="">Select Target Goal</option>
               {mainCategory &&
-                targetGoals[mainCategory].map((goal) => (
+                targetGoals[mainCategory]?.map((goal) => (
                   <option key={goal} value={goal}>
                     {goal}
                   </option>
                 ))}
             </select>
 
+            {/* Sub Target Goal Select */}
             <select
               value={subTargetGoal}
               onChange={(e) => setSubTargetGoal(e.target.value)}
@@ -179,6 +181,7 @@ const AddNotes = () => {
                 ))}
             </select>
 
+            {/* Question Input */}
             <div>
               <label htmlFor="question" className="block mb-1">
                 Question:
@@ -195,6 +198,7 @@ const AddNotes = () => {
               />
             </div>
 
+            {/* Answer Textarea */}
             <div>
               <label htmlFor="answer" className="block mb-1">
                 Answer:

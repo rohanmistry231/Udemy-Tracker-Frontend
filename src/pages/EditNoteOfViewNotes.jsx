@@ -206,6 +206,7 @@ const EditNoteOfViewNotes = () => {
               className={`border p-2 w-full ${
                 isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
               }`}
+              disabled
               required
             >
               <option value="">Select a main target category</option>
@@ -228,6 +229,7 @@ const EditNoteOfViewNotes = () => {
               className={`border p-2 w-full ${
                 isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
               }`}
+              disabled
               required
             >
               <option value="">Select a main target goal</option>

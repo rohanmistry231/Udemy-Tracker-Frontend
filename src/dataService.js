@@ -356,6 +356,27 @@ export const fetchNoteById = async (id) => {
   }
 };
 
+// Function to get course details from localStorage
+export const getCourseDetails = (courseId) => {
+  try {
+    const courses = JSON.parse(localStorage.getItem("courses")) || [];
+    const course = courses.find((course) => course._id === courseId);
+
+    if (!course) {
+      throw new Error("Course not found in localStorage");
+    }
+
+    return {
+      name: course.name, // Course name
+      mainCategory: course.category, // Main category associated with the course
+      targetGoal: course.subCategory, // Target goal (sub-category) associated with the course
+    };
+  } catch (error) {
+    console.error("Error fetching course details from localStorage:", error);
+    throw error;
+  }
+};
+
 // Exporting functions to be used in your components
 export {
   getCoursesFromLocalStorage,

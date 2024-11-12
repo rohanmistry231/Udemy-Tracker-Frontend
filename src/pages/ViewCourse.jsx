@@ -274,6 +274,7 @@ const ViewCourse = () => {
                             ? "bg-gray-700 border-gray-600 text-white"
                             : "bg-white border-gray-300 text-black"
                         }`}
+                        disabled
                       />
                       <input
                         type="text"
@@ -285,6 +286,7 @@ const ViewCourse = () => {
                             ? "bg-gray-700 border-gray-600 text-white"
                             : "bg-white border-gray-300 text-black"
                         }`}
+                        disabled
                       />
                       <input
                         type="text"
@@ -296,6 +298,7 @@ const ViewCourse = () => {
                             ? "bg-gray-700 border-gray-600 text-white"
                             : "bg-white border-gray-300 text-black"
                         }`}
+                        disabled
                       />
                       <div className="flex justify-end space-x-2 mt-2">
                         <button
@@ -319,18 +322,10 @@ const ViewCourse = () => {
                       <Link to={`/courses/${id}/notes/${note._id}/view`}>
                         <div className="mb-4 sm:mb-0">
                           <p>
-                            <strong>Q:</strong> {note.question}
+                            <strong>Question:</strong> {note.question}
                           </p>
                           <p>
-                            <strong>A:</strong> {note.answer}
-                          </p>
-                          <p>
-                            <strong>Main Target Category:</strong>{" "}
-                            {note.mainTargetCategory}
-                          </p>
-                          <p>
-                            <strong>Main Target Goal:</strong>{" "}
-                            {note.mainTargetGoal}
+                            <strong>Answer:</strong> {note.answer}
                           </p>
                           <p>
                             <strong>Sub Target Goal:</strong>{" "}
