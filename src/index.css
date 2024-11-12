@@ -17,60 +17,33 @@ code {
     monospace;
 }
 
-/* Custom scrollbar styles for larger screens */
-@media (min-width: 768px) {
-  /* You can adjust the width as needed */
-  /* For Webkit browsers (Chrome, Safari) */
-  ::-webkit-scrollbar {
-    width: 4px; /* Width of the scrollbar */
-    height: 4px; /* Height of the horizontal scrollbar */
-  }
-
-  ::-webkit-scrollbar-track {
-    background: #1c1c1c; /* Dark background for the track */
-    border-radius: 10px; /* Rounded corners for track */
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: #444; /* Thumb color */
-    border-radius: 10px; /* Rounded corners for thumb */
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: #666; /* Darker shade on hover */
-  }
-
-  /* For Firefox */
-  * {
-    scrollbar-width: thin; /* Set the scrollbar width to thin */
-    scrollbar-color: #444 #1c1c1c; /* Thumb color, track color */
-  }
+/* General scrollbar styling for WebKit browsers (Chrome, Safari, etc.) */
+::-webkit-scrollbar {
+  width: 6px; /* Thin scrollbar track */
+  height: 6px; /* For horizontal scrollbar */
 }
 
-/* Custom scrollbar styles for smaller screens */
-@media (max-width: 767px) {
-  /* Custom scrollbar styles for Webkit browsers */
-  ::-webkit-scrollbar {
-    width: 8px; /* Width of the scrollbar */
-  }
+::-webkit-scrollbar-track {
+  background-color: var(--scrollbar-track-color);
+}
 
-  ::-webkit-scrollbar-track {
-    background: #1c1c1c; /* Dark background for the track */
-    border-radius: 10px; /* Rounded corners for track */
-  }
+::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb-color);
+  border-radius: 10px;
+  width: 12px; /* Larger thumb for easier visibility */
+}
 
-  ::-webkit-scrollbar-thumb {
-    background: #444; /* Thumb color */
-    border-radius: 10px; /* Rounded corners for thumb */
-  }
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover-color);
+}
 
-  ::-webkit-scrollbar-thumb:hover {
-    background: #666; /* Darker shade on hover */
-  }
+/* Firefox styling */
+* {
+  scrollbar-width: thin; /* Makes the scrollbar track thin */
+  scrollbar-color: var(--scrollbar-thumb-color) var(--scrollbar-track-color); /* Thumb color and track color */
+}
 
-  /* For Firefox */
-  * {
-    scrollbar-width: thin; /* Set the scrollbar width */
-    scrollbar-color: #444 #1c1c1c; /* Thumb color, track color */
-  }
+/* Hover effect for Firefox, using the pseudo-class */
+*:hover {
+  scrollbar-color: var(--scrollbar-thumb-hover-color) var(--scrollbar-track-color);
 }
