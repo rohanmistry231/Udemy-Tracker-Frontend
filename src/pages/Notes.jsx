@@ -279,7 +279,12 @@ const Notes = () => {
                   isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
                 }`}
               >
-                <h3 className="font-bold text-lg">{note.title}</h3>
+                <h3 className={`font-bold text-lg ${
+                    isDarkMode ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
+                  Course Name: {note.courseName}
+                </h3>
                 <p
                   className={`font-bold ${
                     isDarkMode ? "text-gray-400" : "text-gray-600"

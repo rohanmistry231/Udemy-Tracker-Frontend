@@ -13,6 +13,7 @@ router.get("/all", async (req, res) => {
       course.notes.map((note) => ({
         ...note.toObject(), // Convert Mongoose document to plain object
         courseId: course._id, // Add course ID to each note
+        courseName: course.name // Add course name to each note
       }))
     );
 
