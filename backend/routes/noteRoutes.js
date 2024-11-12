@@ -3,11 +3,19 @@ const Course = require("../models/Course"); // Import Course model
 
 const router = express.Router({ mergeParams: true }); // Merge params for courseId access
 
-// Fetch all notes across all courses
+// Fetch all notes across all courses with their respective course IDs
 router.get("/all", async (req, res) => {
   try {
-    const courses = await Course.find({}, "notes"); // Fetch only notes from each course
-    const allNotes = courses.flatMap((course) => course.notes); // Flatten notes into a single array
+    const courses = await Course.find({}, "_id notes"); // Fetch course ID and notes only
+
+    // Flatten notes array and include course ID with each note
+    const allNotes = courses.flatMap((course) => 
+      course.notes.map((note) => ({
+        ...note.toObject(), // Convert Mongoose document to plain object
+        courseId: course._id, // Add course ID to each note
+      }))
+    );
+
     res.json({ message: "All notes retrieved successfully", notes: allNotes });
   } catch (error) {
     res
@@ -15,6 +23,7 @@ router.get("/all", async (req, res) => {
       .json({ message: "Error fetching all notes", error: error.message });
   }
 });
+
 
 // Add a new note to a specific course
 router.post("/", async (req, res) => {
