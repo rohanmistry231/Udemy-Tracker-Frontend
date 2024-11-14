@@ -182,73 +182,70 @@ const ViewNotes = () => {
     pdf.setFontSize(20);
     pdf.text("All Notes", 10, 10);
     let yPosition = 20;
-
+  
+    // Function to strip HTML tags
+    const stripHtml = (html) => {
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = html;
+      return tempDiv.textContent || tempDiv.innerText || "";
+    };
+  
     notes.forEach((note) => {
+      // Decode the answer content
+      const cleanAnswer = stripHtml(note.answer);
+  
       pdf.setFontSize(12);
       pdf.text(`Question: ${note.question}`, 10, yPosition);
       yPosition += 10;
-      pdf.text(`Answer: ${note.answer}`, 10, yPosition);
+      pdf.text(`Answer: ${cleanAnswer}`, 10, yPosition);
       yPosition += 10;
-      pdf.text(
-        `Main Target Category: ${note.mainTargetCategory}`,
-        10,
-        yPosition
-      );
+      pdf.text(`Main Target Category: ${note.mainTargetCategory}`, 10, yPosition);
       yPosition += 10;
-      pdf.text(
-        `Main Target Goal: ${note.mainTargetGoal || "N/A"}`,
-        10,
-        yPosition
-      );
+      pdf.text(`Main Target Goal: ${note.mainTargetGoal || "N/A"}`, 10, yPosition);
       yPosition += 10;
-      pdf.text(
-        `Sub Target Goal: ${note.subTargetGoal || "N/A"}`,
-        10,
-        yPosition
-      );
-      yPosition += 20;
+      pdf.text(`Sub Target Goal: ${note.subTargetGoal || "N/A"}`, 10, yPosition);
+      yPosition += 20; // Add space before the next note
     });
-
+  
     pdf.save("all_notes.pdf");
   };
+  
 
   const saveSelectedNotesAsPDF = () => {
     const pdf = new jsPDF();
     pdf.setFontSize(20);
     pdf.text("Selected Notes", 10, 10);
     let yPosition = 20;
-
+  
+    // Function to strip HTML tags
+    const stripHtml = (html) => {
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = html;
+      return tempDiv.textContent || tempDiv.innerText || "";
+    };
+  
     selectedNotes.forEach((noteId) => {
       const note = notes.find((n) => n._id === noteId);
       if (note) {
+        // Decode the answer content
+        const cleanAnswer = stripHtml(note.answer);
+  
         pdf.setFontSize(12);
         pdf.text(`Question: ${note.question}`, 10, yPosition);
         yPosition += 10;
-        pdf.text(`Answer: ${note.answer}`, 10, yPosition);
+        pdf.text(`Answer: ${cleanAnswer}`, 10, yPosition);
         yPosition += 10;
-        pdf.text(
-          `Main Target Category: ${note.mainTargetCategory}`,
-          10,
-          yPosition
-        );
+        pdf.text(`Main Target Category: ${note.mainTargetCategory}`, 10, yPosition);
         yPosition += 10;
-        pdf.text(
-          `Main Target Goal: ${note.mainTargetGoal || "N/A"}`,
-          10,
-          yPosition
-        );
+        pdf.text(`Main Target Goal: ${note.mainTargetGoal || "N/A"}`, 10, yPosition);
         yPosition += 10;
-        pdf.text(
-          `Sub Target Goal: ${note.subTargetGoal || "N/A"}`,
-          10,
-          yPosition
-        );
+        pdf.text(`Sub Target Goal: ${note.subTargetGoal || "N/A"}`, 10, yPosition);
         yPosition += 20; // Add some space before the next note
       }
     });
-
+  
     pdf.save("selected_notes.pdf");
-  };
+  };  
 
   const handleSelectNote = (noteId) => {
     setSelectedNotes(
@@ -260,6 +257,16 @@ const ViewNotes = () => {
   };
 
   const saveAsPDF = (note) => {
+
+    // Function to strip HTML tags
+  const stripHtml = (html) => {
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = html;
+    return tempDiv.textContent || tempDiv.innerText || "";
+  };
+
+  // Decode the answer content
+  const cleanAnswer = stripHtml(note.answer);
     const pdf = new jsPDF();
 
     pdf.setFontSize(20);
@@ -267,7 +274,7 @@ const ViewNotes = () => {
 
     pdf.setFontSize(12);
     pdf.text(`Question: ${note.question}`, 10, 20);
-    pdf.text(`Answer: ${note.answer}`, 10, 30);
+    pdf.text(`Answer: ${cleanAnswer}`, 10, 30);
     pdf.text(`Main Target Category: ${note.mainTargetCategory}`, 10, 40);
     pdf.text(`Main Target Goal: ${note.mainTargetGoal}`, 10, 50);
     pdf.text(`Sub Target Goal: ${note.subTargetGoal}`, 10, 60);
@@ -323,7 +330,7 @@ const ViewNotes = () => {
               isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
             }`}
           >
-            <h2 className="text-2xl mb-4">Notes</h2>
+            <h2 className="text-3xl font-bold mb-4">Notes</h2>
             {/* Filter dropdown */}
             <div className="flex flex-col sm:flex-row justify-center py-2 space-y-4 sm:space-x-4 sm:space-y-0 px-4">
             <select

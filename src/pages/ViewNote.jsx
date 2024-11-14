@@ -36,6 +36,15 @@ const ViewNote = () => {
   }, [id]);
 
   const saveAsPDF = () => {
+    // Function to strip HTML tags
+  const stripHtml = (html) => {
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = html;
+    return tempDiv.textContent || tempDiv.innerText || "";
+  };
+
+  // Decode the answer content
+  const cleanAnswer = stripHtml(note.answer);
     const pdf = new jsPDF();
 
     pdf.setFontSize(20);
@@ -43,7 +52,7 @@ const ViewNote = () => {
 
     pdf.setFontSize(12);
     pdf.text(`Question: ${note.question}`, 10, 20);
-    pdf.text(`Answer: ${note.answer}`, 10, 30);
+    pdf.text(`Answer: ${cleanAnswer}`, 10, 30);
     pdf.text(`Main Target Category: ${note.mainTargetCategory}`, 10, 40);
     pdf.text(`Main Target Goal: ${note.mainTargetGoal}`, 10, 50);
     pdf.text(`Sub Target Goal: ${note.subTargetGoal}`, 10, 60);

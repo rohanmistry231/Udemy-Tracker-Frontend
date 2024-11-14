@@ -120,6 +120,16 @@ const Notes = () => {
   };
 
   const saveNoteAsPDF = (note) => {
+
+    // Function to strip HTML tags
+  const stripHtml = (html) => {
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = html;
+    return tempDiv.textContent || tempDiv.innerText || "";
+  };
+
+  // Decode the answer content
+  const cleanAnswer = stripHtml(note.answer);
     const doc = new jsPDF();
 
     doc.setFontSize(18);
@@ -127,7 +137,7 @@ const Notes = () => {
 
     doc.setFontSize(12);
     doc.text(`Question: ${note.question}`, 10, 40);
-    doc.text(`Answer: ${note.answer}`, 10, 80);
+    doc.text(`Answer: ${cleanAnswer}`, 10, 80);
     doc.text(`Main Goal: ${note.mainTargetCategory}`, 10, 50);
     doc.text(`Target Goal: ${note.mainTargetGoal}`, 10, 60);
     doc.text(`Sub Goal: ${note.subTargetGoal}`, 10, 70);

@@ -1,6 +1,7 @@
 // src/pages/AddCourse.js
 import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
+import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "../context/ThemeContext"; // Import theme context
@@ -351,12 +352,19 @@ const AddCourse = ({ onAdd }) => {
                 }`}
               />
             </div>
+            <div className="flex justify-between">
             <button
               type="submit"
               className="bg-blue-500 text-white p-2 rounded"
             >
               Add Course
             </button>
+          <div className="mt-2">
+              <Link to={`/courses/`} className="text-gray-500">
+                Cancel
+              </Link>
+            </div>
+            </div>
           </form>
           <ToastContainer />
         </>
