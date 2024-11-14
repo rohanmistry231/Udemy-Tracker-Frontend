@@ -1,15 +1,15 @@
 // src/pages/ViewNote.js
 import React, { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "../context/ThemeContext";
 import jsPDF from "jspdf"; // Import jsPDF
 import { fetchNoteById } from "../dataService";
+import html2canvas from 'html2canvas';
 
 const ViewNote = () => {
   const correctPassword = "12345";
-  const navigate = useNavigate();
   const { id } = useParams(); // Note ID for fetching specific note details
   const { theme } = useTheme();
   const isDarkMode = theme === "dark";
@@ -35,30 +35,41 @@ const ViewNote = () => {
     fetchNoteDetails(); // Fetch the note details when the component mounts or id changes
   }, [id]);
 
-  const saveAsPDF = () => {
-    // Function to strip HTML tags
-  const stripHtml = (html) => {
-    const tempDiv = document.createElement("div");
-    tempDiv.innerHTML = html;
-    return tempDiv.textContent || tempDiv.innerText || "";
-  };
+const saveAsPDF = () => {
+  // Create a container for the HTML content we want to capture
+  const container = document.createElement("div");
+  container.style.position = "absolute";
+  container.style.top = "-9999px";
+  container.style.fontFamily = "Arial, sans-serif";
+  container.style.lineHeight = "1.6";
+  container.innerHTML = `
+    <div style="font-size: 14px; padding: 10px; width: 180mm; color: black;">
+      <h1 style="font-size: 18px;">Note Details</h1>
+      <p><strong>Question:</strong> ${note.question}</p>
+      <p><strong>Main Goal:</strong> ${note.mainTargetCategory}</p>
+      <p><strong>Target Goal:</strong> ${note.mainTargetGoal}</p>
+      <p><strong>Sub Goal:</strong> ${note.subTargetGoal}</p>
+      <h2 style="font-size: 16px;">Answer:</h2>
+      <div>${note.answer}</div>
+    </div>
+  `;  document.body.appendChild(container);
 
-  // Decode the answer content
-  const cleanAnswer = stripHtml(note.answer);
-    const pdf = new jsPDF();
+  // Render the content with html2canvas at a higher scale for better clarity
+  html2canvas(container, { scale: 3 }).then((canvas) => {
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF("p", "mm", "a4");
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-    pdf.setFontSize(20);
-    pdf.text("Note Details", 10, 10);
+    // Adjust the image size and margins for better output
+    pdf.addImage(imgData, "PNG", 10, 10, pdfWidth - 20, pdfHeight - 10);
+    pdf.save(`note_${note._id}.pdf`);
 
-    pdf.setFontSize(12);
-    pdf.text(`Question: ${note.question}`, 10, 20);
-    pdf.text(`Answer: ${cleanAnswer}`, 10, 30);
-    pdf.text(`Main Target Category: ${note.mainTargetCategory}`, 10, 40);
-    pdf.text(`Main Target Goal: ${note.mainTargetGoal}`, 10, 50);
-    pdf.text(`Sub Target Goal: ${note.subTargetGoal}`, 10, 60);
+    // Clean up by removing the temporary container
+    document.body.removeChild(container);
+  });
+};
 
-    pdf.save(`note_${id}.pdf`);
-  };
 
   const handlePasswordSubmit = (e) => {
     e.preventDefault();
@@ -141,13 +152,12 @@ const ViewNote = () => {
           >
             Edit Note
           </Link>
-          <button
-            onClick={() => navigate(-1)}
+          <Link
             to="/notes"
             className="text-gray-600 hover:underline"
           >
             Back to Notes
-          </button>
+          </Link>
           <button
             onClick={saveAsPDF}
             className="bg-green-500 text-white p-2 rounded hover:bg-green-600"

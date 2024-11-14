@@ -10,6 +10,7 @@ import {
   syncNotesWithBackend,
 } from "../dataService";
 import { categories, targetGoals } from "../db";
+import html2canvas from "html2canvas";
 
 const Notes = () => {
   const [notes, setNotes] = useState([]);
@@ -118,32 +119,43 @@ const Notes = () => {
       console.error("Error deleting the note:", error);
     }
   };
-
+  
   const saveNoteAsPDF = (note) => {
-
-    // Function to strip HTML tags
-  const stripHtml = (html) => {
-    const tempDiv = document.createElement("div");
-    tempDiv.innerHTML = html;
-    return tempDiv.textContent || tempDiv.innerText || "";
+    // Create a container for the HTML content we want to capture
+    const container = document.createElement("div");
+    container.style.position = "absolute";
+    container.style.top = "-9999px";
+    container.style.fontFamily = "Arial, sans-serif";
+    container.style.lineHeight = "1.6";
+    container.innerHTML = `
+      <div style="font-size: 14px; padding: 10px; width: 180mm; color: black;">
+        <h1 style="font-size: 18px;">Note Details</h1>
+        <p><strong>Question:</strong> ${note.question}</p>
+        <p><strong>Main Goal:</strong> ${note.mainTargetCategory}</p>
+        <p><strong>Target Goal:</strong> ${note.mainTargetGoal}</p>
+        <p><strong>Sub Goal:</strong> ${note.subTargetGoal}</p>
+        <h2 style="font-size: 16px;">Answer:</h2>
+        <div>${note.answer}</div>
+      </div>
+    `;
+    document.body.appendChild(container);
+  
+    // Render the content with html2canvas at a higher scale
+    html2canvas(container, { scale: 3 }).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+  
+      // Positioning and scaling adjustments for a more readable output
+      pdf.addImage(imgData, "PNG", 10, 10, pdfWidth - 20, pdfHeight - 10);
+      pdf.save(`note_${note._id}.pdf`);
+  
+      document.body.removeChild(container); // Clean up
+    });
   };
+  
 
-  // Decode the answer content
-  const cleanAnswer = stripHtml(note.answer);
-    const doc = new jsPDF();
-
-    doc.setFontSize(18);
-    doc.text("Note Details", 10, 10);
-
-    doc.setFontSize(12);
-    doc.text(`Question: ${note.question}`, 10, 40);
-    doc.text(`Answer: ${cleanAnswer}`, 10, 80);
-    doc.text(`Main Goal: ${note.mainTargetCategory}`, 10, 50);
-    doc.text(`Target Goal: ${note.mainTargetGoal}`, 10, 60);
-    doc.text(`Sub Goal: ${note.subTargetGoal}`, 10, 70);
-
-    doc.save(`note_${note._id}.pdf`);
-  };
 
   const getTargetGoals = () => {
     return mainGoalFilter ? targetGoals[mainGoalFilter] || [] : [];
