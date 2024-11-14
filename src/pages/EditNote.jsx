@@ -170,7 +170,7 @@ const EditNote = () => {
               Answer:
             </label>
             <Editor
-                  initialValue={note.answer}
+                  value={note.answer}
                   onEditorChange={handleEditorChange}
                   apiKey="tbfczm3qaa8n4zsi2ru3iiemt1loveg07jq70ahk7isz17zx"
                   init={{

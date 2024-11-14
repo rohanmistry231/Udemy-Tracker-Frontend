@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import { getCourseById } from "../dataService";
+import { Editor } from "@tinymce/tinymce-react";
 
 const ViewCourse = () => {
   const { id } = useParams(); // Get course ID from URL params
@@ -253,17 +254,91 @@ const ViewCourse = () => {
                         }`}
                         required
                       />
-                      <textarea
-                        value={answer}
-                        onChange={(e) => setAnswer(e.target.value)}
-                        placeholder="Answer"
-                        className={`p-2 border rounded ${
-                          isDarkMode
-                            ? "bg-gray-700 border-gray-600 text-white"
-                            : "bg-white border-gray-300 text-black"
-                        }`}
-                        required
-                      ></textarea>
+                      <Editor
+                  value={answer}
+                  onEditorChange={(content) => setAnswer(content)}
+                  apiKey="tbfczm3qaa8n4zsi2ru3iiemt1loveg07jq70ahk7isz17zx"
+                  init={{
+                    plugins: [
+                      // Core editing features
+                      "anchor",
+                      "autolink",
+                      "charmap",
+                      "codesample",
+                      "emoticons",
+                      "image",
+                      "link",
+                      "lists",
+                      "media",
+                      "searchreplace",
+                      "table",
+                      "visualblocks",
+                      "wordcount",
+                      // Your account includes a free trial of TinyMCE premium features
+                      // Try the most popular premium features until Nov 26, 2024:
+                      "checklist",
+                      "mediaembed",
+                      "casechange",
+                      "export",
+                      "formatpainter",
+                      "pageembed",
+                      "a11ychecker",
+                      "tinymcespellchecker",
+                      "permanentpen",
+                      "powerpaste",
+                      "advtable",
+                      "advcode",
+                      "editimage",
+                      "advtemplate",
+                      "ai",
+                      "mentions",
+                      "tinycomments",
+                      "tableofcontents",
+                      "footnotes",
+                      "mergetags",
+                      "autocorrect",
+                      "typography",
+                      "inlinecss",
+                      "markdown",
+                      // Early access to document converters
+                      "importword",
+                      "exportword",
+                      "exportpdf",
+                    ],
+                    toolbar:
+                      "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
+                    tinycomments_mode: "embedded",
+                    tinycomments_author: "Author name",
+                    mergetags_list: [
+                      { value: "First.Name", title: "First Name" },
+                      { value: "Email", title: "Email" },
+                    ],
+                    ai_request: (request, respondWith) =>
+                      respondWith.string(() =>
+                        Promise.reject("See docs to implement AI Assistant")
+                      ),
+                    exportpdf_converter_options: {
+                      format: "Letter",
+                      margin_top: "1in",
+                      margin_right: "1in",
+                      margin_bottom: "1in",
+                      margin_left: "1in",
+                    },
+                    exportword_converter_options: {
+                      document: { size: "Letter" },
+                    },
+                    importword_converter_options: {
+                      formatting: {
+                        styles: "inline",
+                        resets: "inline",
+                        defaults: "inline",
+                      },
+                    },
+                    placeholder: "Answer...",
+                    skin: isDarkMode ? "oxide-dark" : "oxide",
+                    content_css: isDarkMode ? "dark" : "default",
+                  }}
+                />
                       <input
                         type="text"
                         value={mainTargetCategory}
