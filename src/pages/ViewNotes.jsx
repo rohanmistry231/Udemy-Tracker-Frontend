@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import jsPDF from "jspdf"; // Import jsPDF
 import { Editor } from "@tinymce/tinymce-react";
+import html2canvas from "html2canvas";
 
 const ViewNotes = () => {
   const correctPassword = "12345";
@@ -57,12 +58,16 @@ const ViewNotes = () => {
           throw new Error("Notes field is missing in the response.");
         }
         const storedPassword = localStorage.getItem("password");
-    if (storedPassword === correctPassword) {
-      setIsAuthorized(true);
-    }
-    // Extract unique subTargetGoals for filter dropdown
-    const uniqueSubTargetGoals = [...new Set(data.notes.map(note => note.subTargetGoal).filter(goal => goal))];
-    setSubTargetGoalOptions(uniqueSubTargetGoals);
+        if (storedPassword === correctPassword) {
+          setIsAuthorized(true);
+        }
+        // Extract unique subTargetGoals for filter dropdown
+        const uniqueSubTargetGoals = [
+          ...new Set(
+            data.notes.map((note) => note.subTargetGoal).filter((goal) => goal)
+          ),
+        ];
+        setSubTargetGoalOptions(uniqueSubTargetGoals);
       } catch (error) {
         // Log error details for debugging
         console.error("Error fetching notes:", error);
@@ -178,75 +183,108 @@ const ViewNotes = () => {
     }
   };
 
-  const saveAllNotesAsPDF = () => {
+  const saveAllNotesAsPDF = async () => {
     const pdf = new jsPDF();
+    let yPosition = 10;
+
     pdf.setFontSize(20);
-    pdf.text("All Notes", 10, 10);
-    let yPosition = 20;
-  
-    // Function to strip HTML tags
-    const stripHtml = (html) => {
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = html;
-      return tempDiv.textContent || tempDiv.innerText || "";
-    };
-  
-    notes.forEach((note) => {
-      // Decode the answer content
-      const cleanAnswer = stripHtml(note.answer);
-  
-      pdf.setFontSize(12);
-      pdf.text(`Question: ${note.question}`, 10, yPosition);
-      yPosition += 10;
-      pdf.text(`Answer: ${cleanAnswer}`, 10, yPosition);
-      yPosition += 10;
-      pdf.text(`Main Target Category: ${note.mainTargetCategory}`, 10, yPosition);
-      yPosition += 10;
-      pdf.text(`Main Target Goal: ${note.mainTargetGoal || "N/A"}`, 10, yPosition);
-      yPosition += 10;
-      pdf.text(`Sub Target Goal: ${note.subTargetGoal || "N/A"}`, 10, yPosition);
-      yPosition += 20; // Add space before the next note
-    });
-  
+    pdf.text("All Notes", 10, yPosition);
+    yPosition += 10;
+
+    for (const note of notes) {
+      // Create a temporary container for the note's HTML content
+      const container = document.createElement("div");
+      container.style.position = "absolute";
+      container.style.top = "-9999px";
+      container.style.fontFamily = "Arial, sans-serif";
+      container.style.lineHeight = "1.6";
+      container.innerHTML = `
+        <div style="font-size: 14px; padding: 10px; width: 180mm; color: black;">
+          <h1 style="font-size: 18px;">Note Details</h1>
+          <p><strong>Question:</strong> ${note.question}</p>
+          <p><strong>Main Goal:</strong> ${note.mainTargetCategory}</p>
+          <p><strong>Target Goal:</strong> ${note.mainTargetGoal}</p>
+          <p><strong>Sub Goal:</strong> ${note.subTargetGoal}</p>
+          <h2 style="font-size: 16px;">Answer:</h2>
+          <div>${note.answer}</div>
+        </div>
+      `;
+
+      document.body.appendChild(container);
+
+      // Capture the container as a canvas and add it to the PDF
+      const canvas = await html2canvas(container, { scale: 2 });
+      const imgData = canvas.toDataURL("image/png");
+      const imgWidth = 180; // A4 width in mm with some padding
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      // Check if a new page is needed
+      if (yPosition + imgHeight > pdf.internal.pageSize.getHeight() - 10) {
+        pdf.addPage();
+        yPosition = 10; // Reset position on new page
+      }
+
+      pdf.addImage(imgData, "PNG", 10, yPosition, imgWidth, imgHeight);
+      yPosition += imgHeight + 10; // Space between notes
+
+      document.body.removeChild(container); // Clean up
+    }
+
     pdf.save("all_notes.pdf");
   };
-  
 
-  const saveSelectedNotesAsPDF = () => {
+  const saveSelectedNotesAsPDF = async () => {
     const pdf = new jsPDF();
+    let yPosition = 10;
+
     pdf.setFontSize(20);
-    pdf.text("Selected Notes", 10, 10);
-    let yPosition = 20;
-  
-    // Function to strip HTML tags
-    const stripHtml = (html) => {
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = html;
-      return tempDiv.textContent || tempDiv.innerText || "";
-    };
-  
-    selectedNotes.forEach((noteId) => {
+    pdf.text("Selected Notes", 10, yPosition);
+    yPosition += 10;
+
+    for (const noteId of selectedNotes) {
       const note = notes.find((n) => n._id === noteId);
       if (note) {
-        // Decode the answer content
-        const cleanAnswer = stripHtml(note.answer);
-  
-        pdf.setFontSize(12);
-        pdf.text(`Question: ${note.question}`, 10, yPosition);
-        yPosition += 10;
-        pdf.text(`Answer: ${cleanAnswer}`, 10, yPosition);
-        yPosition += 10;
-        pdf.text(`Main Target Category: ${note.mainTargetCategory}`, 10, yPosition);
-        yPosition += 10;
-        pdf.text(`Main Target Goal: ${note.mainTargetGoal || "N/A"}`, 10, yPosition);
-        yPosition += 10;
-        pdf.text(`Sub Target Goal: ${note.subTargetGoal || "N/A"}`, 10, yPosition);
-        yPosition += 20; // Add some space before the next note
+        // Create a temporary container for each note's HTML
+        const container = document.createElement("div");
+        container.style.position = "absolute";
+        container.style.top = "-9999px";
+        container.style.fontFamily = "Arial, sans-serif";
+        container.style.lineHeight = "1.6";
+        container.innerHTML = `
+        <div style="font-size: 14px; padding: 10px; width: 180mm; color: black;">
+          <h1 style="font-size: 18px;">Note Details</h1>
+          <p><strong>Question:</strong> ${note.question}</p>
+          <p><strong>Main Goal:</strong> ${note.mainTargetCategory}</p>
+          <p><strong>Target Goal:</strong> ${note.mainTargetGoal}</p>
+          <p><strong>Sub Goal:</strong> ${note.subTargetGoal}</p>
+          <h2 style="font-size: 16px;">Answer:</h2>
+          <div>${note.answer}</div>
+        </div>
+      `;
+
+        document.body.appendChild(container);
+
+        // Convert the container to canvas and add it to the PDF
+        const canvas = await html2canvas(container, { scale: 2 });
+        const imgData = canvas.toDataURL("image/png");
+        const imgWidth = 180; // A4 width in mm with some padding
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        // Check if a new page is needed
+        if (yPosition + imgHeight > pdf.internal.pageSize.getHeight() - 10) {
+          pdf.addPage();
+          yPosition = 10; // Reset position on new page
+        }
+
+        pdf.addImage(imgData, "PNG", 10, yPosition, imgWidth, imgHeight);
+        yPosition += imgHeight + 10; // Space between notes
+
+        document.body.removeChild(container); // Clean up
       }
-    });
-  
+    }
+
     pdf.save("selected_notes.pdf");
-  };  
+  };
 
   const handleSelectNote = (noteId) => {
     setSelectedNotes(
@@ -257,38 +295,55 @@ const ViewNotes = () => {
     );
   };
 
-  const saveAsPDF = (note) => {
 
-    // Function to strip HTML tags
-  const stripHtml = (html) => {
-    const tempDiv = document.createElement("div");
-    tempDiv.innerHTML = html;
-    return tempDiv.textContent || tempDiv.innerText || "";
-  };
+const saveAsPDF = async (note) => {
+  const pdf = new jsPDF();
+  let yPosition = 20;
 
-  // Decode the answer content
-  const cleanAnswer = stripHtml(note.answer);
-    const pdf = new jsPDF();
+  pdf.setFontSize(20);
+  pdf.text("Note Details", 10, 10);
 
-    pdf.setFontSize(20);
-    pdf.text("Note Details", 10, 10);
+  // Create a temporary container for the answer's HTML content
+  const container = document.createElement("div");
+  container.style.position = "absolute";
+  container.style.top = "-9999px";
+  container.style.fontFamily = "Arial, sans-serif";
+  container.style.lineHeight = "1.6";
+  container.innerHTML = `
+    <div style="font-size: 14px; padding: 10px; width: 180mm; color: black;">
+      <h1 style="font-size: 18px;">Note Details</h1>
+      <p><strong>Question:</strong> ${note.question}</p>
+      <p><strong>Main Goal:</strong> ${note.mainTargetCategory}</p>
+      <p><strong>Target Goal:</strong> ${note.mainTargetGoal}</p>
+      <p><strong>Sub Goal:</strong> ${note.subTargetGoal}</p>
+      <h2 style="font-size: 16px;">Answer:</h2>
+      <div>${note.answer}</div>
+    </div>
+  `;
 
-    pdf.setFontSize(12);
-    pdf.text(`Question: ${note.question}`, 10, 20);
-    pdf.text(`Answer: ${cleanAnswer}`, 10, 30);
-    pdf.text(`Main Target Category: ${note.mainTargetCategory}`, 10, 40);
-    pdf.text(`Main Target Goal: ${note.mainTargetGoal}`, 10, 50);
-    pdf.text(`Sub Target Goal: ${note.subTargetGoal}`, 10, 60);
+  document.body.appendChild(container);
 
-    pdf.save(`note_${id}.pdf`);
-  };
+  // Capture the container content as an image using html2canvas
+  const canvas = await html2canvas(container, { scale: 2 });
+  const imgData = canvas.toDataURL("image/png");
+  const imgWidth = 180; // A4 width in mm with padding
+  const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-  const [filterSubTargetGoal, setFilterSubTargetGoal] = useState(''); // For filtering
+  // Add image to PDF
+  pdf.addImage(imgData, "PNG", 10, yPosition, imgWidth, imgHeight);
+
+  document.body.removeChild(container); // Clean up
+
+  pdf.save(`note_${note._id}.pdf`);
+};
+
+
+  const [filterSubTargetGoal, setFilterSubTargetGoal] = useState(""); // For filtering
   const [subTargetGoalOptions, setSubTargetGoalOptions] = useState([]); // Store unique subTargetGoals
 
   // Filter notes by selected subTargetGoal
   const filteredNotes = filterSubTargetGoal
-    ? notes.filter(note => note.subTargetGoal === filterSubTargetGoal)
+    ? notes.filter((note) => note.subTargetGoal === filterSubTargetGoal)
     : notes;
 
   return (
@@ -334,21 +389,23 @@ const ViewNotes = () => {
             <h2 className="text-3xl font-bold mb-4">Notes</h2>
             {/* Filter dropdown */}
             <div className="flex flex-col sm:flex-row justify-center py-2 space-y-4 sm:space-x-4 sm:space-y-0 px-4">
-            <select
-              id="filter"
-              value={filterSubTargetGoal}
-              onChange={(e) => setFilterSubTargetGoal(e.target.value)}
-              className={`px-4 py-2 rounded ${
-                isDarkMode
-                  ? "bg-gray-700 text-white placeholder-gray-400"
-                  : "border bg-white text-black placeholder-gray-600"
-              }`}
-            >
-              <option value="">All Sub Target Goals</option>
-              {subTargetGoalOptions.map((goal) => (
-                <option key={goal} value={goal}>{goal}</option>
-              ))}
-            </select>
+              <select
+                id="filter"
+                value={filterSubTargetGoal}
+                onChange={(e) => setFilterSubTargetGoal(e.target.value)}
+                className={`px-4 py-2 rounded ${
+                  isDarkMode
+                    ? "bg-gray-700 text-white placeholder-gray-400"
+                    : "border bg-white text-black placeholder-gray-600"
+                }`}
+              >
+                <option value="">All Sub Target Goals</option>
+                {subTargetGoalOptions.map((goal) => (
+                  <option key={goal} value={goal}>
+                    {goal}
+                  </option>
+                ))}
+              </select>
             </div>
             <ul className="space-y-4">
               {filteredNotes.length > 0 ? (
@@ -380,90 +437,92 @@ const ViewNotes = () => {
                           required
                         />
                         <Editor
-                  value={answer}
-                  onEditorChange={(content) => setAnswer(content)}
-                  apiKey="tbfczm3qaa8n4zsi2ru3iiemt1loveg07jq70ahk7isz17zx"
-                  init={{
-                    plugins: [
-                      // Core editing features
-                      "anchor",
-                      "autolink",
-                      "charmap",
-                      "codesample",
-                      "emoticons",
-                      "image",
-                      "link",
-                      "lists",
-                      "media",
-                      "searchreplace",
-                      "table",
-                      "visualblocks",
-                      "wordcount",
-                      // Your account includes a free trial of TinyMCE premium features
-                      // Try the most popular premium features until Nov 26, 2024:
-                      "checklist",
-                      "mediaembed",
-                      "casechange",
-                      "export",
-                      "formatpainter",
-                      "pageembed",
-                      "a11ychecker",
-                      "tinymcespellchecker",
-                      "permanentpen",
-                      "powerpaste",
-                      "advtable",
-                      "advcode",
-                      "editimage",
-                      "advtemplate",
-                      "ai",
-                      "mentions",
-                      "tinycomments",
-                      "tableofcontents",
-                      "footnotes",
-                      "mergetags",
-                      "autocorrect",
-                      "typography",
-                      "inlinecss",
-                      "markdown",
-                      // Early access to document converters
-                      "importword",
-                      "exportword",
-                      "exportpdf",
-                    ],
-                    toolbar:
-                      "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
-                    tinycomments_mode: "embedded",
-                    tinycomments_author: "Author name",
-                    mergetags_list: [
-                      { value: "First.Name", title: "First Name" },
-                      { value: "Email", title: "Email" },
-                    ],
-                    ai_request: (request, respondWith) =>
-                      respondWith.string(() =>
-                        Promise.reject("See docs to implement AI Assistant")
-                      ),
-                    exportpdf_converter_options: {
-                      format: "Letter",
-                      margin_top: "1in",
-                      margin_right: "1in",
-                      margin_bottom: "1in",
-                      margin_left: "1in",
-                    },
-                    exportword_converter_options: {
-                      document: { size: "Letter" },
-                    },
-                    importword_converter_options: {
-                      formatting: {
-                        styles: "inline",
-                        resets: "inline",
-                        defaults: "inline",
-                      },
-                    },
-                    placeholder: "Answer...",
-                    skin: isDarkMode ? "oxide-dark" : "oxide",
-                    content_css: isDarkMode ? "dark" : "default",
-                  }}
-                />
+                          value={answer}
+                          onEditorChange={(content) => setAnswer(content)}
+                          apiKey="tbfczm3qaa8n4zsi2ru3iiemt1loveg07jq70ahk7isz17zx"
+                          init={{
+                            plugins: [
+                              // Core editing features
+                              "anchor",
+                              "autolink",
+                              "charmap",
+                              "codesample",
+                              "emoticons",
+                              "image",
+                              "link",
+                              "lists",
+                              "media",
+                              "searchreplace",
+                              "table",
+                              "visualblocks",
+                              "wordcount",
+                              // Your account includes a free trial of TinyMCE premium features
+                              // Try the most popular premium features until Nov 26, 2024:
+                              "checklist",
+                              "mediaembed",
+                              "casechange",
+                              "export",
+                              "formatpainter",
+                              "pageembed",
+                              "a11ychecker",
+                              "tinymcespellchecker",
+                              "permanentpen",
+                              "powerpaste",
+                              "advtable",
+                              "advcode",
+                              "editimage",
+                              "advtemplate",
+                              "ai",
+                              "mentions",
+                              "tinycomments",
+                              "tableofcontents",
+                              "footnotes",
+                              "mergetags",
+                              "autocorrect",
+                              "typography",
+                              "inlinecss",
+                              "markdown",
+                              // Early access to document converters
+                              "importword",
+                              "exportword",
+                              "exportpdf",
+                            ],
+                            toolbar:
+                              "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
+                            tinycomments_mode: "embedded",
+                            tinycomments_author: "Author name",
+                            mergetags_list: [
+                              { value: "First.Name", title: "First Name" },
+                              { value: "Email", title: "Email" },
+                            ],
+                            ai_request: (request, respondWith) =>
+                              respondWith.string(() =>
+                                Promise.reject(
+                                  "See docs to implement AI Assistant"
+                                )
+                              ),
+                            exportpdf_converter_options: {
+                              format: "Letter",
+                              margin_top: "1in",
+                              margin_right: "1in",
+                              margin_bottom: "1in",
+                              margin_left: "1in",
+                            },
+                            exportword_converter_options: {
+                              document: { size: "Letter" },
+                            },
+                            importword_converter_options: {
+                              formatting: {
+                                styles: "inline",
+                                resets: "inline",
+                                defaults: "inline",
+                              },
+                            },
+                            placeholder: "Answer...",
+                            skin: isDarkMode ? "oxide-dark" : "oxide",
+                            content_css: isDarkMode ? "dark" : "default",
+                          }}
+                        />
                         <input
                           type="text"
                           value={mainTargetCategory}
@@ -537,7 +596,10 @@ const ViewNotes = () => {
                           >
                             {note.question}
                           </h3>
-                          <div className="text-gray-600 text-ellipsis overflow-hidden line-clamp-2" dangerouslySetInnerHTML={{ __html: note.answer }} />
+                          <div
+                            className="text-gray-600 text-ellipsis overflow-hidden line-clamp-2"
+                            dangerouslySetInnerHTML={{ __html: note.answer }}
+                          />
                           <p className="text-gray-600">
                             Sub Target Goal: {note.subTargetGoal || "N/A"}
                           </p>
@@ -550,7 +612,7 @@ const ViewNotes = () => {
                             className="mr-2"
                           />
                           <button
-                            onClick={saveAsPDF}
+                            onClick={() => saveAsPDF(note)}
                             className={`text-green-500 ${
                               isDarkMode
                                 ? "hover:text-green-300"

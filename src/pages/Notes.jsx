@@ -141,7 +141,7 @@ const Notes = () => {
     document.body.appendChild(container);
   
     // Render the content with html2canvas at a higher scale
-    html2canvas(container, { scale: 3 }).then((canvas) => {
+    html2canvas(container, { scale: 2 }).then((canvas) => {
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF("p", "mm", "a4");
       const pdfWidth = pdf.internal.pageSize.getWidth();
