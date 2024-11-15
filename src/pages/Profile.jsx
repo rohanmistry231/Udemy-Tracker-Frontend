@@ -6,6 +6,7 @@ import { getCoursesFromLocalStorage } from "../dataService";
 const Profile = () => {
   const { theme } = useTheme();
   const [courses, setCourses] = useState([]);
+  const [completedCoursesCount, setCompletedCoursesCount] = useState(0);
   const isDarkMode = theme === "dark";
   const [isLoading, setIsLoading] = useState(true);
 
@@ -32,6 +33,12 @@ const Profile = () => {
         if (storedCourses.length > 0) {
           // If courses are found in localStorage, update state
           setCourses(storedCourses);
+
+          // Count completed courses
+          const completedCount = storedCourses.filter(
+            (course) => course.status === "Completed"
+          ).length;
+          setCompletedCoursesCount(completedCount);
         } else {
           console.error("No courses found in localStorage.");
         }
@@ -122,7 +129,7 @@ const Profile = () => {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-                {/* Add any relevant sections like course stats or other metrics */}
+                {/* Total Courses Card */}
                 <div
                   className={`p-4 rounded-md shadow-md ${
                     isDarkMode ? "bg-gray-700" : "bg-white"
@@ -134,22 +141,26 @@ const Profile = () => {
                   </p>
                 </div>
 
+                {/* Completed Courses Card */}
                 <div
                   className={`p-4 rounded-md shadow-md ${
                     isDarkMode ? "bg-gray-700" : "bg-white"
                   }`}
                 >
                   <h4 className="text-lg font-medium">Completed Courses</h4>
-                  <p className="text-2xl font-semibold mt-2">0</p>
+                  <p className="text-2xl font-semibold mt-2">
+                    {completedCoursesCount}
+                  </p>
                 </div>
 
+                {/* Certificates Card */}
                 <div
                   className={`p-4 rounded-md shadow-md ${
                     isDarkMode ? "bg-gray-700" : "bg-white"
                   }`}
                 >
                   <h4 className="text-lg font-medium">Certificates</h4>
-                  <p className="text-2xl font-semibold mt-2">0</p>
+                  <p className="text-2xl font-semibold mt-2">{completedCoursesCount}</p>
                 </div>
               </div>
             </div>
