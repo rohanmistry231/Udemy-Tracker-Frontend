@@ -4,6 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "../context/ThemeContext";
 import { categories as mainTargetCategories, targetGoals, subGoals as subTargetGoals } from '../db';
+import { Editor } from "@tinymce/tinymce-react";
 
 const EditNoteOfViewNotes = () => {
   const correctPassword = "12345";
@@ -121,6 +122,13 @@ const EditNoteOfViewNotes = () => {
     }
   };
 
+  const handleEditorChange = (content) => {
+    setNote((prevNote) => ({
+      ...prevNote,
+      answer: content, // Update the answer with the editor content
+    }));
+  };
+
   return (
     <div
       className={`container mx-auto px-4 py-6 mt-12 ${
@@ -183,16 +191,24 @@ const EditNoteOfViewNotes = () => {
             <label htmlFor="answer" className="block mb-2">
               Answer:
             </label>
-            <textarea
-              id="answer"
-              name="answer"
-              value={note.answer}
-              onChange={handleChange}
-              className={`border p-2 w-full ${
-                isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
-              }`}
-              required
-            />
+            <Editor
+                  value={note.answer}
+                  onEditorChange={handleEditorChange}
+                  apiKey="tbfczm3qaa8n4zsi2ru3iiemt1loveg07jq70ahk7isz17zx"
+                  init={{
+                    plugins: [
+                      // Core editing features
+                      'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 
+                      'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 
+                      'wordcount'
+                    ],
+                    toolbar: 
+                      'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+                    placeholder: "Answer...",
+                    skin: isDarkMode ? "oxide-dark" : "oxide",
+                    content_css: isDarkMode ? "dark" : "default",
+                  }}
+                />
           </div>
           <div className="mb-4">
             <label htmlFor="mainTargetCategory" className="block mb-2">

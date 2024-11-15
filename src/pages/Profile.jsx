@@ -140,7 +140,7 @@ const Profile = () => {
                   }`}
                 >
                   <h4 className="text-lg font-medium">Completed Courses</h4>
-                  <p className="text-2xl font-semibold mt-2">85</p>
+                  <p className="text-2xl font-semibold mt-2">0</p>
                 </div>
 
                 <div
@@ -149,7 +149,7 @@ const Profile = () => {
                   }`}
                 >
                   <h4 className="text-lg font-medium">Certificates</h4>
-                  <p className="text-2xl font-semibold mt-2">25</p>
+                  <p className="text-2xl font-semibold mt-2">0</p>
                 </div>
               </div>
             </div>
