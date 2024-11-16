@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useTheme } from "../context/ThemeContext";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { FaChevronDown, FaChevronUp, FaPlus } from "react-icons/fa";
 
 const Progress = () => {
   const { theme } = useTheme();
@@ -13,6 +13,15 @@ const Progress = () => {
   const [collapsedMainCategories, setCollapsedMainCategories] = useState({});
   const [collapsedMainGoals, setCollapsedMainGoals] = useState({});
   const [priorityFilter, setPriorityFilter] = useState("");
+
+   // Modal states
+   const [isModalOpen, setIsModalOpen] = useState(false);
+   const [modalType, setModalType] = useState("");
+   const [newMainCategoryName, setNewMainCategoryName] = useState("");
+   const [selectedMainCategory, setSelectedMainCategory] = useState("");
+   const [newMainGoalName, setNewMainGoalName] = useState("");
+   const [selectedMainGoal, setSelectedMainGoal] = useState("");
+   const [newSubGoalName, setNewSubGoalName] = useState("");
 
   // Fetch data from backend
   useEffect(() => {
@@ -66,6 +75,87 @@ const Progress = () => {
 
     fetchData();
   }, []);
+
+  const addMainCategory = async () => {
+    if (!newMainCategoryName.trim()) return;
+    const newCategory = { name: newMainCategoryName, mainGoals: [] };
+
+    try {
+      const response = await fetch("http://localhost:5000/main-category", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newCategory),
+      });
+      if (response.ok) {
+        const savedCategory = await response.json();
+        setMainCategories((prev) => [...prev, savedCategory]);
+        setIsModalOpen(false);
+        setNewMainCategoryName("");
+      }
+    } catch (error) {
+      console.error("Failed to add Main Category:", error);
+    }
+  };
+
+  const addMainGoal = async () => {
+    if (!selectedMainCategory || !newMainGoalName.trim()) return;
+    try {
+      const response = await fetch(
+        `http://localhost:5000/main-category/${selectedMainCategory}/main-goal`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: newMainGoalName }),
+        }
+      );
+      if (response.ok) {
+        const updatedCategory = await response.json();
+        setMainCategories((prev) =>
+          prev.map((category) =>
+            category.name === updatedCategory.name ? updatedCategory : category
+          )
+        );
+        setIsModalOpen(false);
+        setSelectedMainCategory("");
+        setNewMainGoalName("");
+      }
+    } catch (error) {
+      console.error("Failed to add Main Goal:", error);
+    }
+  };
+
+  const addSubGoal = async () => {
+    if (!selectedMainCategory || !selectedMainGoal || !newSubGoalName.trim()) return;
+    try {
+      const response = await fetch(
+        `http://localhost:5000/main-category/${selectedMainCategory}/main-goal/${selectedMainGoal}/sub-goal`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: newSubGoalName }),
+        }
+      );
+      if (response.ok) {
+        const updatedCategory = await response.json();
+        setMainCategories((prev) =>
+          prev.map((category) =>
+            category.name === updatedCategory.name ? updatedCategory : category
+          )
+        );
+        setIsModalOpen(false);
+        setSelectedMainCategory("");
+        setSelectedMainGoal("");
+        setNewSubGoalName("");
+      }
+    } catch (error) {
+      console.error("Failed to add Sub Goal:", error);
+    }
+  };
+
+  const handleModalOpen = (type) => {
+    setModalType(type);
+    setIsModalOpen(true);
+  };
 
   // Function to update the backend
   const updateBackend = async (url, method, body) => {
@@ -199,7 +289,164 @@ const Progress = () => {
           <option value="Parallel priority">Parallel Priority</option>
         </select>
       </div>
+      <div className="flex flex-col sm:flex-row sm:justify-center sm:space-x-4 space-y-3 sm:space-y-0 mb-6 px-4">
+  <button
+    onClick={() => handleModalOpen("MainCategory")}
+    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center"
+  >
+    <FaPlus className="mr-2" /> Add Main Category
+  </button>
+  <button
+    onClick={() => handleModalOpen("MainGoal")}
+    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 flex items-center"
+  >
+    <FaPlus className="mr-2" /> Add Main Target Goal
+  </button>
+  <button
+    onClick={() => handleModalOpen("SubGoal")}
+    className="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600 flex items-center"
+  >
+    <FaPlus className="mr-2" /> Add Sub Goal
+  </button>
+</div>
 
+      {/* Modal */}
+      {isModalOpen && (
+  <div className={`fixed inset-0 ${isDarkMode ? "bg-black bg-opacity-70" : "bg-black bg-opacity-50"} flex items-center justify-center z-50`}>
+    <div className={`rounded-lg p-6 w-96 ${isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"} z-50`}>
+      {modalType === "MainCategory" && (
+        <>
+          <h2 className="text-xl font-semibold mb-4">Add Main Category</h2>
+          <input
+            type="text"
+            value={newMainCategoryName}
+            onChange={(e) => setNewMainCategoryName(e.target.value)}
+            placeholder="Category Name"
+            className={`w-full p-2 mb-4 border rounded ${isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"}`}
+          />
+          <div className="flex justify-end space-x-2">
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={addMainCategory}
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              Add Category
+            </button>
+          </div>
+        </>
+      )}
+
+      {modalType === "MainGoal" && (
+        <>
+          <h2 className="text-xl font-semibold mb-4">Add Main Goal</h2>
+          <select
+            value={selectedMainCategory}
+            onChange={(e) => setSelectedMainCategory(e.target.value)}
+            className={`w-full p-2 mb-4 border rounded ${isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"}`}
+          >
+            <option value="" disabled className={`${isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"}`}>
+              Select Main Category
+            </option>
+            {mainCategories?.map((category) => (
+              <option key={category._id} value={category._id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+          <input
+            type="text"
+            value={newMainGoalName}
+            onChange={(e) => setNewMainGoalName(e.target.value)}
+            placeholder="Main Goal Name"
+            className={`w-full p-2 mb-4 border rounded ${isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"}`}
+          />
+          <div className="flex justify-end space-x-2">
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={addMainGoal}
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              Add Main Goal
+            </button>
+          </div>
+        </>
+      )}
+
+      {modalType === "SubGoal" && (
+        <>
+          <h2 className="text-xl font-semibold mb-4">Add Sub Goal</h2>
+          <select
+            value={selectedMainCategory}
+            onChange={(e) => {
+              setSelectedMainCategory(e.target.value);
+              setSelectedMainGoal("");
+            }}
+            className={`w-full p-2 mb-4 border rounded ${isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"}`}
+          >
+            <option value="" disabled>
+              Select Main Category
+            </option>
+            {mainCategories?.map((category) => (
+              <option key={category._id} value={category._id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+          <select
+            value={selectedMainGoal}
+            onChange={(e) => setSelectedMainGoal(e.target.value)}
+            className={`w-full p-2 mb-4 border rounded ${isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"}`}
+            disabled={!selectedMainCategory}
+          >
+            <option value="" disabled>
+              Select Main Goal
+            </option>
+            {selectedMainCategory &&
+              mainCategories
+                .find((category) => category._id === selectedMainCategory)
+                ?.mainGoals?.map((goal) => (
+                  <option key={goal._id} value={goal._id}>
+                    {goal.name}
+                  </option>
+                ))}
+          </select>
+          <input
+            type="text"
+            value={newSubGoalName}
+            onChange={(e) => setNewSubGoalName(e.target.value)}
+            placeholder="Sub Goal Name"
+            className={`w-full p-2 mb-4 border rounded ${isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"}`}
+          />
+          <div className="flex justify-end space-x-2">
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={addSubGoal}
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              disabled={!selectedMainCategory || !selectedMainGoal || !newSubGoalName.trim()}
+            >
+              Add Sub Goal
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  </div>
+)}
       <div
         className={`my-2 mx-4 ${
           isDarkMode ? "bg-gray-800 text-white" : "border bg-white text-black"
