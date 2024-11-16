@@ -67,40 +67,83 @@ const Progress = () => {
     fetchData();
   }, []);
 
-  // Calculate overall progress
-  const calculateProgress = (checkedItems, totalItems) =>
-    totalItems > 0 ? (Object.values(checkedItems).filter(Boolean).length / totalItems) * 100 : 0;
+  // Function to update the backend
+  const updateBackend = async (url, method, body) => {
+    try {
+      await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+    } catch (error) {
+      console.error("Failed to update backend:", error);
+    }
+  };
 
-  const overallProgress = calculateProgress(checkedMainCategories, mainCategories.length);
-
+  // Toggle functions with backend updates
   const toggleMainCategory = (category) => {
+    const newCheckedState = !checkedMainCategories[category];
     setCheckedMainCategories((prev) => ({
       ...prev,
-      [category]: !prev[category],
+      [category]: newCheckedState,
     }));
+
+    // Update backend
+    const categoryId = mainCategories.find((cat) => cat.name === category)._id;
+    updateBackend(`http://localhost:5000/main-category/${categoryId}`, "PUT", {
+      isChecked: newCheckedState,
+    });
   };
 
   const toggleMainGoal = (category, goal) => {
+    const newCheckedState = !checkedMainGoals[category][goal];
     setCheckedMainGoals((prev) => ({
       ...prev,
       [category]: {
         ...prev[category],
-        [goal]: !prev[category][goal],
+        [goal]: newCheckedState,
       },
     }));
+
+    // Update backend
+    const categoryId = mainCategories.find((cat) => cat.name === category)._id;
+    const goalId = mainCategories
+      .find((cat) => cat.name === category)
+      .mainGoals.find((g) => g.name === goal)._id;
+
+    updateBackend(`http://localhost:5000/main-category/${categoryId}/main-goal/${goalId}`, "PUT", {
+      isChecked: newCheckedState,
+    });
   };
 
   const toggleSubGoal = (category, goal, subGoal) => {
+    const newCheckedState = !checkedSubGoals[category][goal][subGoal];
     setCheckedSubGoals((prev) => ({
       ...prev,
       [category]: {
         ...prev[category],
         [goal]: {
           ...prev[category][goal],
-          [subGoal]: !prev[category][goal][subGoal],
+          [subGoal]: newCheckedState,
         },
       },
     }));
+
+    // Update backend
+    const categoryId = mainCategories.find((cat) => cat.name === category)._id;
+    const goalId = mainCategories
+      .find((cat) => cat.name === category)
+      .mainGoals.find((g) => g.name === goal)._id;
+    const subGoalId = mainCategories
+      .find((cat) => cat.name === category)
+      .mainGoals.find((g) => g.name === goal)
+      .subGoals.find((sg) => sg.name === subGoal)._id;
+
+    updateBackend(
+      `http://localhost:5000/main-category/${categoryId}/main-goal/${goalId}/sub-goal/${subGoalId}`,
+      "PUT",
+      { isChecked: newCheckedState }
+    );
   };
 
   const toggleCategoryCollapse = (category) => {
@@ -124,9 +167,14 @@ const Progress = () => {
     return checked ? "text-green-500" : ""; // Apply green text if checked
   };
 
+  const calculateProgress = (checkedItems, totalItems) =>
+    totalItems > 0 ? (Object.values(checkedItems).filter(Boolean).length / totalItems) * 100 : 0;
+
   const filteredCategories = mainCategories.filter(
     (category) => priorityFilter === "" || category.priority === priorityFilter
   );
+
+  const overallProgress = calculateProgress(checkedMainCategories, mainCategories.length);
 
   return (
     <div
