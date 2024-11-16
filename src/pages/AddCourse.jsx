@@ -153,13 +153,13 @@ const AddCourse = ({ onAdd }) => {
         </form>
       ) : (
         <>
-          <h2 className="text-2xl mb-4">Add New Course</h2>
           <form
             onSubmit={handleSubmit}
-            className={`p-6 rounded shadow-md ${
+            className={`p-6 rounded shadow-md mt-12 ${
               isDarkMode ? "bg-gray-800" : "bg-white"
             }`}
           >
+            <h2 className="text-3xl font-bold mb-4">Add New Course</h2>
             <div className="mb-4">
               <label className="block mb-2" htmlFor="no">
                 Course No:

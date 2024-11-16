@@ -1,100 +1,87 @@
 import React, { useState, useEffect } from "react";
 import { useTheme } from "../context/ThemeContext";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
-import { categories, targetGoals, subGoals, categoryPriorities } from '../db';
 
 const Progress = () => {
   const { theme } = useTheme();
   const isDarkMode = theme === "dark";
 
-  const [checkedCategories, setCheckedCategories] = useState(() => {
-    const storedCategories = JSON.parse(
-      localStorage.getItem("checkedCategories")
-    );
-    return (
-      storedCategories ||
-      categories.reduce((acc, category) => ({ ...acc, [category]: false }), {})
-    );
-  });
+  const [mainCategories, setMainCategories] = useState([]);
+  const [checkedMainCategories, setCheckedMainCategories] = useState({});
+  const [checkedMainGoals, setCheckedMainGoals] = useState({});
+  const [checkedSubGoals, setCheckedSubGoals] = useState({});
+  const [collapsedMainCategories, setCollapsedMainCategories] = useState({});
+  const [collapsedMainGoals, setCollapsedMainGoals] = useState({});
+  const [priorityFilter, setPriorityFilter] = useState("");
 
-  const [checkedGoals, setCheckedGoals] = useState(() => {
-    const storedGoals = JSON.parse(localStorage.getItem("checkedGoals"));
-    return (
-      storedGoals ||
-      Object.keys(targetGoals).reduce(
-        (acc, category) => ({
-          ...acc,
-          [category]: targetGoals[category]?.reduce((goalAcc, goal) => {
-            goalAcc[goal] = false;
-            return goalAcc;
-          }, {}),
-        }),
-        {}
-      )
-    );
-  });
-
-  const [checkedSubGoals, setCheckedSubGoals] = useState(() => {
-    const storedSubGoals = JSON.parse(localStorage.getItem("checkedSubGoals"));
-    return (
-      storedSubGoals ||
-      Object.keys(subGoals).reduce(
-        (acc, goal) => ({
-          ...acc,
-          [goal]: subGoals[goal]?.reduce((subAcc, subGoal) => {
-            subAcc[subGoal] = false;
-            return subAcc;
-          }, {}),
-        }),
-        {}
-      )
-    );
-  });
-
-  const [collapsedCategories, setCollapsedCategories] = useState(
-    categories.reduce((acc, category) => ({ ...acc, [category]: false }), {})
-  );
-
-  const [collapsedGoals, setCollapsedGoals] = useState(
-    Object.keys(targetGoals).reduce(
-      (acc, category) => ({
-        ...acc,
-        [category]: targetGoals[category]?.reduce((goalAcc, goal) => {
-          goalAcc[goal] = false;
-          return goalAcc;
-        }, {}),
-      }),
-      {}
-    )
-  );
-
+  // Fetch data from backend
   useEffect(() => {
-    // Save the checked states to localStorage whenever they change
-    localStorage.setItem(
-      "checkedCategories",
-      JSON.stringify(checkedCategories)
-    );
-  }, [checkedCategories]);
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/main-category");
+        const mainCategoriesData = await response.json();
+        setMainCategories(mainCategoriesData);
 
-  useEffect(() => {
-    // Save the checked goals to localStorage whenever they change
-    localStorage.setItem("checkedGoals", JSON.stringify(checkedGoals));
-  }, [checkedGoals]);
+        // Initialize states for main categories and goals
+        setCheckedMainCategories(
+          mainCategoriesData.reduce((acc, category) => ({ ...acc, [category.name]: category.isChecked }), {})
+        );
+        setCheckedMainGoals(
+          mainCategoriesData.reduce((acc, category) => {
+            acc[category.name] = category.mainGoals.reduce((goalAcc, goal) => {
+              goalAcc[goal.name] = goal.isChecked;
+              return goalAcc;
+            }, {});
+            return acc;
+          }, {})
+        );
+        setCheckedSubGoals(
+          mainCategoriesData.reduce((acc, category) => {
+            acc[category.name] = category.mainGoals.reduce((goalAcc, goal) => {
+              goalAcc[goal.name] = goal.subGoals.reduce((subGoalAcc, subGoal) => {
+                subGoalAcc[subGoal.name] = subGoal.isChecked;
+                return subGoalAcc;
+              }, {});
+              return goalAcc;
+            }, {});
+            return acc;
+          }, {})
+        );
+        setCollapsedMainCategories(
+          mainCategoriesData.reduce((acc, category) => ({ ...acc, [category.name]: false }), {})
+        );
+        setCollapsedMainGoals(
+          mainCategoriesData.reduce((acc, category) => {
+            acc[category.name] = category.mainGoals.reduce((goalAcc, goal) => {
+              goalAcc[goal.name] = false; // Initialize collapse state for each goal
+              return goalAcc;
+            }, {});
+            return acc;
+          }, {})
+        );
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      }
+    };
 
-  useEffect(() => {
-    // Save the checked subgoals to localStorage whenever they change
-    localStorage.setItem("checkedSubGoals", JSON.stringify(checkedSubGoals));
-  }, [checkedSubGoals]);
+    fetchData();
+  }, []);
 
-  const toggleCategory = (category) => {
-    setCheckedCategories((prev) => ({
+  // Calculate overall progress
+  const calculateProgress = (checkedItems, totalItems) =>
+    totalItems > 0 ? (Object.values(checkedItems).filter(Boolean).length / totalItems) * 100 : 0;
+
+  const overallProgress = calculateProgress(checkedMainCategories, mainCategories.length);
+
+  const toggleMainCategory = (category) => {
+    setCheckedMainCategories((prev) => ({
       ...prev,
       [category]: !prev[category],
     }));
   };
 
-  const toggleGoal = (category, goal) => {
-    setCheckedGoals((prev) => ({
+  const toggleMainGoal = (category, goal) => {
+    setCheckedMainGoals((prev) => ({
       ...prev,
       [category]: {
         ...prev[category],
@@ -103,25 +90,28 @@ const Progress = () => {
     }));
   };
 
-  const toggleSubGoal = (goal, subGoal) => {
+  const toggleSubGoal = (category, goal, subGoal) => {
     setCheckedSubGoals((prev) => ({
       ...prev,
-      [goal]: {
-        ...prev[goal],
-        [subGoal]: !prev[goal][subGoal],
+      [category]: {
+        ...prev[category],
+        [goal]: {
+          ...prev[category][goal],
+          [subGoal]: !prev[category][goal][subGoal],
+        },
       },
     }));
   };
 
   const toggleCategoryCollapse = (category) => {
-    setCollapsedCategories((prev) => ({
+    setCollapsedMainCategories((prev) => ({
       ...prev,
       [category]: !prev[category],
     }));
   };
 
   const toggleGoalCollapse = (category, goal) => {
-    setCollapsedGoals((prev) => ({
+    setCollapsedMainGoals((prev) => ({
       ...prev,
       [category]: {
         ...prev[category],
@@ -130,23 +120,12 @@ const Progress = () => {
     }));
   };
 
-  const getProgress = (checked, total) => {
-    if (!total) return 0;
-    return (Object.values(checked).filter(Boolean).length / total) * 100;
-  };
-
-  const overallProgress = getProgress(checkedCategories, categories.length);
-
   const getTextClass = (checked) => {
     return checked ? "text-green-500" : ""; // Apply green text if checked
   };
 
-  // Add filter states
-  const [priorityFilter, setPriorityFilter] = useState("");
-
-  const filteredCategories = categories.filter(
-    (category) =>
-      priorityFilter === "" || categoryPriorities[category] === priorityFilter
+  const filteredCategories = mainCategories.filter(
+    (category) => priorityFilter === "" || category.priority === priorityFilter
   );
 
   return (
@@ -161,11 +140,9 @@ const Progress = () => {
         <select
           value={priorityFilter}
           onChange={(e) => setPriorityFilter(e.target.value)}
-          className={`px-4 py-2 rounded ${
-            isDarkMode
-              ? "bg-gray-700 text-white placeholder-gray-400"
-              : "border bg-white text-black placeholder-gray-600"
-          }`}
+          className={`px-4 py-2 rounded ${isDarkMode
+            ? "bg-gray-700 text-white placeholder-gray-400"
+            : "border bg-white text-black placeholder-gray-600"}`}
         >
           <option value="">All Priorities</option>
           <option value="High priority">High Priority</option>
@@ -207,137 +184,134 @@ const Progress = () => {
         </div>
       </div>
 
-      {filteredCategories.map((category) => (
-        <div key={category} className="my-6 mx-4">
-          <div
-            className={
-              isDarkMode
+      {filteredCategories.map((category) => {
+        const mainGoalsProgress = calculateProgress(checkedMainGoals[category.name], category.mainGoals.length);
+        return (
+          <div key={category._id} className="my-6 mx-4">
+            <div
+              className={isDarkMode
                 ? "rounded-lg shadow-lg p-4 bg-gray-800 text-white"
-                : "border rounded-lg shadow-lg p-4 bg-white text-black"
-            }
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={checkedCategories[category]}
-                  onChange={() => toggleCategory(category)}
-                  className="mr-2"
-                />
-                <h2
-                  className={`text-xl font-semibold cursor-pointer ${getTextClass(
-                    checkedCategories[category]
-                  )}`}
-                  onClick={() => toggleCategoryCollapse(category)}
-                >
-                  {category}
-                </h2>
-              </div>
-              <button
-                onClick={() => toggleCategoryCollapse(category)}
-                className="text-lg"
-              >
-                {collapsedCategories[category] ? (
-                  <FaChevronDown />
-                ) : (
-                  <FaChevronUp />
-                )}
-              </button>
-            </div>
-
-            {collapsedCategories[category] && targetGoals[category] && (
-              <div className="mt-4">
-                {targetGoals[category]?.map((goal) => (
-                  <div key={goal} className="ml-6 my-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <input
-                          type="checkbox"
-                          checked={checkedGoals[category]?.[goal]}
-                          onChange={() => toggleGoal(category, goal)}
-                          className="mr-2"
-                        />
-                        <h3
-                          className={`text-lg cursor-pointer ${getTextClass(
-                            checkedGoals[category]?.[goal]
-                          )}`}
-                          onClick={() => toggleGoalCollapse(category, goal)}
-                        >
-                          {goal}
-                        </h3>
-                      </div>
-                      <button
-                        onClick={() => toggleGoalCollapse(category, goal)}
-                        className="text-lg"
-                      >
-                        {collapsedGoals[category]?.[goal] ? (
-                          <FaChevronDown />
-                        ) : (
-                          <FaChevronUp />
-                        )}
-                      </button>
-                    </div>
-
-                    {collapsedGoals[category]?.[goal] && subGoals[goal] && (
-                      <div className="mt-2">
-                        {subGoals[goal]?.map((subGoal) => (
-                          <div key={subGoal} className="ml-6 my-2">
-                            <div className="flex items-center">
-                              <input
-                                type="checkbox"
-                                checked={checkedSubGoals[goal]?.[subGoal]}
-                                onChange={() => toggleSubGoal(goal, subGoal)}
-                                className="mr-2"
-                              />
-                              <span
-                                className={`${getTextClass(
-                                  checkedSubGoals[goal]?.[subGoal]
-                                )}`}
-                              >
-                                {subGoal}
-                              </span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    <div className="my-2">
-                      <label className="text-sm">Progress:</label>
-                      <div className="relative w-full h-4 mt-2 bg-gray-200 rounded overflow-hidden">
-                        <div
-                          className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-400 to-indigo-600"
-                          style={{
-                            width: `${getProgress(
-                              checkedSubGoals[goal],
-                              subGoals[goal]?.length
-                            )}%`,
-                            transition: "width 0.5s ease-in-out",
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-                <div className="my-2">
-                  <label className="text-sm">Overall Goal Progress:</label>
-                  <div className="relative w-full h-4 mt-2 bg-gray-200 rounded overflow-hidden">
-                    <div
-                      className="absolute top-0 left-0 h-full bg-gradient-to-r from-green-400 to-teal-500"
-                      style={{
-                        width: `${getProgress(
-                          checkedGoals[category],
-                          targetGoals[category]?.length
-                        )}%`,
-                        transition: "width 0.5s ease-in-out",
-                      }}
-                    />
-                  </div>
+                : "border rounded-lg shadow-lg p-4 bg-white text-black"}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={checkedMainCategories[category.name]}
+                    onChange={() => toggleMainCategory(category.name)}
+                    className="mr-2"
+                  />
+                  <h2
+                    className={`text-xl font-semibold cursor-pointer ${getTextClass(
+                      checkedMainCategories[category.name]
+                    )}`}
+                    onClick={() => toggleCategoryCollapse(category.name)}
+                  >
+                    {category.name}
+                  </h2>
                 </div>
+                <button
+                  onClick={() => toggleCategoryCollapse(category.name)}
+                  className="text-lg"
+                >
+                  {collapsedMainCategories[category.name] ? (
+                    <FaChevronDown />
+                  ) : (
+                    <FaChevronUp />
+                  )}
+                </button>
               </div>
-            )}
+              <div className="relative w-full h-4 mt-2 bg-gray-200 rounded overflow-hidden">
+                <div
+                  className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-400 to-indigo-600"
+                  style={{ width: `${mainGoalsProgress}%`,transition: "width 0.5s ease-in-out" }}
+                ></div>
+              </div>
+              <p className="text-sm mt-2">
+                Main Goals Progress: {Math.round(mainGoalsProgress)}%
+              </p>
+
+              {collapsedMainCategories[category.name] && (
+                <div className="mt-4">
+                  {category.mainGoals?.map((goal) => {
+                    const subGoalsProgress = calculateProgress(
+                      checkedSubGoals[category.name]?.[goal.name],
+                      goal.subGoals.length
+                    );
+                    return (
+                      <div key={goal._id} className="ml-6 my-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center">
+                            <input
+                              type="checkbox"
+                              checked={checkedMainGoals[category.name]?.[goal.name]}
+                              onChange={() => toggleMainGoal(category.name, goal.name)}
+                              className="mr-2"
+                            />
+                            <h3
+                              className={`text-lg cursor-pointer ${getTextClass(
+                                checkedMainGoals[category.name]?.[goal.name]
+                              )}`}
+                              onClick={() => toggleGoalCollapse(category.name, goal.name)}
+                            >
+                              {goal.name}
+                            </h3>
+                          </div>
+                          <button
+                            onClick={() => toggleGoalCollapse(category.name, goal.name)}
+                            className="text-lg"
+                          >
+                            {collapsedMainGoals[category.name]?.[goal.name] ? (
+                              <FaChevronDown />
+                            ) : (
+                              <FaChevronUp />
+                            )}
+                          </button>
+                        </div>
+                        <div className="relative w-full h-4 mt-2 bg-gray-200 rounded overflow-hidden">
+                          <div
+                            className="absolute top-0 left-0 h-full bg-gradient-to-r from-green-400 to-teal-500"
+                            style={{ width: `${subGoalsProgress}%`,transition: "width 0.5s ease-in-out" }}
+                          ></div>
+                        </div>
+                        <p className="text-sm mt-2">
+                          Sub Goals Progress: {Math.round(subGoalsProgress)}%
+                        </p>
+
+                        {collapsedMainGoals[category.name]?.[goal.name] && (
+                          <ul className="mt-2">
+                            {goal.subGoals?.map((subGoal) => (
+                              <li key={subGoal._id} className="ml-8 flex items-center">
+                                <input
+                                  type="checkbox"
+                                  checked={
+                                    checkedSubGoals[category.name]?.[goal.name]?.[subGoal.name]
+                                  }
+                                  onChange={() =>
+                                    toggleSubGoal(category.name, goal.name, subGoal.name)
+                                  }
+                                  className="mr-2"
+                                />
+                                <span
+                                  className={`cursor-pointer ${getTextClass(
+                                    checkedSubGoals[category.name]?.[goal.name]?.[subGoal.name]
+                                  )}`}
+                                >
+                                  {subGoal.name}
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };

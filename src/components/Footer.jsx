@@ -15,7 +15,7 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center">
         {/* Left: Brand and Copyright */}
         <div className="text-sm text-center sm:text-left mb-2 sm:mb-0">
-          &copy; {new Date().getFullYear()} Udemy Learning Hub. All Rights Reserved.
+          &copy; {new Date().getFullYear()} Own Udemy Tracker. All Rights Reserved.
         </div>
 
         {/* Right: Contact Email */}
@@ -24,7 +24,7 @@ const Footer = () => {
             href="mailto:admin@udemyhub.com"
             className="hover:text-blue-500 transition duration-300"
           >
-            admin@udemyhub.com
+            own.ai.231@gmail.com
           </a>
         </div>
       </div>

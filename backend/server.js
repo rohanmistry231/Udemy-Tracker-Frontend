@@ -4,6 +4,7 @@ const cors = require("cors");
 const helmet = require("helmet"); // Import Helmet
 const courseRoutes = require("./routes/courseRoutes");
 const noteRoutes = require("./routes/noteRoutes");
+const mainCategoryRoutes = require("./routes/mainCategoryRoutes");
 require("dotenv").config();
 
 const app = express();
@@ -34,7 +35,7 @@ app.use(express.json());
 
 // Connect to MongoDB
 mongoose
-  .connect(process.env.MONGODB_URI)
+  .connect("mongodb://localhost:27017/udemyCourses")
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("Connection failed", err));
 
@@ -47,7 +48,8 @@ app.get("/", (req, res) => {
 app.use("/courses", courseRoutes);
 app.use("/courses/:courseId/notes", noteRoutes);
 app.use("/notes", noteRoutes);
+app.use("/main-category", mainCategoryRoutes);
 
 // Start the server
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5000; // Fallback to 5000 if PORT is not defined
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

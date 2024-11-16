@@ -194,6 +194,13 @@ const Notes = () => {
         isDarkMode ? "bg-gray-900" : "bg-white"
       }`}
     >
+      <h2
+        className={`text-3xl font-semibold mb-6 text-center ${
+          isDarkMode ? "text-white" : "text-gray-800"
+        }`}
+      >
+        📝 Notes List 📝
+      </h2>
       <div>
         <button
           onClick={handleSyncClick}
@@ -204,13 +211,6 @@ const Notes = () => {
         </button>
         {syncMessage && <p>{syncMessage}</p>} {/* Display sync message */}
       </div>
-      <h2
-        className={`text-3xl font-semibold mb-6 text-center ${
-          isDarkMode ? "text-white" : "text-gray-800"
-        }`}
-      >
-        📝 Notes List 📝
-      </h2>
 
       <div className="flex flex-col sm:flex-row justify-between items-center mb-4 space-y-4 sm:space-y-0">
         <input
@@ -301,7 +301,6 @@ const Notes = () => {
                   isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
                 }`}
               >
-                <h3 className="font-bold text-lg">{note.title}</h3>
                 <p
                   className={`font-bold ${
                     isDarkMode ? "text-purple-400" : "text-purple-600"
