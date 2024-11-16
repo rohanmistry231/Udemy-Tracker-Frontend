@@ -6,6 +6,7 @@ const Progress = () => {
   const { theme } = useTheme();
   const isDarkMode = theme === "dark";
 
+  const [loading, setLoading] = useState(true);
   const [mainCategories, setMainCategories] = useState([]);
   const [checkedMainCategories, setCheckedMainCategories] = useState({});
   const [checkedMainGoals, setCheckedMainGoals] = useState({});
@@ -27,7 +28,7 @@ const Progress = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/main-category");
+        const response = await fetch("https://udemy-tracker.vercel.app/main-category");
         const mainCategoriesData = await response.json();
         setMainCategories(mainCategoriesData);
 
@@ -70,6 +71,8 @@ const Progress = () => {
         );
       } catch (error) {
         console.error("Failed to fetch data:", error);
+      } finally{
+        setLoading(false);
       }
     };
 
@@ -81,7 +84,7 @@ const Progress = () => {
     const newCategory = { name: newMainCategoryName, mainGoals: [] };
 
     try {
-      const response = await fetch("http://localhost:5000/main-category", {
+      const response = await fetch("https://udemy-tracker.vercel.app/main-category", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newCategory),
@@ -101,7 +104,7 @@ const Progress = () => {
     if (!selectedMainCategory || !newMainGoalName.trim()) return;
     try {
       const response = await fetch(
-        `http://localhost:5000/main-category/${selectedMainCategory}/main-goal`,
+        `https://udemy-tracker.vercel.app/main-category/${selectedMainCategory}/main-goal`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -128,7 +131,7 @@ const Progress = () => {
     if (!selectedMainCategory || !selectedMainGoal || !newSubGoalName.trim()) return;
     try {
       const response = await fetch(
-        `http://localhost:5000/main-category/${selectedMainCategory}/main-goal/${selectedMainGoal}/sub-goal`,
+        `https://udemy-tracker.vercel.app/main-category/${selectedMainCategory}/main-goal/${selectedMainGoal}/sub-goal`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -180,7 +183,7 @@ const Progress = () => {
 
     // Update backend
     const categoryId = mainCategories.find((cat) => cat.name === category)._id;
-    updateBackend(`http://localhost:5000/main-category/${categoryId}`, "PUT", {
+    updateBackend(`https://udemy-tracker.vercel.app/main-category/${categoryId}`, "PUT", {
       isChecked: newCheckedState,
     });
   };
@@ -201,7 +204,7 @@ const Progress = () => {
       .find((cat) => cat.name === category)
       .mainGoals.find((g) => g.name === goal)._id;
 
-    updateBackend(`http://localhost:5000/main-category/${categoryId}/main-goal/${goalId}`, "PUT", {
+    updateBackend(`https://udemy-tracker.vercel.app/main-category/${categoryId}/main-goal/${goalId}`, "PUT", {
       isChecked: newCheckedState,
     });
   };
@@ -230,7 +233,7 @@ const Progress = () => {
       .subGoals.find((sg) => sg.name === subGoal)._id;
 
     updateBackend(
-      `http://localhost:5000/main-category/${categoryId}/main-goal/${goalId}/sub-goal/${subGoalId}`,
+      `https://udemy-tracker.vercel.app/main-category/${categoryId}/main-goal/${goalId}/sub-goal/${subGoalId}`,
       "PUT",
       { isChecked: newCheckedState }
     );
@@ -447,6 +450,12 @@ const Progress = () => {
     </div>
   </div>
 )}
+{loading ? (
+        <div className="flex justify-center items-center md:min-h-screen lg:min-h-screen max-h-screen mt-10 mb-10">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
+        </div>
+      ) : (
+        <>
       <div
         className={`my-2 mx-4 ${
           isDarkMode ? "bg-gray-800 text-white" : "border bg-white text-black"
@@ -607,6 +616,8 @@ const Progress = () => {
           </div>
         );
       })}
+      </>
+      )}
     </div>
   );
 };
