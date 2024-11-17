@@ -22,7 +22,9 @@ const Certificates = () => {
     // Fetch certificates from backend
     const fetchCertificates = async () => {
       try {
-        const response = await fetch("https://udemy-tracker.vercel.app/certificate");
+        const response = await fetch(
+          "https://udemy-tracker.vercel.app/certificate"
+        );
         const data = await response.json();
         setCertificates(data.certificates);
         setFilteredCertificates(data.certificates);
@@ -60,11 +62,14 @@ const Certificates = () => {
     }
 
     try {
-      const response = await fetch("https://udemy-tracker.vercel.app/certificate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newCertificate),
-      });
+      const response = await fetch(
+        "https://udemy-tracker.vercel.app/certificate",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newCertificate),
+        }
+      );
 
       const data = await response.json();
       setCertificates([...certificates, data.certificate]);
@@ -81,9 +86,12 @@ const Certificates = () => {
     if (window.confirm("Are you sure you want to delete this certificate?")) {
       try {
         // API call to delete the certificate
-        await fetch(`https://udemy-tracker.vercel.app/certificate/${certificateId}`, {
-          method: "DELETE",
-        });
+        await fetch(
+          `https://udemy-tracker.vercel.app/certificate/${certificateId}`,
+          {
+            method: "DELETE",
+          }
+        );
 
         // Update the certificates state after deletion
         const updatedCertificates = certificates.filter(
@@ -119,7 +127,7 @@ const Certificates = () => {
         isDarkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-black"
       }`}
     >
-        <h2
+      <h2
         className={`text-3xl font-semibold mt-14 text-center ${
           isDarkMode ? "text-white" : "text-gray-800"
         }`}
@@ -128,28 +136,27 @@ const Certificates = () => {
       </h2>
       {/* Header with Search and Add Button */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6 mt-5">
-  {/* Search Bar */}
-  <input
-    type="text"
-    placeholder="Search Certificates by Course Name..."
-    className={`border p-2 rounded w-full md:w-[1324px] transition duration-200 ${
-      isDarkMode
-        ? "bg-gray-800 text-white border-gray-700"
-        : "bg-white text-black border-gray-300"
-    }`}
-    value={searchTerm}
-    onChange={(e) => setSearchTerm(e.target.value)}
-  />
+        {/* Search Bar */}
+        <input
+          type="text"
+          placeholder="Search Certificates by Course Name..."
+          className={`border p-2 rounded w-full md:w-[1324px] transition duration-200 ${
+            isDarkMode
+              ? "bg-gray-800 text-white border-gray-700"
+              : "bg-white text-black border-gray-300"
+          }`}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
 
-  {/* Add Certificate Button */}
-  <button
-    className={`bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 w-full md:w-auto`}
-    onClick={() => setIsModalOpen(true)}
-  >
-    Add Certificate
-  </button>
-</div>
-
+        {/* Add Certificate Button */}
+        <button
+          className={`bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 w-full md:w-auto`}
+          onClick={() => setIsModalOpen(true)}
+        >
+          Add Certificate
+        </button>
+      </div>
 
       {/* Certificates Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -180,7 +187,7 @@ const Certificates = () => {
               </h3>
 
               {/* Action Buttons */}
-              <div className="absolute bottom-4 right-4 flex gap-2">
+              <div className="mt-4 flex gap-2">
                 {/* View Button */}
                 <a
                   href={certificate.imageUrl}
