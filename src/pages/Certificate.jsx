@@ -173,7 +173,7 @@ const Certificates = () => {
             <img
               src={certificate.imageUrl}
               alt={certificate.courseName}
-              className="w-full h-48 object-cover rounded-lg transition-transform duration-300"
+              className="w-full h-60 object-cover rounded-lg transition-transform duration-300"
             />
 
             {/* Certificate Details */}
