@@ -292,6 +292,7 @@ const Certificates = () => {
                     imageUrl: e.target.value,
                   })
                 }
+                autoFocus
               />
             </div>
 
