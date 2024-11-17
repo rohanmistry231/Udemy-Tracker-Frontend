@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useTheme } from "../context/ThemeContext";
-import { FaChevronDown, FaChevronUp, FaPlus } from "react-icons/fa";
-import { categoryPriorities } from '../db';
+import { FaChevronDown, FaChevronUp, FaMinus, FaPlus } from "react-icons/fa";
+import { categoryPriorities } from "../db";
 
 const Progress = () => {
   const { theme } = useTheme();
@@ -23,7 +23,7 @@ const Progress = () => {
   const [selectedMainCategory, setSelectedMainCategory] = useState("");
   const [newMainGoalName, setNewMainGoalName] = useState("");
   const [selectedMainGoal, setSelectedMainGoal] = useState("");
-  const [newSubGoalName, setNewSubGoalName] = useState("");  
+  const [newSubGoalName, setNewSubGoalName] = useState("");
 
   // Fetch data from backend
   useEffect(() => {
@@ -294,14 +294,86 @@ const Progress = () => {
 
   const filteredCategories = mainCategories.filter(
     (category) =>
-      (priorityFilter === "" ||
-        categoryPriorities[category.name] === priorityFilter)
+      priorityFilter === "" ||
+      categoryPriorities[category.name] === priorityFilter
   );
 
   const overallProgress = calculateProgress(
     checkedMainCategories,
     mainCategories.length
   );
+
+  // Delete a main category
+  const deleteMainCategory = async (categoryId) => {
+    try {
+      await fetch(
+        `https://udemy-tracker.vercel.app/main-category/${categoryId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      setMainCategories((prev) =>
+        prev.filter((category) => category._id !== categoryId)
+      );
+    } catch (error) {
+      console.error("Failed to delete main category:", error);
+    }
+  };
+
+  // Delete a main goal
+  const deleteMainGoal = async (categoryId, goalId) => {
+    try {
+      await fetch(
+        `https://udemy-tracker.vercel.app/main-category/${categoryId}/main-goal/${goalId}`,
+        { method: "DELETE" }
+      );
+      setMainCategories((prev) =>
+        prev.map((category) =>
+          category._id === categoryId
+            ? {
+                ...category,
+                mainGoals: category.mainGoals.filter(
+                  (goal) => goal._id !== goalId
+                ),
+              }
+            : category
+        )
+      );
+    } catch (error) {
+      console.error("Failed to delete main goal:", error);
+    }
+  };
+
+  // Delete a sub-goal
+  const deleteSubGoal = async (categoryId, goalId, subGoalId) => {
+    try {
+      await fetch(
+        `https://udemy-tracker.vercel.app/main-category/${categoryId}/main-goal/${goalId}/sub-goal/${subGoalId}`,
+        { method: "DELETE" }
+      );
+      setMainCategories((prev) =>
+        prev.map((category) =>
+          category._id === categoryId
+            ? {
+                ...category,
+                mainGoals: category.mainGoals.map((goal) =>
+                  goal._id === goalId
+                    ? {
+                        ...goal,
+                        subGoals: goal.subGoals.filter(
+                          (subGoal) => subGoal._id !== subGoalId
+                        ),
+                      }
+                    : goal
+                ),
+              }
+            : category
+        )
+      );
+    } catch (error) {
+      console.error("Failed to delete sub-goal:", error);
+    }
+  };
 
   return (
     <div
@@ -331,19 +403,31 @@ const Progress = () => {
       <div className="flex flex-col sm:flex-row sm:justify-center sm:space-x-4 space-y-3 sm:space-y-0 mb-6 sm:mt-6 mt-4 px-4">
         <button
           onClick={() => handleModalOpen("MainCategory")}
-          className={`text-white px-4 py-2 rounded flex items-center ${ isDarkMode ? "bg-blue-600 hover:bg-blue-700" : "bg-blue-500 hover:bg-blue-600" }`}
+          className={`text-white px-4 py-2 rounded flex items-center ${
+            isDarkMode
+              ? "bg-blue-600 hover:bg-blue-700"
+              : "bg-blue-500 hover:bg-blue-600"
+          }`}
         >
           <FaPlus className="mr-2" /> Add Main Category
         </button>
         <button
           onClick={() => handleModalOpen("MainGoal")}
-          className={`text-white px-4 py-2 rounded flex items-center ${ isDarkMode ? "bg-green-600 hover:bg-green-700" : "bg-green-500 hover:bg-green-600" }`}
+          className={`text-white px-4 py-2 rounded flex items-center ${
+            isDarkMode
+              ? "bg-green-600 hover:bg-green-700"
+              : "bg-green-500 hover:bg-green-600"
+          }`}
         >
           <FaPlus className="mr-2" /> Add Main Target Goal
         </button>
         <button
           onClick={() => handleModalOpen("SubGoal")}
-          className={`text-white px-4 py-2 rounded flex items-center ${ isDarkMode ? "bg-purple-600 hover:bg-purple-700" : "bg-purple-500 hover:bg-purple-600" }`}
+          className={`text-white px-4 py-2 rounded flex items-center ${
+            isDarkMode
+              ? "bg-purple-600 hover:bg-purple-700"
+              : "bg-purple-500 hover:bg-purple-600"
+          }`}
         >
           <FaPlus className="mr-2" /> Add Sub Goal
         </button>
@@ -607,6 +691,12 @@ const Progress = () => {
                       </h2>
                     </div>
                     <button
+                      className="delete-btn text-red-600 ml-auto mr-3"
+                      onClick={() => deleteMainCategory(category._id)}
+                    >
+                      <FaMinus />
+                    </button>
+                    <button
                       onClick={() => toggleCategoryCollapse(category.name)}
                       className="text-lg"
                     >
@@ -618,18 +708,18 @@ const Progress = () => {
                     </button>
                   </div>
                   <div className="flex flex-row">
-                  <div className="relative w-full h-4 mt-2 bg-gray-200 rounded overflow-hidden">
-                    <div
-                      className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-400 to-indigo-600"
-                      style={{
-                        width: `${mainGoalsProgress}%`,
-                        transition: "width 0.5s ease-in-out",
-                      }}
-                    ></div>
-                  </div>
-                  <p className="text-sm mt-1 ml-2">
-                    {Math.round(mainGoalsProgress)}%
-                  </p>
+                    <div className="relative w-full h-4 mt-2 bg-gray-200 rounded overflow-hidden">
+                      <div
+                        className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-400 to-indigo-600"
+                        style={{
+                          width: `${mainGoalsProgress}%`,
+                          transition: "width 0.5s ease-in-out",
+                        }}
+                      ></div>
+                    </div>
+                    <p className="text-sm mt-1 ml-2">
+                      {Math.round(mainGoalsProgress)}%
+                    </p>
                   </div>
 
                   {collapsedMainCategories[category.name] && (
@@ -665,6 +755,14 @@ const Progress = () => {
                                 </h3>
                               </div>
                               <button
+                                className="delete-btn text-red-600 ml-auto mr-3"
+                                onClick={() =>
+                                  deleteMainGoal(category._id, goal._id)
+                                }
+                              >
+                                <FaMinus />
+                              </button>
+                              <button
                                 onClick={() =>
                                   toggleGoalCollapse(category.name, goal.name)
                                 }
@@ -679,6 +777,7 @@ const Progress = () => {
                                 )}
                               </button>
                             </div>
+                            <div className="flex flex-row">
                             <div className="relative w-full h-4 mt-2 bg-gray-200 rounded overflow-hidden">
                               <div
                                 className="absolute top-0 left-0 h-full bg-gradient-to-r from-green-400 to-teal-500"
@@ -688,17 +787,18 @@ const Progress = () => {
                                 }}
                               ></div>
                             </div>
-                            <p className="text-sm mt-2">
-                              Sub Goals Progress: {Math.round(subGoalsProgress)}
+                            <p className="text-sm mt-2 ml-2">
+                              {Math.round(subGoalsProgress)}
                               %
                             </p>
+                            </div>
 
                             {collapsedMainGoals[category.name]?.[goal.name] && (
                               <ul className="mt-2">
                                 {goal.subGoals?.map((subGoal) => (
                                   <li
                                     key={subGoal._id}
-                                    className="ml-8 flex items-center"
+                                    className="ml-8 flex items-center mt-3 mb-0"
                                   >
                                     <input
                                       type="checkbox"
@@ -725,6 +825,14 @@ const Progress = () => {
                                     >
                                       {subGoal.name}
                                     </span>
+                                    <button
+      className="delete-btn text-red-600 ml-auto mr-7"
+      onClick={() =>
+        deleteSubGoal(category._id, goal._id, subGoal._id)
+      }
+    >
+      <FaMinus />
+    </button>
                                   </li>
                                 ))}
                               </ul>
