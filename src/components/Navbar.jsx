@@ -31,6 +31,9 @@ const Navbar = () => {
           </div>
 
           <div className="hidden md:flex space-x-6 items-center">
+            <Link to="/" className={`transition duration-150 ${getLinkClass('/')}`}>
+              Home
+            </Link>
             <Link to="/courses" className={`transition duration-150 ${getLinkClass('/courses')}`}>
               Courses
             </Link>
@@ -39,6 +42,9 @@ const Navbar = () => {
             </Link>
             <Link to="/progress" className={`transition duration-150 ${getLinkClass('/progress')}`}>
               Progress
+            </Link>
+            <Link to="/certificate" className={`transition duration-150 ${getLinkClass('/certificate')}`}>
+              Certificates
             </Link>
             <Link to="/profile" className={`transition duration-150 ${getLinkClass('/profile')}`}>
               Profile
@@ -84,6 +90,9 @@ const Navbar = () => {
           isOpen ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
         } fixed top-14 right-0 h-screen w-64 overflow-y-auto z-40`} 
       >
+        <Link to="/" className={`block ${getLinkClass('/')} py-2`} onClick={toggleMenu}>
+          Home
+        </Link>
         <Link to="/courses" className={`block ${getLinkClass('/courses')} py-2`} onClick={toggleMenu}>
           Courses
         </Link>
@@ -92,6 +101,9 @@ const Navbar = () => {
         </Link>
         <Link to="/progress" className={`block ${getLinkClass('/progress')} py-2`} onClick={toggleMenu}>
           Progress
+        </Link>
+        <Link to="/certificate" className={`block ${getLinkClass('/certificate')} py-2`} onClick={toggleMenu}>
+          Certificates
         </Link>
         <Link to="/profile" className={`block ${getLinkClass('/profile')} py-2`} onClick={toggleMenu}>
           Profile

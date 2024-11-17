@@ -5,6 +5,7 @@ const helmet = require("helmet"); // Import Helmet
 const courseRoutes = require("./routes/courseRoutes");
 const noteRoutes = require("./routes/noteRoutes");
 const mainCategoryRoutes = require("./routes/mainCategoryRoutes");
+const certificateRoutes = require("./routes/certificateRoutes");
 require("dotenv").config();
 
 const app = express();
@@ -49,6 +50,7 @@ app.use("/courses", courseRoutes);
 app.use("/courses/:courseId/notes", noteRoutes);
 app.use("/notes", noteRoutes);
 app.use("/main-category", mainCategoryRoutes);
+app.use("/certificate", certificateRoutes);
 
 // Start the server
 const PORT = process.env.PORT || 5000; // Fallback to 5000 if PORT is not defined

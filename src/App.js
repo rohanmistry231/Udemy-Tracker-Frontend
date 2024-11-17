@@ -20,6 +20,7 @@ import ViewNote from "./pages/ViewNote";
 import ViewCourseNote from "./pages/ViewCourseNote";
 import ViewNoteOfViewNotes from "./pages/ViewNoteOfViewNotes";
 import EditNoteOfViewNotes from "./pages/EditNoteOfViewNotes";
+import Certificate from "./pages/Certificate";
 
 function App() {
   const { isDarkMode } = useTheme();
@@ -66,7 +67,8 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/progress" element={<Progress />} />
             <Route path="/notes" element={<Notes />} />
-            <Route path="/add-note" element={<AddNote />} />{" "}
+            <Route path="/add-note" element={<AddNote />} />
+            <Route path="/certificate" element={<Certificate />} />
             {/* New route for AddNote */}
           </Routes>
         </main>
