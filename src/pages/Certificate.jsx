@@ -5,6 +5,7 @@ const Certificates = () => {
   const { theme } = useTheme(); // Access theme from ThemeContext
   const isDarkMode = theme === "dark";
 
+  const [loading, setLoading] = useState(true);
   const [certificates, setCertificates] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredCertificates, setFilteredCertificates] = useState([]);
@@ -30,6 +31,8 @@ const Certificates = () => {
         setFilteredCertificates(data.certificates);
       } catch (error) {
         console.error("Error fetching certificates:", error);
+      }finally {
+        setLoading(false);
       }
     };
 
@@ -159,6 +162,12 @@ const Certificates = () => {
       </div>
 
       {/* Certificates Grid */}
+      {loading ? (
+        <div className="flex justify-center items-center md:min-h-screen lg:min-h-screen max-h-screen mt-40 mb-10">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
+        </div>
+      ) : (
+        <>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {currentCertificates.map((certificate) => (
           <div
@@ -218,6 +227,7 @@ const Certificates = () => {
           </div>
         ))}
       </div>
+      </>)}
 
       {/* Pagination Controls */}
       <div className="flex justify-between items-center mt-6">
