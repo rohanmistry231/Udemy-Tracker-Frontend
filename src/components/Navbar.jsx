@@ -40,6 +40,12 @@ const Navbar = () => {
             <Link to="/notes" className={`transition duration-150 ${getLinkClass('/notes')}`}>
               Notes
             </Link>
+            <Link to="/skills" className={`transition duration-150 ${getLinkClass('/skills')}`}>
+              Skills
+            </Link>
+            <Link to="/projects" className={`transition duration-150 ${getLinkClass('/projects')}`}>
+              Projects
+            </Link>
             <Link to="/progress" className={`transition duration-150 ${getLinkClass('/progress')}`}>
               Progress
             </Link>
@@ -98,6 +104,12 @@ const Navbar = () => {
         </Link>
         <Link to="/notes" className={`block ${getLinkClass('/notes')} py-2`} onClick={toggleMenu}>
           Notes
+        </Link>
+        <Link to="/skills" className={`block ${getLinkClass('/skills')} py-2`} onClick={toggleMenu}>
+          Skills
+        </Link>
+        <Link to="/projects" className={`block ${getLinkClass('/projects')} py-2`} onClick={toggleMenu}>
+          Projects
         </Link>
         <Link to="/progress" className={`block ${getLinkClass('/progress')} py-2`} onClick={toggleMenu}>
           Progress

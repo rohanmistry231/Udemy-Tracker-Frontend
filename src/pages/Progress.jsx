@@ -677,7 +677,7 @@ const Progress = () => {
         </div>
       )}
       {loading ? (
-        <div className="flex justify-center items-center md:min-h-screen lg:min-h-screen max-h-screen mt-60 mb-60">
+        <div className="flex justify-center items-center md:min-h-screen lg:min-h-screen max-h-screen mt-10 mb-10">
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
         </div>
       ) : (
@@ -694,7 +694,7 @@ const Progress = () => {
             </h2>
             <div className="relative w-full h-6 bg-gray-200 rounded-lg overflow-hidden">
               <div
-                className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-400 to-indigo-600"
+                className="absolute top-0 left-0 h-full bg-gradient-to-r from-teal-400 via-blue-500 to-indigo-600"
                 style={{
                   width: `${overallProgress}%`,
                   transition: "width 0.5s ease-in-out",
@@ -736,7 +736,7 @@ const Progress = () => {
                         type="checkbox"
                         checked={checkedMainCategories[category.name]}
                         onChange={() => toggleMainCategory(category.name)}
-                        className="mr-2"
+                        className="mr-2 cursor-pointer"
                       />
                       <h2
                         className={`text-xl font-semibold cursor-pointer ${getTextClass(
@@ -766,13 +766,15 @@ const Progress = () => {
                   </div>
                   <div className="flex flex-row">
                     <div className="relative w-full h-4 mt-2 bg-gray-200 rounded overflow-hidden">
-                      <div
-                        className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-400 to-indigo-600"
-                        style={{
-                          width: `${mainGoalsProgress}%`,
-                          transition: "width 0.5s ease-in-out",
-                        }}
-                      ></div>
+                    <div
+  className="absolute top-0 left-0 h-full bg-gradient-to-r from-purple-400 via-violet-500 to-blue-600"
+  style={{
+    width: `${mainGoalsProgress}%`,
+    transition: "width 0.5s ease-in-out",
+  }}
+></div>
+
+
                     </div>
                     <p className="text-sm mt-1 ml-2">
                       {Math.round(mainGoalsProgress)}%
@@ -798,7 +800,7 @@ const Progress = () => {
                                   onChange={() =>
                                     toggleMainGoal(category.name, goal.name)
                                   }
-                                  className="mr-2"
+                                  className="mr-2 cursor-pointer"
                                 />
                                 <h3
                                   className={`text-lg cursor-pointer ${getTextClass(
@@ -837,7 +839,7 @@ const Progress = () => {
                             <div className="flex flex-row">
                               <div className="relative w-full h-4 mt-2 bg-gray-200 rounded overflow-hidden">
                                 <div
-                                  className="absolute top-0 left-0 h-full bg-gradient-to-r from-green-400 to-teal-500"
+                                  className="absolute top-0 left-0 h-full bg-gradient-to-r from-green-400 via-blue-400 to-teal-500"
                                   style={{
                                     width: `${subGoalsProgress}%`,
                                     transition: "width 0.5s ease-in-out",
@@ -870,7 +872,7 @@ const Progress = () => {
                                           subGoal.name
                                         )
                                       }
-                                      className="mr-2"
+                                      className="mr-2 cursor-pointer"
                                     />
                                     <span
                                       className={`cursor-pointer ${getTextClass(

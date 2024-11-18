@@ -217,14 +217,14 @@ const Notes = () => {
           type="text"
           placeholder="Search notes by title or content..."
           className={`border p-2 rounded w-full sm:w-1/3 h-12 ${
-            isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+            isDarkMode ? "bg-gray-800 text-white border-gray-700" : "bg-white text-black border-gray-300"
           }`}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         <select
           className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
-            isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+            isDarkMode ? "bg-gray-800 text-white border-gray-700" : "bg-white text-black border-gray-300"
           }`}
           value={mainGoalFilter}
           onChange={(e) => {
@@ -242,7 +242,7 @@ const Notes = () => {
         </select>
         <select
           className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
-            isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+            isDarkMode ? "bg-gray-800 text-white border-gray-700" : "bg-white text-black border-gray-300"
           }`}
           value={targetGoalFilter}
           onChange={(e) => {
@@ -260,7 +260,7 @@ const Notes = () => {
         </select>
         <select
           className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
-            isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+            isDarkMode ? "bg-gray-800 text-white border-gray-700" : "bg-white text-black border-gray-300"
           }`}
           value={subTargetGoalFilter}
           onChange={(e) => setSubTargetGoalFilter(e.target.value)}
