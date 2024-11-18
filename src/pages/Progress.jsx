@@ -404,10 +404,10 @@ const Progress = () => {
         <select
           value={priorityFilter}
           onChange={(e) => setPriorityFilter(e.target.value)}
-          className={`px-4 py-2 rounded ${
+          className={`px-4 py-2 rounded-md ${
             isDarkMode
-              ? "bg-gray-700 text-white placeholder-gray-400"
-              : "border bg-white text-black placeholder-gray-600"
+              ? "bg-gray-800 text-white border-gray-700"
+              : "bg-white text-black border-gray-300"
           }`}
         >
           <option value="">All Priorities</option>
@@ -420,7 +420,7 @@ const Progress = () => {
       <div className="flex flex-col sm:flex-row sm:justify-center sm:space-x-4 space-y-3 sm:space-y-0 mb-6 sm:mt-6 mt-4 px-4">
         <button
           onClick={() => handleModalOpen("MainCategory")}
-          className={`text-white px-4 py-2 rounded flex items-center ${
+          className={`text-white px-4 py-2 rounded-md flex items-center ${
             isDarkMode
               ? "bg-blue-600 hover:bg-blue-700"
               : "bg-blue-500 hover:bg-blue-600"
@@ -430,7 +430,7 @@ const Progress = () => {
         </button>
         <button
           onClick={() => handleModalOpen("MainGoal")}
-          className={`text-white px-4 py-2 rounded flex items-center ${
+          className={`text-white px-4 py-2 rounded-md flex items-center ${
             isDarkMode
               ? "bg-green-600 hover:bg-green-700"
               : "bg-green-500 hover:bg-green-600"
@@ -440,7 +440,7 @@ const Progress = () => {
         </button>
         <button
           onClick={() => handleModalOpen("SubGoal")}
-          className={`text-white px-4 py-2 rounded flex items-center ${
+          className={`text-white px-4 py-2 rounded-md flex items-center ${
             isDarkMode
               ? "bg-purple-600 hover:bg-purple-700"
               : "bg-purple-500 hover:bg-purple-600"

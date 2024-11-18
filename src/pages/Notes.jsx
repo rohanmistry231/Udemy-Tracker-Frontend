@@ -216,14 +216,14 @@ const Notes = () => {
         <input
           type="text"
           placeholder="Search notes by title or content..."
-          className={`border p-2 rounded w-full sm:w-1/3 h-12 ${
+          className={`border p-2 rounded-md w-full sm:w-1/3 h-10 ${
             isDarkMode ? "bg-gray-800 text-white border-gray-700" : "bg-white text-black border-gray-300"
           }`}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         <select
-          className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
+          className={`border p-2 rounded-md w-full sm:w-1/6 h-10 ${
             isDarkMode ? "bg-gray-800 text-white border-gray-700" : "bg-white text-black border-gray-300"
           }`}
           value={mainGoalFilter}
@@ -241,7 +241,7 @@ const Notes = () => {
           ))}
         </select>
         <select
-          className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
+          className={`border p-2 rounded-md w-full sm:w-1/6 h-10 ${
             isDarkMode ? "bg-gray-800 text-white border-gray-700" : "bg-white text-black border-gray-300"
           }`}
           value={targetGoalFilter}
@@ -259,7 +259,7 @@ const Notes = () => {
           ))}
         </select>
         <select
-          className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
+          className={`border p-2 rounded-md w-full sm:w-1/6 h-10 ${
             isDarkMode ? "bg-gray-800 text-white border-gray-700" : "bg-white text-black border-gray-300"
           }`}
           value={subTargetGoalFilter}
@@ -275,7 +275,7 @@ const Notes = () => {
         </select>
         <Link to="/add-note" className="w-full sm:w-auto">
           <button
-            className={`rounded h-12 w-full sm:w-32 transition duration-200 flex items-center justify-center ${
+            className={`rounded-md h-10 w-full sm:w-32 transition duration-200 flex items-center justify-center ${
               isDarkMode
                 ? "bg-blue-600 hover:bg-blue-700 text-white"
                 : "bg-blue-500 hover:bg-blue-600 text-white"

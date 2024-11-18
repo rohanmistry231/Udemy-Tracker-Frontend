@@ -6,6 +6,8 @@ const courseRoutes = require("./routes/courseRoutes");
 const noteRoutes = require("./routes/noteRoutes");
 const mainCategoryRoutes = require("./routes/mainCategoryRoutes");
 const certificateRoutes = require("./routes/certificateRoutes");
+const projectRoutes = require("./routes/projectRoutes");
+const skillRoutes = require("./routes/skillRoutes");
 require("dotenv").config();
 
 const app = express();
@@ -51,6 +53,8 @@ app.use("/courses/:courseId/notes", noteRoutes);
 app.use("/notes", noteRoutes);
 app.use("/main-category", mainCategoryRoutes);
 app.use("/certificate", certificateRoutes);
+app.use("/project", projectRoutes);
+app.use("/skill", skillRoutes);
 
 // Start the server
 const PORT = process.env.PORT || 5000; // Fallback to 5000 if PORT is not defined

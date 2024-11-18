@@ -164,7 +164,7 @@ const Certificates = () => {
         <input
           type="text"
           placeholder="Search Certificates by Course Name..."
-          className={`border p-2 rounded w-full md:w-[1324px] transition duration-200 ${
+          className={`border p-2 rounded-md w-full md:w-[1324px] transition duration-200 ${
             isDarkMode
               ? "bg-gray-800 text-white border-gray-700"
               : "bg-white text-black border-gray-300"
@@ -175,7 +175,7 @@ const Certificates = () => {
 
         {/* Add Certificate Button */}
         <button
-          className={`bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 w-full md:w-auto`}
+          className={`bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 w-full md:w-auto`}
           onClick={() => {
             if (!isAuthorized) {
               setIsModalOpen(true);

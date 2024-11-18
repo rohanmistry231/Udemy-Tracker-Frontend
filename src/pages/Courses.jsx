@@ -181,7 +181,7 @@ const Courses = () => {
         <input
           type="text"
           placeholder="Search by name or course number..."
-          className={`border p-2 rounded w-full sm:w-1/3 h-12 ${
+          className={`border p-2 rounded-md w-full sm:w-1/3 h-10 ${
             isDarkMode
               ? "bg-gray-800 text-white border-gray-700"
               : "bg-white text-black border-gray-300"
@@ -192,7 +192,7 @@ const Courses = () => {
 
         {/* Category Filter */}
         <select
-          className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
+          className={`border p-2 rounded-md w-full sm:w-1/6 h-10 ${
             isDarkMode
               ? "bg-gray-800 text-white border-gray-700"
               : "bg-white text-black border-gray-300"
@@ -216,7 +216,7 @@ const Courses = () => {
 
         {/* Sub-category Filter */}
         <select
-          className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
+          className={`border p-2 rounded-md w-full sm:w-1/6 h-10 ${
             isDarkMode
               ? "bg-gray-800 text-white border-gray-700"
               : "bg-white text-black border-gray-300"
@@ -236,7 +236,7 @@ const Courses = () => {
 
         {/* Status Filter */}
         <select
-          className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
+          className={`border p-2 rounded-md w-full sm:w-1/6 h-10 ${
             isDarkMode
               ? "bg-gray-800 text-white border-gray-700"
               : "bg-white text-black border-gray-300"
@@ -252,7 +252,7 @@ const Courses = () => {
 
         {/* Important Status Filter */}
         <select
-          className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
+          className={`border p-2 rounded-md w-full sm:w-1/6 h-10 ${
             isDarkMode
               ? "bg-gray-800 text-white border-gray-700"
               : "bg-white text-black border-gray-300"
@@ -269,7 +269,7 @@ const Courses = () => {
 
         {/* Sort Order Filter */}
         <select
-          className={`border p-2 rounded w-full sm:w-1/6 h-12 ${
+          className={`border p-2 rounded-md w-full sm:w-1/6 h-10 ${
             isDarkMode
               ? "bg-gray-800 text-white border-gray-700"
               : "bg-white text-black border-gray-300"
@@ -285,7 +285,7 @@ const Courses = () => {
         <Link to="/add-course" className="w-full sm:w-auto">
           <button
             type="button"
-            className={`rounded h-12 w-full sm:w-32 transition duration-200 flex items-center justify-center ${
+            className={`rounded-md h-10 w-full sm:w-32 transition duration-200 flex items-center justify-center ${
               isDarkMode
                 ? "bg-blue-600 hover:bg-blue-700 text-white"
                 : "bg-blue-500 hover:bg-blue-600 text-white"
