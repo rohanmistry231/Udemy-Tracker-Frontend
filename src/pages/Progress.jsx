@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useTheme } from "../context/ThemeContext";
 import { FaChevronDown, FaChevronUp, FaMinus, FaPlus } from "react-icons/fa";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { categoryPriorities } from "../db";
 
 const Progress = () => {
   const { theme } = useTheme();
   const isDarkMode = theme === "dark";
 
+  const correctPassword = "12345";
   const [loading, setLoading] = useState(true);
   const [mainCategories, setMainCategories] = useState([]);
   const [checkedMainCategories, setCheckedMainCategories] = useState({});
@@ -24,6 +27,9 @@ const Progress = () => {
   const [newMainGoalName, setNewMainGoalName] = useState("");
   const [selectedMainGoal, setSelectedMainGoal] = useState("");
   const [newSubGoalName, setNewSubGoalName] = useState("");
+
+  const [password, setPassword] = useState("");
+  const [isAuthorized, setIsAuthorized] = useState(false);
 
   // Fetch data from backend
   useEffect(() => {
@@ -375,6 +381,17 @@ const Progress = () => {
     }
   };
 
+  const handlePasswordSubmit = (e) => {
+    e.preventDefault();
+    if (password === correctPassword) {
+      setIsAuthorized(true);
+      localStorage.setItem("password", password);
+      toast.success("Access granted!");
+    } else {
+      toast.error("Incorrect password. Please try again.");
+    }
+  };
+
   return (
     <div
       className={isDarkMode ? "bg-gray-900 text-white" : "bg-white text-black"}
@@ -436,191 +453,231 @@ const Progress = () => {
       {/* Modal */}
       {isModalOpen && (
         <div
-          className={`fixed inset-0 ${
-            isDarkMode ? "bg-black bg-opacity-70" : "bg-black bg-opacity-50"
-          } flex items-center justify-center z-50`}
+          className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50`}
         >
-          <div
-            className={`rounded-lg p-6 w-96 ${
-              isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
-            } z-50`}
-          >
-            {modalType === "MainCategory" && (
-              <>
-                <h2 className="text-xl font-semibold mb-4">
-                  Add Main Category
-                </h2>
-                <input
-                  type="text"
-                  value={newMainCategoryName}
-                  onChange={(e) => setNewMainCategoryName(e.target.value)}
-                  placeholder="Category Name"
-                  className={`w-full p-2 mb-4 border rounded ${
-                    isDarkMode
-                      ? "bg-gray-800 text-white"
-                      : "bg-white text-black"
-                  }`}
-                  autoFocus
-                />
-                <div className="flex justify-end space-x-2">
-                  <button
-                    onClick={() => setIsModalOpen(false)}
-                    className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={addMainCategory}
-                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                  >
-                    Add Category
-                  </button>
-                </div>
-              </>
-            )}
+          {!isAuthorized ? (
+            <form
+              onSubmit={handlePasswordSubmit}
+              className={`p-6 rounded shadow-md ${
+                isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+              }`}
+            >
+              <label htmlFor="password" className="block mb-2">
+                🔒 Prove You're Worthy! Enter the Secret Code:
+              </label>
+              <input
+                type="password"
+                id="password"
+                autoFocus
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className={`border p-2 rounded w-full ${
+                  isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
+                }`}
+                required
+              />
+              <button
+                type="submit"
+                className="bg-blue-500 text-white p-2 rounded mt-4"
+              >
+                Submit
+              </button>
+              <button
+                className="bg-gray-500 text-white p-2 rounded mt-4 ml-4"
+                onClick={() => setIsModalOpen(false)}
+              >
+                Cancel
+              </button>
+            </form>
+          ) : (
+            <>
+              <div
+                className={`rounded-lg p-6 w-96 ${
+                  isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+                } z-50`}
+              >
+                {modalType === "MainCategory" && (
+                  <>
+                    <h2 className="text-xl font-semibold mb-4">
+                      Add Main Category
+                    </h2>
+                    <input
+                      type="text"
+                      value={newMainCategoryName}
+                      onChange={(e) => setNewMainCategoryName(e.target.value)}
+                      placeholder="Category Name"
+                      className={`w-full p-2 mb-4 border rounded ${
+                        isDarkMode
+                          ? "bg-gray-800 text-white"
+                          : "bg-white text-black"
+                      }`}
+                      autoFocus
+                    />
+                    <div className="flex justify-end space-x-2">
+                      <button
+                        onClick={() => setIsModalOpen(false)}
+                        className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={addMainCategory}
+                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                      >
+                        Add Category
+                      </button>
+                    </div>
+                  </>
+                )}
 
-            {modalType === "MainGoal" && (
-              <>
-                <h2 className="text-xl font-semibold mb-4">Add Main Goal</h2>
-                <select
-                  value={selectedMainCategory}
-                  onChange={(e) => setSelectedMainCategory(e.target.value)}
-                  className={`w-full p-2 mb-4 border rounded ${
-                    isDarkMode
-                      ? "bg-gray-800 text-white"
-                      : "bg-white text-black"
-                  }`}
-                >
-                  <option
-                    value=""
-                    disabled
-                    className={`${
-                      isDarkMode
-                        ? "bg-gray-800 text-white"
-                        : "bg-white text-black"
-                    }`}
-                  >
-                    Select Main Category
-                  </option>
-                  {mainCategories?.map((category) => (
-                    <option key={category._id} value={category._id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-                <input
-                  type="text"
-                  value={newMainGoalName}
-                  onChange={(e) => setNewMainGoalName(e.target.value)}
-                  placeholder="Main Goal Name"
-                  className={`w-full p-2 mb-4 border rounded ${
-                    isDarkMode
-                      ? "bg-gray-800 text-white"
-                      : "bg-white text-black"
-                  }`}
-                  autoFocus
-                />
-                <div className="flex justify-end space-x-2">
-                  <button
-                    onClick={() => setIsModalOpen(false)}
-                    className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={addMainGoal}
-                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                  >
-                    Add Main Goal
-                  </button>
-                </div>
-              </>
-            )}
-
-            {modalType === "SubGoal" && (
-              <>
-                <h2 className="text-xl font-semibold mb-4">Add Sub Goal</h2>
-                <select
-                  value={selectedMainCategory}
-                  onChange={(e) => {
-                    setSelectedMainCategory(e.target.value);
-                    setSelectedMainGoal("");
-                  }}
-                  className={`w-full p-2 mb-4 border rounded ${
-                    isDarkMode
-                      ? "bg-gray-800 text-white"
-                      : "bg-white text-black"
-                  }`}
-                >
-                  <option value="" disabled>
-                    Select Main Category
-                  </option>
-                  {mainCategories?.map((category) => (
-                    <option key={category._id} value={category._id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-                <select
-                  value={selectedMainGoal}
-                  onChange={(e) => setSelectedMainGoal(e.target.value)}
-                  className={`w-full p-2 mb-4 border rounded ${
-                    isDarkMode
-                      ? "bg-gray-800 text-white"
-                      : "bg-white text-black"
-                  }`}
-                  disabled={!selectedMainCategory}
-                >
-                  <option value="" disabled>
-                    Select Main Goal
-                  </option>
-                  {selectedMainCategory &&
-                    mainCategories
-                      .find((category) => category._id === selectedMainCategory)
-                      ?.mainGoals?.map((goal) => (
-                        <option key={goal._id} value={goal._id}>
-                          {goal.name}
+                {modalType === "MainGoal" && (
+                  <>
+                    <h2 className="text-xl font-semibold mb-4">
+                      Add Main Goal
+                    </h2>
+                    <select
+                      value={selectedMainCategory}
+                      onChange={(e) => setSelectedMainCategory(e.target.value)}
+                      className={`w-full p-2 mb-4 border rounded ${
+                        isDarkMode
+                          ? "bg-gray-800 text-white"
+                          : "bg-white text-black"
+                      }`}
+                    >
+                      <option
+                        value=""
+                        disabled
+                        className={`${
+                          isDarkMode
+                            ? "bg-gray-800 text-white"
+                            : "bg-white text-black"
+                        }`}
+                      >
+                        Select Main Category
+                      </option>
+                      {mainCategories?.map((category) => (
+                        <option key={category._id} value={category._id}>
+                          {category.name}
                         </option>
                       ))}
-                </select>
-                <input
-                  type="text"
-                  value={newSubGoalName}
-                  onChange={(e) => setNewSubGoalName(e.target.value)}
-                  placeholder="Sub Goal Name"
-                  className={`w-full p-2 mb-4 border rounded ${
-                    isDarkMode
-                      ? "bg-gray-800 text-white"
-                      : "bg-white text-black"
-                  }`}
-                  autoFocus
-                />
-                <div className="flex justify-end space-x-2">
-                  <button
-                    onClick={() => setIsModalOpen(false)}
-                    className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={addSubGoal}
-                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                    disabled={
-                      !selectedMainCategory ||
-                      !selectedMainGoal ||
-                      !newSubGoalName.trim()
-                    }
-                  >
-                    Add Sub Goal
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
+                    </select>
+                    <input
+                      type="text"
+                      value={newMainGoalName}
+                      onChange={(e) => setNewMainGoalName(e.target.value)}
+                      placeholder="Main Goal Name"
+                      className={`w-full p-2 mb-4 border rounded ${
+                        isDarkMode
+                          ? "bg-gray-800 text-white"
+                          : "bg-white text-black"
+                      }`}
+                      autoFocus
+                    />
+                    <div className="flex justify-end space-x-2">
+                      <button
+                        onClick={() => setIsModalOpen(false)}
+                        className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={addMainGoal}
+                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                      >
+                        Add Main Goal
+                      </button>
+                    </div>
+                  </>
+                )}
+
+                {modalType === "SubGoal" && (
+                  <>
+                    <h2 className="text-xl font-semibold mb-4">Add Sub Goal</h2>
+                    <select
+                      value={selectedMainCategory}
+                      onChange={(e) => {
+                        setSelectedMainCategory(e.target.value);
+                        setSelectedMainGoal("");
+                      }}
+                      className={`w-full p-2 mb-4 border rounded ${
+                        isDarkMode
+                          ? "bg-gray-800 text-white"
+                          : "bg-white text-black"
+                      }`}
+                    >
+                      <option value="" disabled>
+                        Select Main Category
+                      </option>
+                      {mainCategories?.map((category) => (
+                        <option key={category._id} value={category._id}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={selectedMainGoal}
+                      onChange={(e) => setSelectedMainGoal(e.target.value)}
+                      className={`w-full p-2 mb-4 border rounded ${
+                        isDarkMode
+                          ? "bg-gray-800 text-white"
+                          : "bg-white text-black"
+                      }`}
+                      disabled={!selectedMainCategory}
+                    >
+                      <option value="" disabled>
+                        Select Main Goal
+                      </option>
+                      {selectedMainCategory &&
+                        mainCategories
+                          .find(
+                            (category) => category._id === selectedMainCategory
+                          )
+                          ?.mainGoals?.map((goal) => (
+                            <option key={goal._id} value={goal._id}>
+                              {goal.name}
+                            </option>
+                          ))}
+                    </select>
+                    <input
+                      type="text"
+                      value={newSubGoalName}
+                      onChange={(e) => setNewSubGoalName(e.target.value)}
+                      placeholder="Sub Goal Name"
+                      className={`w-full p-2 mb-4 border rounded ${
+                        isDarkMode
+                          ? "bg-gray-800 text-white"
+                          : "bg-white text-black"
+                      }`}
+                      autoFocus
+                    />
+                    <div className="flex justify-end space-x-2">
+                      <button
+                        onClick={() => setIsModalOpen(false)}
+                        className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={addSubGoal}
+                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                        disabled={
+                          !selectedMainCategory ||
+                          !selectedMainGoal ||
+                          !newSubGoalName.trim()
+                        }
+                      >
+                        Add Sub Goal
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            </>
+          )}
         </div>
       )}
       {loading ? (
-        <div className="flex justify-center items-center md:min-h-screen lg:min-h-screen max-h-screen mt-40 mb-10">
+        <div className="flex justify-center items-center md:min-h-screen lg:min-h-screen max-h-screen mt-60 mb-60">
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
         </div>
       ) : (
@@ -778,19 +835,18 @@ const Progress = () => {
                               </button>
                             </div>
                             <div className="flex flex-row">
-                            <div className="relative w-full h-4 mt-2 bg-gray-200 rounded overflow-hidden">
-                              <div
-                                className="absolute top-0 left-0 h-full bg-gradient-to-r from-green-400 to-teal-500"
-                                style={{
-                                  width: `${subGoalsProgress}%`,
-                                  transition: "width 0.5s ease-in-out",
-                                }}
-                              ></div>
-                            </div>
-                            <p className="text-sm mt-2 ml-2">
-                              {Math.round(subGoalsProgress)}
-                              %
-                            </p>
+                              <div className="relative w-full h-4 mt-2 bg-gray-200 rounded overflow-hidden">
+                                <div
+                                  className="absolute top-0 left-0 h-full bg-gradient-to-r from-green-400 to-teal-500"
+                                  style={{
+                                    width: `${subGoalsProgress}%`,
+                                    transition: "width 0.5s ease-in-out",
+                                  }}
+                                ></div>
+                              </div>
+                              <p className="text-sm mt-2 ml-2">
+                                {Math.round(subGoalsProgress)}%
+                              </p>
                             </div>
 
                             {collapsedMainGoals[category.name]?.[goal.name] && (
@@ -826,13 +882,17 @@ const Progress = () => {
                                       {subGoal.name}
                                     </span>
                                     <button
-      className="delete-btn text-red-600 ml-auto mr-7"
-      onClick={() =>
-        deleteSubGoal(category._id, goal._id, subGoal._id)
-      }
-    >
-      <FaMinus />
-    </button>
+                                      className="delete-btn text-red-600 ml-auto mr-7"
+                                      onClick={() =>
+                                        deleteSubGoal(
+                                          category._id,
+                                          goal._id,
+                                          subGoal._id
+                                        )
+                                      }
+                                    >
+                                      <FaMinus />
+                                    </button>
                                   </li>
                                 ))}
                               </ul>
