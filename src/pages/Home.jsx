@@ -20,6 +20,7 @@ const Home = () => {
 
   const [courses, setCourses] = useState([]);
   const [totalHours, setTotalHours] = useState(0);
+  const [completedCoursesCount, setCompletedCoursesCount] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedSubCategory, setSelectedSubCategory] = useState("");
   const [selectedImportantStatus, setSelectedImportantStatus] = useState("");
@@ -41,6 +42,12 @@ const Home = () => {
             0
           );
           setTotalHours(hours);
+
+          // Count completed courses
+          const completedCount = storedCourses.filter(
+            (course) => course.status === "Completed"
+          ).length;
+          setCompletedCoursesCount(completedCount);
         }
         setIsLoading(false); // Set loading to false once fetching is complete
       } catch (error) {
@@ -143,7 +150,7 @@ const Home = () => {
             <h1 className="text-2xl font-bold text-center mb-6">
               Udemy Courses Analysis
             </h1>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-2">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-2">
               <div
                 className={`p-4 rounded-md shadow-md ${
                   isDarkMode ? "bg-gray-800" : "bg-white"
@@ -160,6 +167,16 @@ const Home = () => {
                 <h2 className="text-lg font-medium">Total Learning Hours</h2>
                 <p className="text-3xl font-semibold mt-2">
                   {totalHours.toFixed(2)} hrs
+                </p>
+              </div>
+              <div
+                className={`p-4 rounded-md shadow-md ${
+                  isDarkMode ? "bg-gray-800" : "bg-white"
+                }`}
+              >
+                <h2 className="text-lg font-medium">Completed Courses</h2>
+                <p className="text-3xl font-semibold mt-2">
+                  {completedCoursesCount}
                 </p>
               </div>
             </div>
