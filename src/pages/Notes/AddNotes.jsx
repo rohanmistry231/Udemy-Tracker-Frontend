@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useTheme } from "../context/ThemeContext"; // Import theme context
-import { addNoteToCourse, getCourseDetails } from "../dataService";
-import { categories, targetGoals, subGoals } from "../db";
+import { useTheme } from "../../context/ThemeContext"; // Import theme context
+import { addNoteToCourse, getCourseDetails } from "../../dataService";
+import { categories, targetGoals, subGoals } from "../../db";
 import { Editor } from "@tinymce/tinymce-react";
 
 const AddNotes = () => {

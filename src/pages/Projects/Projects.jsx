@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useTheme } from "../context/ThemeContext";
+import { useTheme } from "../../context/ThemeContext";
 import axios from "axios";
 import ProjectModal from "./ProjectModal";
 import { AiOutlinePlus } from "react-icons/ai";

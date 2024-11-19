@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useTheme } from "../context/ThemeContext"; // Import theme context
+import { useTheme } from "../../context/ThemeContext"; // Import theme context
 import jsPDF from "jspdf";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -8,8 +8,8 @@ import {
   getNotesFromLocalStorage,
   saveNotesToLocalStorage,
   syncNotesWithBackend,
-} from "../dataService";
-import { categories, targetGoals } from "../db";
+} from "../../dataService";
+import { categories, targetGoals } from "../../db";
 import html2canvas from "html2canvas";
 
 const Notes = () => {

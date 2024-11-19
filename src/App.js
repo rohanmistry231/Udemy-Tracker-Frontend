@@ -3,26 +3,26 @@ import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import Courses from "./pages/Courses";
-import AddCourse from "./pages/AddCourse";
-import EditCourse from "./pages/EditCourse";
-import ViewCourse from "./pages/ViewCourse";
-import AddNotes from "./pages/AddNotes";
-import ViewNotes from "./pages/ViewNotes";
-import AddNote from "./pages/AddNote"; // Import the new AddNote page
+import Courses from "./pages/Courses/Courses";
+import AddCourse from "./pages/Courses/AddCourse";
+import EditCourse from "./pages/Courses/EditCourse";
+import ViewCourse from "./pages/Courses/ViewCourse";
+import AddNotes from "./pages/Notes/AddNotes";
+import ViewNotes from "./pages/Notes/ViewNotes";
+import AddNote from "./pages/Notes/AddNote"; // Import the new AddNote page
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
-import Home from "./pages/Home";
-import Profile from "./pages/Profile";
-import Progress from "./pages/Progress";
-import Notes from "./pages/Notes";
-import EditNote from "./pages/EditNote";
-import ViewNote from "./pages/ViewNote";
-import ViewCourseNote from "./pages/ViewCourseNote";
-import ViewNoteOfViewNotes from "./pages/ViewNoteOfViewNotes";
-import EditNoteOfViewNotes from "./pages/EditNoteOfViewNotes";
-import Certificate from "./pages/Certificate";
-import Skills from "./pages/Skills";
-import Projects from "./pages/Projects";
+import Home from "./pages/Home/Home";
+import Profile from "./pages/Profile/Profile";
+import Progress from "./pages/Progress/Progress";
+import Notes from "./pages/Notes/Notes";
+import EditNote from "./pages/Notes/EditNote";
+import ViewNote from "./pages/Notes/ViewNote";
+import ViewCourseNote from "./pages/Notes/ViewCourseNote";
+import ViewNoteOfViewNotes from "./pages/Notes/ViewNoteOfViewNotes";
+import EditNoteOfViewNotes from "./pages/Notes/EditNoteOfViewNotes";
+import Certificate from "./pages/Certificate/Certificate";
+import Skills from "./pages/Skills/Skills";
+import Projects from "./pages/Projects/Projects";
 
 function App() {
   const { isDarkMode } = useTheme();

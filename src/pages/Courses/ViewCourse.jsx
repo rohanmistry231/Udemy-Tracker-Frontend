@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { useTheme } from "../context/ThemeContext";
-import { getCourseById } from "../dataService";
+import { useTheme } from "../../context/ThemeContext";
+import { getCourseById } from "../../dataService";
 import { Editor } from "@tinymce/tinymce-react";
 
 const ViewCourse = () => {

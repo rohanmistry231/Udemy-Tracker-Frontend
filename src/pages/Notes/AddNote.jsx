@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useTheme } from "../context/ThemeContext";
+import { useTheme } from "../../context/ThemeContext";
 import Select from "react-select";
 import {
   getCoursesFromLocalStorage,
   getNotesFromLocalStorage,
   saveNotesToLocalStorage,
-} from "../dataService";
-import { categories, targetGoals, subGoals } from "../db";
+} from "../../dataService";
+import { categories, targetGoals, subGoals } from "../../db";
 import { Editor } from "@tinymce/tinymce-react";
 
 const AddNote = () => {

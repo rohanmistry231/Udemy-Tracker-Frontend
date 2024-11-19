@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useTheme } from "../context/ThemeContext";
+import { useTheme } from "../../context/ThemeContext";
 import * as FaIcons from "react-icons/fa";
 import * as SiIcons from "react-icons/si";
 import { FiEdit } from "react-icons/fi";

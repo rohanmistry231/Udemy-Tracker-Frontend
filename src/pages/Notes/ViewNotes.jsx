@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { useTheme } from "../context/ThemeContext"; // Import theme context
+import { useTheme } from "../../context/ThemeContext"; // Import theme context
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import jsPDF from "jspdf"; // Import jsPDF

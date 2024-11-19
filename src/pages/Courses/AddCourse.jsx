@@ -4,9 +4,9 @@ import { ToastContainer, toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
-import { useTheme } from "../context/ThemeContext"; // Import theme context
-import { createCourse } from "../dataService";
-import { categories, categoryPriorities, targetGoals as subCategories } from '../db';
+import { useTheme } from "../../context/ThemeContext"; // Import theme context
+import { createCourse } from "../../dataService";
+import { categories, categoryPriorities, targetGoals as subCategories } from '../../db';
 
 const AddCourse = ({ onAdd }) => {
   const navigate = useNavigate();

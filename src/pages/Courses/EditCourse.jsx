@@ -3,9 +3,9 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useTheme } from "../context/ThemeContext";
-import { updateCourse } from "../dataService";
-import { categories, targetGoals as subCategories } from '../db';
+import { useTheme } from "../../context/ThemeContext";
+import { updateCourse } from "../../dataService";
+import { categories, targetGoals as subCategories } from '../../db';
 
 const EditCourse = () => {
   const correctPassword = "12345";

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useTheme } from "../context/ThemeContext";
+import { useTheme } from "../../context/ThemeContext";
 import { Link } from "react-router-dom";
-import { getCoursesFromLocalStorage } from "../dataService";
+import { getCoursesFromLocalStorage } from "../../dataService";
 
 const Profile = () => {
   const { theme } = useTheme();

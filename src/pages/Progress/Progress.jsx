@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useTheme } from "../context/ThemeContext";
+import { useTheme } from "../../context/ThemeContext";
 import { FaChevronDown, FaChevronUp, FaMinus, FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { categoryPriorities } from "../db";
+import { categoryPriorities } from "../../db";
 
 const Progress = () => {
   const { theme } = useTheme();

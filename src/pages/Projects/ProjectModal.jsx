@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useTheme } from "../context/ThemeContext"; // Importing the useTheme hook
+import { useTheme } from "../../context/ThemeContext"; // Importing the useTheme hook
 
 // Dummy data for categories and subcategories
 const projectCategories = [
