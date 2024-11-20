@@ -13,34 +13,73 @@ const Projects = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [currentProject, setCurrentProject] = useState(null);
-  const [currentPage, setCurrentPage] = useState(
-    parseInt(localStorage.getItem("currentPage")) || 1
-  ); // Get the page from localStorage or default to 1
-  const [projectsPerPage] = useState(12); // 12 cards per page
 
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedSubCategory, setSelectedSubCategory] = useState("");
 
   // Fetch projects from backend
-  const fetchProjects = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get("https://udemy-tracker.vercel.app/project");
-      setProjects(response.data);
-      setLoading(false);
+  // Key for localStorage
+  const localStorageKey = "projectData";
 
-      // Get unique categories from projects
-      const uniqueCategories = [
-        ...new Set(response.data.map((project) => project.category)),
-      ];
-      setCategories(uniqueCategories);
-    } catch (error) {
-      console.error("Error fetching projects:", error);
-    } finally{
-      setLoading(false);
-    }
+  // Save data to localStorage
+  const saveToLocalStorage = (data) => {
+    localStorage.setItem(localStorageKey, JSON.stringify(data));
   };
+
+  // Load data from localStorage
+  const loadFromLocalStorage = () => {
+    const storedData = localStorage.getItem(localStorageKey);
+    return storedData ? JSON.parse(storedData) : null;
+  };
+
+  // Fetch projects from backend or localStorage
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        setLoading(true);
+
+        // Try loading from localStorage first
+        const storedData = loadFromLocalStorage();
+        if (storedData) {
+          setProjects(storedData.projects);
+          setCategories(storedData.categories);
+        } else {
+          // Fetch from backend if not found in localStorage
+          const response = await axios.get("https://udemy-tracker.vercel.app/project");
+          const fetchedProjects = response.data;
+
+          // Update state with fetched data
+          setProjects(fetchedProjects);
+
+          // Extract unique categories
+          const uniqueCategories = [
+            ...new Set(fetchedProjects.map((project) => project.category)),
+          ];
+          setCategories(uniqueCategories);
+
+          // Save fetched data to localStorage
+          saveToLocalStorage({
+            projects: fetchedProjects,
+            categories: uniqueCategories,
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
+  // Update localStorage whenever projects or categories change
+  useEffect(() => {
+    if (!loading) {
+      saveToLocalStorage({ projects, categories });
+    }
+  }, [projects, categories, loading]);
 
   // Add Project
   const addProject = async (newProject) => {
@@ -104,10 +143,6 @@ const deleteProject = async (id) => {
   const handleSubCategoryChange = (e) => {
     setSelectedSubCategory(e.target.value);
   };
-
-  useEffect(() => {
-    fetchProjects();
-  }, []);
 
   // Get unique sub-categories based on selected category
   const filteredSubCategories = [

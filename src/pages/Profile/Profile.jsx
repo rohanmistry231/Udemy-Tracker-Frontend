@@ -52,20 +52,56 @@ const Profile = () => {
     fetchCoursesFromLocalStorage(); // Call function to fetch data from localStorage
   }, []);
 
+  // Key for localStorage
+  const localStorageKey = "userProfile";
+
+  // Save data to localStorage
+  const saveToLocalStorage = (data) => {
+    localStorage.setItem(localStorageKey, JSON.stringify(data));
+  };
+
+  // Load data from localStorage
+  const loadFromLocalStorage = () => {
+    const storedData = localStorage.getItem(localStorageKey);
+    return storedData ? JSON.parse(storedData) : null;
+  };
+
+  // Simulate fetching user data from API
   useEffect(() => {
-    // Simulate fetching user data (replace with actual API call)
-    const userData = {
-      name: "Rohan Mistry",
-      email: "rohanmistry231@gmail.com",
-      bio: "A passionate learner exploring the world of technology.",
-      avatarUrl: "profile.jpg", // Example avatar URL
-      socialLinks: {
-        portfolio: "https://irohanportfolio.netlify.app",
-        linkedin: "https://linkedin.com/in/rohan-mistry-493987202",
-        github: "https://github.com/rohanmistry231",
-      },
+    const fetchUserData = async () => {
+      try {
+        setIsLoading(true);
+
+        // Check localStorage for user data
+        const storedData = loadFromLocalStorage();
+        if (storedData) {
+          setUser(storedData);
+        } else {
+          // Simulate fetching user data (replace with actual API call)
+          const userData = {
+            name: "Rohan Mistry",
+            email: "rohanmistry231@gmail.com",
+            bio: "A passionate learner exploring the world of technology.",
+            avatarUrl: "profile.jpg", // Example avatar URL
+            socialLinks: {
+              portfolio: "https://irohanportfolio.netlify.app",
+              linkedin: "https://linkedin.com/in/rohan-mistry-493987202",
+              github: "https://github.com/rohanmistry231",
+            },
+          };
+
+          // Set user data and save to localStorage
+          setUser(userData);
+          saveToLocalStorage(userData);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
-    setUser(userData);
+  
+    fetchUserData();
   }, []);
 
   return (
