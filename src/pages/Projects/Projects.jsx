@@ -13,6 +13,10 @@ const Projects = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [currentProject, setCurrentProject] = useState(null);
+  const [currentPage, setCurrentPage] = useState(
+    parseInt(localStorage.getItem("currentPage")) || 1
+  ); // Get the page from localStorage or default to 1
+  const [projectsPerPage] = useState(12); // 12 cards per page
 
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -33,6 +37,7 @@ const Projects = () => {
       setCategories(uniqueCategories);
     } catch (error) {
       console.error("Error fetching projects:", error);
+    } finally{
       setLoading(false);
     }
   };
@@ -177,8 +182,11 @@ const deleteProject = async (id) => {
 
       {/* Projects Section */}
       {loading ? (
-        <div className="text-center">Loading...</div>
+        <div className="flex justify-center items-center md:min-h-screen lg:min-h-screen max-h-screen mt-60 mb-60">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
+        </div>
       ) : filteredProjects.length > 0 ? (
+        <>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredProjects.map((project) => (
             <div
@@ -256,6 +264,7 @@ const deleteProject = async (id) => {
             </div>
           ))}
         </div>
+        </>
       ) : (
         <div className="text-center">No projects available.</div>
       )}

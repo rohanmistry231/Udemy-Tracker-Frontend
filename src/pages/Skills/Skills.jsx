@@ -10,6 +10,7 @@ const Skills = () => {
   const { theme } = useTheme();
   const isDarkMode = theme === "dark";
 
+  const [loading, setLoading] = useState(true); // Loading state
   const [skills, setSkills] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [currentSkill, setCurrentSkill] = useState(null); // For editing
@@ -22,6 +23,8 @@ const Skills = () => {
         setSkills(response.data);
       } catch (err) {
         console.error("Error fetching skills data");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -102,6 +105,12 @@ const Skills = () => {
       </div>
 
       {/* Skills Section */}
+      {loading ? (
+        <div className="flex justify-center items-center md:min-h-screen lg:min-h-screen max-h-screen mt-60 mb-60">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
+        </div>
+      ) : (
+      <>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
         {skills.map((skill) => (
           <div
@@ -141,6 +150,9 @@ const Skills = () => {
           </div>
         ))}
       </div>
+      </>
+      )}
+
 
       {/* Modal */}
       {showModal && (
