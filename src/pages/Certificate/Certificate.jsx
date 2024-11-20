@@ -96,25 +96,34 @@ const Certificates = () => {
 
   // Handle Delete Function
   const handleDelete = async (certificateId) => {
-    if (window.confirm("Are you sure you want to delete this certificate?")) {
-      try {
-        // API call to delete the certificate
-        await fetch(
-          `https://udemy-tracker.vercel.app/certificate/${certificateId}`,
-          {
-            method: "DELETE",
-          }
-        );
 
-        // Update the certificates state after deletion
-        const updatedCertificates = certificates.filter(
-          (certificate) => certificate._id !== certificateId
-        );
-        setCertificates(updatedCertificates);
-      } catch (error) {
-        console.error("Error deleting certificate:", error);
+    // Retrieve password from localStorage
+    const storedPassword = localStorage.getItem("password");
+
+     // Check if the stored password matches the correct password
+     if (storedPassword === correctPassword) {
+      if (window.confirm("Are you sure you want to delete this certificate?")) {
+        try {
+          // API call to delete the certificate
+          await fetch(
+            `https://udemy-tracker.vercel.app/certificate/${certificateId}`,
+            {
+              method: "DELETE",
+            }
+          );
+
+          // Update the certificates state after deletion
+          const updatedCertificates = certificates.filter(
+            (certificate) => certificate._id !== certificateId
+          );
+          setCertificates(updatedCertificates);
+        } catch (error) {
+          console.error("Error deleting certificate:", error);
+        }
       }
-    }
+    }else {
+      alert("Access Denied: You lack authorization to perform this action.");
+  }  
   };
 
   // Pagination logic

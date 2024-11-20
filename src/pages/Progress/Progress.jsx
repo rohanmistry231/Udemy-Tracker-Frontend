@@ -265,13 +265,22 @@ const Progress = () => {
 
     // Update backend
     const categoryId = mainCategories.find((cat) => cat.name === category)._id;
-    updateBackend(
-      `https://udemy-tracker.vercel.app/main-category/${categoryId}`,
-      "PUT",
-      {
-        isChecked: newCheckedState,
-      }
-    );
+
+    // Retrieve password from localStorage
+    const storedPassword = localStorage.getItem("password");
+
+    // Check if the stored password matches the correct password
+    if (storedPassword === correctPassword) {
+      updateBackend(
+        `https://udemy-tracker.vercel.app/main-category/${categoryId}`,
+        "PUT",
+        {
+          isChecked: newCheckedState,
+        }
+      );
+    }else {
+      alert("Access Denied: You lack authorization to perform this action.");
+  }
   };
 
   const toggleMainGoal = (category, goal) => {
@@ -290,13 +299,21 @@ const Progress = () => {
       .find((cat) => cat.name === category)
       .mainGoals.find((g) => g.name === goal)._id;
 
-    updateBackend(
-      `https://udemy-tracker.vercel.app/main-category/${categoryId}/main-goal/${goalId}`,
-      "PUT",
-      {
-        isChecked: newCheckedState,
-      }
-    );
+      // Retrieve password from localStorage
+    const storedPassword = localStorage.getItem("password");
+
+    // Check if the stored password matches the correct password
+    if (storedPassword === correctPassword) {
+      updateBackend(
+        `https://udemy-tracker.vercel.app/main-category/${categoryId}/main-goal/${goalId}`,
+        "PUT",
+        {
+          isChecked: newCheckedState,
+        }
+      );
+    }else {
+      alert("Access Denied: You lack authorization to perform this action.");
+  }
   };
 
   const toggleSubGoal = (category, goal, subGoal) => {
@@ -322,11 +339,19 @@ const Progress = () => {
       .mainGoals.find((g) => g.name === goal)
       .subGoals.find((sg) => sg.name === subGoal)._id;
 
-    updateBackend(
-      `https://udemy-tracker.vercel.app/main-category/${categoryId}/main-goal/${goalId}/sub-goal/${subGoalId}`,
-      "PUT",
-      { isChecked: newCheckedState }
-    );
+      // Retrieve password from localStorage
+    const storedPassword = localStorage.getItem("password");
+
+    // Check if the stored password matches the correct password
+    if (storedPassword === correctPassword) {
+      updateBackend(
+        `https://udemy-tracker.vercel.app/main-category/${categoryId}/main-goal/${goalId}/sub-goal/${subGoalId}`,
+        "PUT",
+        { isChecked: newCheckedState }
+      );
+    }else {
+      alert("Access Denied: You lack authorization to perform this action.");
+  }
   };
 
   const toggleCategoryCollapse = (category) => {
@@ -368,74 +393,101 @@ const Progress = () => {
 
   // Delete a main category
   const deleteMainCategory = async (categoryId) => {
-    try {
-      await fetch(
-        `https://udemy-tracker.vercel.app/main-category/${categoryId}`,
-        {
-          method: "DELETE",
+
+    // Retrieve password from localStorage
+    const storedPassword = localStorage.getItem("userPassword");
+
+     // Check if the stored password matches the correct password
+     if (storedPassword === correctPassword) {
+        try {
+          await fetch(
+            `https://udemy-tracker.vercel.app/main-category/${categoryId}`,
+            {
+              method: "DELETE",
+            }
+          );
+          setMainCategories((prev) =>
+            prev.filter((category) => category._id !== categoryId)
+          );
+        } catch (error) {
+          console.error("Failed to delete main category:", error);
         }
-      );
-      setMainCategories((prev) =>
-        prev.filter((category) => category._id !== categoryId)
-      );
-    } catch (error) {
-      console.error("Failed to delete main category:", error);
+      }else {
+        alert("Access Denied: You lack authorization to perform this action.");
     }
   };
 
   // Delete a main goal
   const deleteMainGoal = async (categoryId, goalId) => {
-    try {
-      await fetch(
-        `https://udemy-tracker.vercel.app/main-category/${categoryId}/main-goal/${goalId}`,
-        { method: "DELETE" }
-      );
-      setMainCategories((prev) =>
-        prev.map((category) =>
-          category._id === categoryId
-            ? {
-                ...category,
-                mainGoals: category.mainGoals.filter(
-                  (goal) => goal._id !== goalId
-                ),
-              }
-            : category
-        )
-      );
-    } catch (error) {
-      console.error("Failed to delete main goal:", error);
-    }
+
+    // Retrieve password from localStorage
+    const storedPassword = localStorage.getItem("password");
+
+    // Check if the stored password matches the correct password
+    if (storedPassword === correctPassword) {
+      try {
+        await fetch(
+          `https://udemy-tracker.vercel.app/main-category/${categoryId}/main-goal/${goalId}`,
+          { method: "DELETE" }
+        );
+        setMainCategories((prev) =>
+          prev.map((category) =>
+            category._id === categoryId
+              ? {
+                  ...category,
+                  mainGoals: category.mainGoals.filter(
+                    (goal) => goal._id !== goalId
+                  ),
+                }
+              : category
+          )
+        );
+      } catch (error) {
+        console.error("Failed to delete main goal:", error);
+      }
+    }else {
+      alert("Access Denied: You lack authorization to perform this action.");
+  }
   };
 
   // Delete a sub-goal
   const deleteSubGoal = async (categoryId, goalId, subGoalId) => {
-    try {
-      await fetch(
-        `https://udemy-tracker.vercel.app/main-category/${categoryId}/main-goal/${goalId}/sub-goal/${subGoalId}`,
-        { method: "DELETE" }
-      );
-      setMainCategories((prev) =>
-        prev.map((category) =>
-          category._id === categoryId
-            ? {
-                ...category,
-                mainGoals: category.mainGoals.map((goal) =>
-                  goal._id === goalId
-                    ? {
-                        ...goal,
-                        subGoals: goal.subGoals.filter(
-                          (subGoal) => subGoal._id !== subGoalId
-                        ),
-                      }
-                    : goal
-                ),
-              }
-            : category
-        )
-      );
-    } catch (error) {
-      console.error("Failed to delete sub-goal:", error);
-    }
+
+    // Retrieve password from localStorage
+    const storedPassword = localStorage.getItem("password");
+
+    // Check if the stored password matches the correct password
+    if (storedPassword === correctPassword) {
+      try {
+        await fetch(
+          `https://udemy-tracker.vercel.app/main-category/${categoryId}/main-goal/${goalId}/sub-goal/${subGoalId}`,
+          { method: "DELETE" }
+        );
+        setMainCategories((prev) =>
+          prev.map((category) =>
+            category._id === categoryId
+              ? {
+                  ...category,
+                  mainGoals: category.mainGoals.map((goal) =>
+                    goal._id === goalId
+                      ? {
+                          ...goal,
+                          subGoals: goal.subGoals.filter(
+                            (subGoal) => subGoal._id !== subGoalId
+                          ),
+                        }
+                      : goal
+                  ),
+                }
+              : category
+          )
+        );
+      } catch (error) {
+        console.error("Failed to delete sub-goal:", error);
+      }
+    }else {
+      alert("Access Denied: You lack authorization to perform this action.");
+  }
   };
 
   const handlePasswordSubmit = (e) => {
