@@ -122,7 +122,7 @@ const Certificates = () => {
         }
       }
     }else {
-      alert("Access Denied: You lack authorization to perform this action.");
+      alert("⚠️ Access Denied: You lack authorization to perform this action. ⚠️");
   }  
   };
 

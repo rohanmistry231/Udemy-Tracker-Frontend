@@ -31,37 +31,58 @@ const Progress = () => {
   const [password, setPassword] = useState("");
   const [isAuthorized, setIsAuthorized] = useState(false);
 
-  // Fetch data from backend
+  // Key for localStorage
+  const localStorageKey = "progressData";
+
+  // Save data to localStorage
+  const saveToLocalStorage = (data) => {
+    localStorage.setItem(localStorageKey, JSON.stringify(data));
+  };
+
+  // Load data from localStorage
+  const loadFromLocalStorage = () => {
+    const storedData = localStorage.getItem(localStorageKey);
+    return storedData ? JSON.parse(storedData) : null;
+  };
+
+  // Fetch data from backend or localStorage
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          "https://udemy-tracker.vercel.app/main-category"
-        );
-        const mainCategoriesData = await response.json();
-        setMainCategories(mainCategoriesData);
+        const storedData = loadFromLocalStorage();
 
-        // Initialize states for main categories and goals
-        setCheckedMainCategories(
-          mainCategoriesData.reduce(
+        if (storedData) {
+          // Use data from localStorage
+          setMainCategories(storedData.mainCategories);
+          setCheckedMainCategories(storedData.checkedMainCategories);
+          setCheckedMainGoals(storedData.checkedMainGoals);
+          setCheckedSubGoals(storedData.checkedSubGoals);
+          setCollapsedMainCategories(storedData.collapsedMainCategories);
+          setCollapsedMainGoals(storedData.collapsedMainGoals);
+        } else {
+          // Fetch data from backend
+          const response = await fetch(
+            "https://udemy-tracker.vercel.app/main-category"
+          );
+          const mainCategoriesData = await response.json();
+          setMainCategories(mainCategoriesData);
+
+          // Initialize states
+          const newCheckedMainCategories = mainCategoriesData.reduce(
             (acc, category) => ({
               ...acc,
               [category.name]: category.isChecked,
             }),
             {}
-          )
-        );
-        setCheckedMainGoals(
-          mainCategoriesData.reduce((acc, category) => {
+          );
+          const newCheckedMainGoals = mainCategoriesData.reduce((acc, category) => {
             acc[category.name] = category.mainGoals.reduce((goalAcc, goal) => {
               goalAcc[goal.name] = goal.isChecked;
               return goalAcc;
             }, {});
             return acc;
-          }, {})
-        );
-        setCheckedSubGoals(
-          mainCategoriesData.reduce((acc, category) => {
+          }, {});
+          const newCheckedSubGoals = mainCategoriesData.reduce((acc, category) => {
             acc[category.name] = category.mainGoals.reduce((goalAcc, goal) => {
               goalAcc[goal.name] = goal.subGoals.reduce(
                 (subGoalAcc, subGoal) => {
@@ -73,23 +94,36 @@ const Progress = () => {
               return goalAcc;
             }, {});
             return acc;
-          }, {})
-        );
-        setCollapsedMainCategories(
-          mainCategoriesData.reduce(
+          }, {});
+          const newCollapsedMainCategories = mainCategoriesData.reduce(
             (acc, category) => ({ ...acc, [category.name]: false }),
             {}
-          )
-        );
-        setCollapsedMainGoals(
-          mainCategoriesData.reduce((acc, category) => {
+          );
+          const newCollapsedMainGoals = mainCategoriesData.reduce((acc, category) => {
             acc[category.name] = category.mainGoals.reduce((goalAcc, goal) => {
               goalAcc[goal.name] = false; // Initialize collapse state for each goal
               return goalAcc;
             }, {});
             return acc;
-          }, {})
-        );
+          }, {});
+
+          // Update states
+          setCheckedMainCategories(newCheckedMainCategories);
+          setCheckedMainGoals(newCheckedMainGoals);
+          setCheckedSubGoals(newCheckedSubGoals);
+          setCollapsedMainCategories(newCollapsedMainCategories);
+          setCollapsedMainGoals(newCollapsedMainGoals);
+
+          // Save to localStorage
+          saveToLocalStorage({
+            mainCategories: mainCategoriesData,
+            checkedMainCategories: newCheckedMainCategories,
+            checkedMainGoals: newCheckedMainGoals,
+            checkedSubGoals: newCheckedSubGoals,
+            collapsedMainCategories: newCollapsedMainCategories,
+            collapsedMainGoals: newCollapsedMainGoals,
+          });
+        }
       } catch (error) {
         console.error("Failed to fetch data:", error);
       } finally {
@@ -99,6 +133,28 @@ const Progress = () => {
 
     fetchData();
   }, []);
+
+  // Update localStorage whenever progress changes
+  useEffect(() => {
+    if (!loading) {
+      saveToLocalStorage({
+        mainCategories,
+        checkedMainCategories,
+        checkedMainGoals,
+        checkedSubGoals,
+        collapsedMainCategories,
+        collapsedMainGoals,
+      });
+    }
+  }, [
+    mainCategories,
+    checkedMainCategories,
+    checkedMainGoals,
+    checkedSubGoals,
+    collapsedMainCategories,
+    collapsedMainGoals,
+    loading,
+  ]);
 
   const addMainCategory = async () => {
     if (!newMainCategoryName.trim()) return;
@@ -404,7 +460,7 @@ const Progress = () => {
         <select
           value={priorityFilter}
           onChange={(e) => setPriorityFilter(e.target.value)}
-          className={`px-4 py-2 rounded-md ${
+          className={`border px-4 py-2 rounded-md ${
             isDarkMode
               ? "bg-gray-800 text-white border-gray-700"
               : "bg-white text-black border-gray-300"
@@ -737,12 +793,12 @@ const Progress = () => {
                         checked={checkedMainCategories[category.name]}
                         onChange={() => {
                           const storedPassword = localStorage.getItem("password");
-                          const correctPassword = "yourCorrectPassword";
+                          const correctPassword = "12345";
 
                           if (storedPassword === correctPassword) {
                             toggleMainCategory(category.name);
                           } else {
-                            alert("Access Denied: You lack authorization to perform this action.");
+                            alert("⚠️ Access Denied: You lack authorization to perform this action. ⚠️");
                           }
                         }}
                         className="mr-2 cursor-pointer"
@@ -765,7 +821,7 @@ const Progress = () => {
                         if (storedPassword === correctPassword) {
                           deleteMainCategory(category._id);
                         } else {
-                          alert("Access Denied: You lack authorization to perform this action.");
+                          alert("⚠️ Access Denied: You lack authorization to perform this action. ⚠️");
                         }
                       }}
                     >
@@ -820,7 +876,7 @@ const Progress = () => {
                                     if (storedPassword === correctPassword) {
                                       toggleMainGoal(category.name, goal.name);
                                     } else {
-                                      alert("Access Denied: You lack authorization to perform this action.");
+                                      alert("⚠️ Access Denied: You lack authorization to perform this action. ⚠️");
                                     }
                                   }}
                                   className="mr-2 cursor-pointer"
@@ -840,12 +896,12 @@ const Progress = () => {
                                 className="delete-btn text-red-600 ml-auto mr-3"
                                 onClick={() => {
                                   const storedPassword = localStorage.getItem("password");
-                                  const correctPassword = "yourCorrectPassword"; // Replace with your actual correct password
+                                  const correctPassword = "12345"; // Replace with your actual correct password
 
                                   if (storedPassword === correctPassword) {
                                     deleteMainGoal(category._id, goal._id);
                                   } else {
-                                    alert("Access Denied: You lack authorization to perform this action.");
+                                    alert("⚠️ Access Denied: You lack authorization to perform this action. ⚠️");
                                   }
                                 }}
                               >
@@ -900,7 +956,7 @@ const Progress = () => {
                                         if (storedPassword === correctPassword) {
                                           toggleSubGoal(category.name, goal.name, subGoal.name);
                                         } else {
-                                          alert("Access Denied: You lack authorization to perform this action.");
+                                          alert("⚠️ Access Denied: You lack authorization to perform this action. ⚠️");
                                         }
                                       }}
                                       className="mr-2 cursor-pointer"
@@ -918,12 +974,12 @@ const Progress = () => {
                                       className="delete-btn text-red-600 ml-auto mr-7"
                                       onClick={() => {
                                         const storedPassword = localStorage.getItem("password");
-                                        const correctPassword = "yourCorrectPassword"; // Replace with your actual correct password
+                                        const correctPassword = "12345"; // Replace with your actual correct password
 
                                         if (storedPassword === correctPassword) {
                                           deleteSubGoal(category._id, goal._id, subGoal._id);
                                         } else {
-                                          alert("Access Denied: You lack authorization to perform this action.");
+                                          alert("⚠️ Access Denied: You lack authorization to perform this action. ⚠️");
                                         }
                                       }}
                                     >

@@ -78,13 +78,16 @@ const Notes = () => {
 
   // Function to handle button click
   const handleSyncClick = async () => {
+    setIsSyncing(true);
+    setSyncMessage("Syncing...");
+
     try {
       // Call the sync function
       const updatedNotes = await syncNotesWithBackend();
 
       // Update your state or UI accordingly with the updated notes
       setNotes(updatedNotes);
-      setSyncMessage("Notes successfully synced with the backend!");
+      setSyncMessage("Sync successful!");
     } catch (error) {
       console.error("Error during sync:", error);
       toast.error("Error syncing notes. Please try again.");
@@ -201,27 +204,36 @@ const Notes = () => {
       >
         📝 Notes List 📝
       </h2>
-      <div>
-        <button
-          onClick={handleSyncClick}
-          disabled={isSyncing} // Disable button while syncing
-          className="sync-button"
-        >
-          {isSyncing ? "Syncing..." : "Sync Notes"}
-        </button>
-        {syncMessage && <p>{syncMessage}</p>} {/* Display sync message */}
-      </div>
 
       <div className="flex flex-col sm:flex-row justify-between items-center mb-4 space-y-4 sm:space-y-0">
+        <div className="w-full flex flex-row lg:w-1/4">
         <input
           type="text"
           placeholder="Search notes by title or content..."
-          className={`border p-2 rounded-md w-full sm:w-1/3 h-10 ${
+          className={`border p-2 rounded-md md:w-full lg:w-full w-full sm:w-full h-10 ${
             isDarkMode ? "bg-gray-800 text-white border-gray-700" : "bg-white text-black border-gray-300"
           }`}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
+        <button
+        onClick={handleSyncClick}
+        disabled={isSyncing}
+        className={`hide-on-large rounded-md h-10 w-1/3 lg:ml-auto ml-2 sm:w-32 transition duration-200 flex items-center justify-center ${
+          isDarkMode
+            ? "bg-gray-600 hover:bg-gray-700 text-white"
+            : "bg-gray-500 hover:bg-gray-600 text-white"
+        } ${isSyncing ? "cursor-not-allowed opacity-50" : ""}`}
+      >
+        {isSyncing ? (
+          <span>Syncing...</span>
+        ) : syncMessage ? (
+          <span>{syncMessage}</span>
+        ) : (
+          <span>Sync Notes</span>
+        )}
+      </button>
+        </div>
         <select
           className={`border p-2 rounded-md w-full sm:w-1/6 h-10 ${
             isDarkMode ? "bg-gray-800 text-white border-gray-700" : "bg-white text-black border-gray-300"
@@ -273,6 +285,7 @@ const Notes = () => {
             </option>
           ))}
         </select>
+        
         <Link to="/add-note" className="w-full sm:w-auto">
           <button
             className={`rounded-md h-10 w-full sm:w-32 transition duration-200 flex items-center justify-center ${
@@ -284,6 +297,25 @@ const Notes = () => {
             Add Note
           </button>
         </Link>
+
+        <button
+        onClick={handleSyncClick}
+        disabled={isSyncing}
+        className={`rounded-md h-10 w-full sm:w-32 transition duration-200 flex items-center justify-center ${
+          isDarkMode
+            ? "bg-gray-600 hover:bg-gray-700 text-white"
+            : "bg-gray-500 hover:bg-gray-600 text-white"
+        } ${isSyncing ? "cursor-not-allowed opacity-50" : ""}`}
+      >
+        {isSyncing ? (
+          <span>Syncing...</span>
+        ) : syncMessage ? (
+          <span>{syncMessage}</span>
+        ) : (
+          <span>Sync Notes</span>
+        )}
+      </button>
+
       </div>
 
       {loading ? (

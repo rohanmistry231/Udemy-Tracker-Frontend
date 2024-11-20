@@ -10,6 +10,7 @@ const Skills = () => {
   const { theme } = useTheme();
   const isDarkMode = theme === "dark";
 
+  const correctPassword = "12345";
   const [loading, setLoading] = useState(true); // Loading state
   const [skills, setSkills] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -103,6 +104,11 @@ const Skills = () => {
 
   // Handle deleting a skill
   const handleDelete = async (id) => {
+    // Retrieve password from localStorage
+    const storedPassword = localStorage.getItem("password");
+
+     // Check if the stored password matches the correct password
+     if (storedPassword === correctPassword) {
     if (window.confirm("Are you sure you want to delete this skill?")) {
       try {
         await axios.delete(`https://udemy-tracker.vercel.app/skill/${id}`);
@@ -111,13 +117,24 @@ const Skills = () => {
         alert("Error deleting skill. Please try again.");
       }
     }
+    }else {
+      alert("⚠️ Access Denied: You lack authorization to perform this action. ⚠️");
+  }
   };
 
   // Open modal for adding or editing skill
   const openModal = (skill = null) => {
+    // Retrieve password from localStorage
+    const storedPassword = localStorage.getItem("password");
+
+     // Check if the stored password matches the correct password
+     if (storedPassword === correctPassword) {
     setCurrentSkill(skill);
     setFormData(skill || { name: "", description: "", level: "", icon: "" });
     setShowModal(true);
+     }else {
+      alert("⚠️ Access Denied: You lack authorization to perform this action. ⚠️");
+  }
   };
 
   return (

@@ -8,6 +8,7 @@ const Projects = () => {
   const { theme } = useTheme();
   const isDarkMode = theme === "dark";
 
+  const correctPassword = "12345";
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -112,6 +113,11 @@ const Projects = () => {
 
   // Delete Project with Confirmation
 const deleteProject = async (id) => {
+  // Retrieve password from localStorage
+  const storedPassword = localStorage.getItem("password");
+
+  // Check if the stored password matches the correct password
+  if (storedPassword === correctPassword) {
     const confirmDelete = window.confirm("Are you sure you want to delete this project?");
     if (confirmDelete) {
       try {
@@ -121,6 +127,9 @@ const deleteProject = async (id) => {
         console.error("Error deleting project:", error);
       }
     }
+  }else {
+    alert("⚠️ Access Denied: You lack authorization to perform this action. ⚠️");
+}
   };  
 
   // Filter projects based on selected category and subCategory
@@ -202,17 +211,25 @@ const deleteProject = async (id) => {
 
       {/* Add Project Button */}
       <div className="mb-6 flex justify-center">
-        <button
-          onClick={() => setShowAddModal(true)}
-          className={`rounded-md h-10 w-full sm:w-32 transition duration-200 flex items-center justify-center ${
-            isDarkMode
-              ? "bg-blue-600 hover:bg-blue-700 text-white"
-              : "bg-blue-500 hover:bg-blue-600 text-white"
-          }`}
-        >
-          <AiOutlinePlus size={20} />
-          Add Project
-        </button>
+      <button
+        onClick={() => {
+          const storedPassword = localStorage.getItem("password");
+
+          if (correctPassword === storedPassword) {
+            setShowAddModal(true);
+          } else {
+            alert("⚠️ Access Denied: You lack authorization to perform this action. ⚠️");
+        }
+        }}
+        className={`rounded-md h-10 w-full sm:w-32 transition duration-200 flex items-center justify-center ${
+          isDarkMode
+            ? "bg-blue-600 hover:bg-blue-700 text-white"
+            : "bg-blue-500 hover:bg-blue-600 text-white"
+        }`}
+      >
+        <AiOutlinePlus size={20} />
+        Add Project
+      </button>
       </div>
 
       {/* Projects Section */}
@@ -280,15 +297,21 @@ const deleteProject = async (id) => {
 
               {/* Action Buttons */}
               <div className="mt-4 flex space-x-4">
-                <button
-                  onClick={() => {
+              <button
+                onClick={() => {
+                  const storedPassword = localStorage.getItem("password");
+
+                  if (correctPassword === storedPassword) {
                     setCurrentProject(project);
                     setShowUpdateModal(true);
-                  }}
-                  className="py-1 px-4 rounded-md h-9 bg-blue-500 text-white hover:bg-blue-600"
-                >
-                  Update
-                </button>
+                  } else {
+                    alert("⚠️ Access Denied: You lack authorization to perform this action. ⚠️");
+                }
+                }}
+                className="py-1 px-4 rounded-md h-9 bg-blue-500 text-white hover:bg-blue-600"
+              >
+                Update
+              </button>
                 <button
                   onClick={() => deleteProject(project._id)}
                   className="py-1 px-4 rounded bg-red-500 text-white hover:bg-red-600"

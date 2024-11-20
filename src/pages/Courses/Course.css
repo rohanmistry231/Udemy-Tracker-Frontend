@@ -1,0 +1,24 @@
+/* Hide the button and remove space for larger screens */
+@media (min-width: 1024px) {
+  .hide-on-large {
+    display: none;
+  }
+}
+
+/* Show button only for small screens and hide on larger screens */
+@media (min-width: 640px) {
+  /* 640px and above (tablets, desktops, etc.) */
+  .hide-on-large {
+    display: none; /* Hide the button and remove it from the layout */
+  }
+}
+
+@media (max-width: 639px) {
+  /* 639px and below (phones) */
+  .hide-on-large {
+    display: flex; /* Ensure the button is visible */
+  }
+  .hide-on-small{
+    display: none;
+  }
+}
