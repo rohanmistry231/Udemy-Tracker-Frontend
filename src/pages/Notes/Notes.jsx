@@ -13,6 +13,7 @@ import { categories, targetGoals } from "../../db";
 import html2canvas from "html2canvas";
 
 const Notes = () => {
+  const correctPassword = "12345";
   const [notes, setNotes] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
@@ -97,6 +98,11 @@ const Notes = () => {
   };
 
   const deleteNote = async (noteId) => {
+    // Retrieve password from localStorage
+    const storedPassword = localStorage.getItem("password");
+
+     // Check if the stored password matches the correct password
+     if (storedPassword === correctPassword) {
     // Show confirmation dialog
     const isConfirmed = window.confirm(
       "Are you sure you want to delete this note?"
@@ -121,9 +127,17 @@ const Notes = () => {
     } catch (error) {
       console.error("Error deleting the note:", error);
     }
+    }else {
+      alert("⚠️ Access Denied: You lack authorization to perform this action. ⚠️");
+  }
   };
   
   const saveNoteAsPDF = (note) => {
+    // Retrieve password from localStorage
+    const storedPassword = localStorage.getItem("password");
+
+     // Check if the stored password matches the correct password
+     if (storedPassword === correctPassword) {
     // Create a container for the HTML content we want to capture
     const container = document.createElement("div");
     container.style.position = "absolute";
@@ -156,6 +170,9 @@ const Notes = () => {
   
       document.body.removeChild(container); // Clean up
     });
+  }else {
+    alert("⚠️ Access Denied: You lack authorization to perform this action. ⚠️");
+}
   };
   
 
@@ -301,7 +318,7 @@ const Notes = () => {
         <button
         onClick={handleSyncClick}
         disabled={isSyncing}
-        className={`rounded-md h-10 w-full sm:w-32 transition duration-200 flex items-center justify-center ${
+        className={`hide-on-small rounded-md h-10 w-full sm:w-32 transition duration-200 flex items-center justify-center ${
           isDarkMode
             ? "bg-gray-600 hover:bg-gray-700 text-white"
             : "bg-gray-500 hover:bg-gray-600 text-white"
