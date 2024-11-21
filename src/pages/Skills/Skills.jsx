@@ -17,57 +17,20 @@ const Skills = () => {
   const [currentSkill, setCurrentSkill] = useState(null); // For editing
   const [formData, setFormData] = useState({ name: "", description: "", level: "", icon: "" });
 
-  // Key for localStorage
-  const localStorageKey = "skillsData";
-
-  // Save data to localStorage
-  const saveToLocalStorage = (data) => {
-    localStorage.setItem(localStorageKey, JSON.stringify(data));
-  };
-
-  // Load data from localStorage
-  const loadFromLocalStorage = () => {
-    const storedData = localStorage.getItem(localStorageKey);
-    return storedData ? JSON.parse(storedData) : null;
-  };
-
-  // Fetch skills from backend or localStorage
   useEffect(() => {
     const fetchSkills = async () => {
       try {
-        setLoading(true);
-
-        // Check localStorage for skills data
-        const storedData = loadFromLocalStorage();
-        if (storedData) {
-          setSkills(storedData);
-        } else {
-          // Fetch from backend if not in localStorage
-          const response = await axios.get("https://udemy-tracker.vercel.app/skill");
-          const fetchedSkills = response.data;
-
-          // Update state with fetched data
-          setSkills(fetchedSkills);
-
-          // Save fetched data to localStorage
-          saveToLocalStorage(fetchedSkills);
-        }
+        const response = await axios.get("https://udemy-tracker.vercel.app/skill");
+        setSkills(response.data);
       } catch (err) {
-        console.error("Error fetching skills data:", err);
+        console.error("Error fetching skills data");
       } finally {
         setLoading(false);
       }
     };
-    
+
     fetchSkills();
   }, []);
-
-  // Update localStorage whenever skills data changes
-  useEffect(() => {
-    if (!loading) {
-      saveToLocalStorage(skills);
-    }
-  }, [skills, loading]);
 
   // Dynamically render the icon component based on the icon name
   const renderIcon = (iconName) => {

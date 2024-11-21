@@ -31,58 +31,37 @@ const Progress = () => {
   const [password, setPassword] = useState("");
   const [isAuthorized, setIsAuthorized] = useState(false);
 
-  // Key for localStorage
-  const localStorageKey = "progressData";
-
-  // Save data to localStorage
-  const saveToLocalStorage = (data) => {
-    localStorage.setItem(localStorageKey, JSON.stringify(data));
-  };
-
-  // Load data from localStorage
-  const loadFromLocalStorage = () => {
-    const storedData = localStorage.getItem(localStorageKey);
-    return storedData ? JSON.parse(storedData) : null;
-  };
-
-  // Fetch data from backend or localStorage
+   // Fetch data from backend
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const storedData = loadFromLocalStorage();
+        const response = await fetch(
+          "https://udemy-tracker.vercel.app/main-category"
+        );
+        const mainCategoriesData = await response.json();
+        setMainCategories(mainCategoriesData);
 
-        if (storedData) {
-          // Use data from localStorage
-          setMainCategories(storedData.mainCategories);
-          setCheckedMainCategories(storedData.checkedMainCategories);
-          setCheckedMainGoals(storedData.checkedMainGoals);
-          setCheckedSubGoals(storedData.checkedSubGoals);
-          setCollapsedMainCategories(storedData.collapsedMainCategories);
-          setCollapsedMainGoals(storedData.collapsedMainGoals);
-        } else {
-          // Fetch data from backend
-          const response = await fetch(
-            "https://udemy-tracker.vercel.app/main-category"
-          );
-          const mainCategoriesData = await response.json();
-          setMainCategories(mainCategoriesData);
-
-          // Initialize states
-          const newCheckedMainCategories = mainCategoriesData.reduce(
+        // Initialize states for main categories and goals
+        setCheckedMainCategories(
+          mainCategoriesData.reduce(
             (acc, category) => ({
               ...acc,
               [category.name]: category.isChecked,
             }),
             {}
-          );
-          const newCheckedMainGoals = mainCategoriesData.reduce((acc, category) => {
+          )
+        );
+        setCheckedMainGoals(
+          mainCategoriesData.reduce((acc, category) => {
             acc[category.name] = category.mainGoals.reduce((goalAcc, goal) => {
               goalAcc[goal.name] = goal.isChecked;
               return goalAcc;
             }, {});
             return acc;
-          }, {});
-          const newCheckedSubGoals = mainCategoriesData.reduce((acc, category) => {
+          }, {})
+        );
+        setCheckedSubGoals(
+          mainCategoriesData.reduce((acc, category) => {
             acc[category.name] = category.mainGoals.reduce((goalAcc, goal) => {
               goalAcc[goal.name] = goal.subGoals.reduce(
                 (subGoalAcc, subGoal) => {
@@ -94,36 +73,23 @@ const Progress = () => {
               return goalAcc;
             }, {});
             return acc;
-          }, {});
-          const newCollapsedMainCategories = mainCategoriesData.reduce(
+          }, {})
+        );
+        setCollapsedMainCategories(
+          mainCategoriesData.reduce(
             (acc, category) => ({ ...acc, [category.name]: false }),
             {}
-          );
-          const newCollapsedMainGoals = mainCategoriesData.reduce((acc, category) => {
+          )
+        );
+        setCollapsedMainGoals(
+          mainCategoriesData.reduce((acc, category) => {
             acc[category.name] = category.mainGoals.reduce((goalAcc, goal) => {
               goalAcc[goal.name] = false; // Initialize collapse state for each goal
               return goalAcc;
             }, {});
             return acc;
-          }, {});
-
-          // Update states
-          setCheckedMainCategories(newCheckedMainCategories);
-          setCheckedMainGoals(newCheckedMainGoals);
-          setCheckedSubGoals(newCheckedSubGoals);
-          setCollapsedMainCategories(newCollapsedMainCategories);
-          setCollapsedMainGoals(newCollapsedMainGoals);
-
-          // Save to localStorage
-          saveToLocalStorage({
-            mainCategories: mainCategoriesData,
-            checkedMainCategories: newCheckedMainCategories,
-            checkedMainGoals: newCheckedMainGoals,
-            checkedSubGoals: newCheckedSubGoals,
-            collapsedMainCategories: newCollapsedMainCategories,
-            collapsedMainGoals: newCollapsedMainGoals,
-          });
-        }
+          }, {})
+        );
       } catch (error) {
         console.error("Failed to fetch data:", error);
       } finally {
@@ -133,28 +99,6 @@ const Progress = () => {
 
     fetchData();
   }, []);
-
-  // Update localStorage whenever progress changes
-  useEffect(() => {
-    if (!loading) {
-      saveToLocalStorage({
-        mainCategories,
-        checkedMainCategories,
-        checkedMainGoals,
-        checkedSubGoals,
-        collapsedMainCategories,
-        collapsedMainGoals,
-      });
-    }
-  }, [
-    mainCategories,
-    checkedMainCategories,
-    checkedMainGoals,
-    checkedSubGoals,
-    collapsedMainCategories,
-    collapsedMainGoals,
-    loading,
-  ]);
 
   const addMainCategory = async () => {
     if (!newMainCategoryName.trim()) return;

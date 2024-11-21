@@ -247,7 +247,7 @@ const Notes = () => {
         ) : syncMessage ? (
           <span>{syncMessage}</span>
         ) : (
-          <span>Sync Notes</span>
+          <span>Sync</span>
         )}
       </button>
         </div>
@@ -329,7 +329,7 @@ const Notes = () => {
         ) : syncMessage ? (
           <span>{syncMessage}</span>
         ) : (
-          <span>Sync Notes</span>
+          <span>Sync</span>
         )}
       </button>
 
