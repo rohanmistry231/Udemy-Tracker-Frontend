@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
+import './Navbar.css';
 
 const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
@@ -92,34 +93,29 @@ const Navbar = () => {
       </div>
 
       <div
-        className={`md:hidden ${isDarkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg space-y-2 px-4 pt-2 pb-3 transition-transform duration-300 ease-in-out transform ${
+        className={`md:hidden ${
+          isDarkMode ? 'bg-gray-800' : 'bg-white'
+        } shadow-lg space-y-4 px-6 pt-4 pb-6 transition-transform duration-300 ease-in-out transform ${
           isOpen ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
-        } fixed top-14 right-0 h-screen w-64 overflow-y-auto z-40`} 
+        } fixed top-14 right-0 h-screen w-64 overflow-y-auto z-40`}
       >
-        <Link to="/" className={`block ${getLinkClass('/')} py-2`} onClick={toggleMenu}>
-          Home
-        </Link>
-        <Link to="/courses" className={`block ${getLinkClass('/courses')} py-2`} onClick={toggleMenu}>
-          Courses
-        </Link>
-        <Link to="/notes" className={`block ${getLinkClass('/notes')} py-2`} onClick={toggleMenu}>
-          Notes
-        </Link>
-        <Link to="/skills" className={`block ${getLinkClass('/skills')} py-2`} onClick={toggleMenu}>
-          Skills
-        </Link>
-        <Link to="/projects" className={`block ${getLinkClass('/projects')} py-2`} onClick={toggleMenu}>
-          Projects
-        </Link>
-        <Link to="/progress" className={`block ${getLinkClass('/progress')} py-2`} onClick={toggleMenu}>
-          Progress
-        </Link>
-        <Link to="/certificate" className={`block ${getLinkClass('/certificate')} py-2`} onClick={toggleMenu}>
-          Certificates
-        </Link>
-        <Link to="/profile" className={`block ${getLinkClass('/profile')} py-2`} onClick={toggleMenu}>
-          Profile
-        </Link>
+        {['/', '/courses', '/notes', '/skills', '/projects', '/progress', '/certificate', '/profile'].map((path, index) => (
+          <Link
+            key={path}
+            to={path}
+            className={`block ${
+              location.pathname === path ? 'text-purple-500' : getLinkClass(path)
+            } text-lg py-2 ml-2`}
+            onClick={toggleMenu}
+            style={{
+              animation: isOpen
+                ? `slideOpacityBloom 0.6s ease-in-out forwards`
+                : 'none', // Delay increases for each item
+            }}
+          >
+            {path === '/' ? 'Home' : path.replace('/', '').charAt(0).toUpperCase() + path.slice(2)}
+          </Link>
+        ))}
       </div>
     </nav>
   );

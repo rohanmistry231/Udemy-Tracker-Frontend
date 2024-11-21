@@ -159,7 +159,7 @@ const Skills = () => {
             >
               {renderIcon(skill.icon)}
             </div>
-            <h3 className="font-semibold">{skill.name}</h3>
+            <h3 className="font-semibold text-xl">{skill.name}</h3>
             <p className="text-gray-600 text-sm mt-2">{skill.description}</p>
             <div className="mt-4">
               <span className="font-semibold">{skill.level}</span>

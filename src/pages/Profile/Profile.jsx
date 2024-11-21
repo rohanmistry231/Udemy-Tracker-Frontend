@@ -106,7 +106,7 @@ const Profile = () => {
 
   return (
     <div
-      className={`min-h-screen p-6 mt-12 transition-colors duration-300 ${
+      className={`min-h-screen p-6 mt-14 transition-colors duration-300 ${
         isDarkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"
       }`}
     >
