@@ -15,11 +15,15 @@ const Projects = () => {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [currentProject, setCurrentProject] = useState(null);
 
+  const [currentProjectPage, setCurrentProjectPage] = useState(
+    parseInt(localStorage.getItem("currentProjectPage")) || 1
+  ); // Get the page from localStorage or default to 1
+  const [projectsPerPage] = useState(6); // 6 projects per page
+
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedSubCategory, setSelectedSubCategory] = useState("");
 
-  // Fetch projects from backend
   // Update localStorage whenever projects or categories change
   useEffect(() => {
   const fetchProjects = async () => {
@@ -34,6 +38,8 @@ const Projects = () => {
         ...new Set(response.data.map((project) => project.category)),
       ];
       setCategories(uniqueCategories);
+      // Store the currentCertificatePage in localStorage
+      localStorage.setItem("currentProjectPage", currentProjectPage);
     } catch (error) {
       console.error("Error fetching projects:", error);
     } finally{
@@ -41,7 +47,19 @@ const Projects = () => {
     }
   };
   fetchProjects();
-}, []);
+
+  // Clear currentCertificatePage from localStorage on page reload
+  const handlePageReload = () => {
+    localStorage.removeItem("currentProjectPage");
+  };
+
+  window.addEventListener("beforeunload", handlePageReload);
+
+  // Cleanup event listener on component unmount
+  return () => {
+    window.removeEventListener("beforeunload", handlePageReload);
+  };
+}, [currentProjectPage]);
 
   // Add Project
   const addProject = async (newProject) => {
@@ -123,6 +141,24 @@ const deleteProject = async (id) => {
     ),
   ];
 
+  // Pagination logic
+  const indexOfLastProject = currentProjectPage * projectsPerPage;
+  const indexOfFirstProject = indexOfLastProject - projectsPerPage;
+  const currentProjects = filteredProjects.slice(
+    indexOfFirstProject,
+    indexOfLastProject
+  );
+
+  const totalPages = Math.ceil(
+    filteredProjects.length / projectsPerPage
+  );
+
+  // Function to handle page change and scroll to top
+  const handlePageChange = (newPage) => {
+    setCurrentProjectPage(newPage);
+    window.scrollTo(0, 0); // Scroll to the top of the page
+  };
+
   return (
     <div
       className={`container mx-auto px-4 py-10 mt-8 ${isDarkMode ? "bg-gray-900 text-gray-100" : "bg-white text-gray-800"}`}
@@ -201,7 +237,7 @@ const deleteProject = async (id) => {
       ) : filteredProjects.length > 0 ? (
         <>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProjects.map((project) => (
+          {currentProjects.map((project) => (
             <div
               key={project._id}
               className={`p-6 ${isDarkMode ? "bg-gray-800" : "bg-gray-100"} rounded-lg shadow-md flex flex-col`}
@@ -287,6 +323,35 @@ const deleteProject = async (id) => {
       ) : (
         <div className="text-center">No projects available.</div>
       )}
+
+      {/* Pagination Controls */}
+      <div className="flex justify-between items-center mt-6">
+        <button
+          onClick={() => handlePageChange(currentProjectPage - 1)}
+          disabled={currentProjectPage === 1}
+          className={`p-2 rounded ${
+            isDarkMode
+              ? "bg-gray-700 text-white hover:bg-gray-600"
+              : "bg-gray-300 text-black hover:bg-gray-400"
+          }`}
+        >
+          Previous
+        </button>
+        <span className={`${isDarkMode ? "text-white" : "text-black"}`}>
+          Page {currentProjectPage} of {totalPages}
+        </span>
+        <button
+          onClick={() => handlePageChange(currentProjectPage + 1)}
+          disabled={currentProjectPage === totalPages}
+          className={`p-2 rounded ${
+            isDarkMode
+              ? "bg-gray-700 text-white hover:bg-gray-600"
+              : "bg-gray-300 text-black hover:bg-gray-400"
+          }`}
+        >
+          Next
+        </button>
+      </div>
 
       {/* Modals */}
       {showAddModal && (

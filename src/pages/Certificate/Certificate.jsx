@@ -12,10 +12,10 @@ const Certificates = () => {
   const [certificates, setCertificates] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredCertificates, setFilteredCertificates] = useState([]);
-  const [currentPage, setCurrentPage] = useState(
-    parseInt(localStorage.getItem("currentPage")) || 1
+  const [currentCerticatePage, setCurrentCerticatePage] = useState(
+    parseInt(localStorage.getItem("currentCerticatePage")) || 1
   ); // Get the page from localStorage or default to 1
-  const [certificatesPerPage] = useState(12); // 12 cards per page
+  const [certificatesPerPage] = useState(8); // 8 certificates per page
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
   const [newCertificate, setNewCertificate] = useState({
     imageUrl: "",
@@ -39,6 +39,8 @@ const Certificates = () => {
         if (storedPassword === correctPassword) {
           setIsAuthorized(true);
         }
+        // Store the currentCertificatePage in localStorage
+        localStorage.setItem("currentCerticatePage", currentCerticatePage);
       } catch (error) {
         console.error("Error fetching certificates:", error);
       } finally {
@@ -47,12 +49,20 @@ const Certificates = () => {
     };
 
     fetchCertificates();
-  }, []);
 
-  // Store current page in localStorage
-  useEffect(() => {
-    localStorage.setItem("currentPage", currentPage);
-  }, [currentPage]);
+    // Clear currentCertificatePage from localStorage on page reload
+    const handlePageReload = () => {
+      localStorage.removeItem("currentCerticatePage");
+    };
+
+    window.addEventListener("beforeunload", handlePageReload);
+
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener("beforeunload", handlePageReload);
+    };
+
+  }, [currentCerticatePage]);
 
   // Filter certificates based on search term
   useEffect(() => {
@@ -63,8 +73,8 @@ const Certificates = () => {
         certificate.courseName.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setFilteredCertificates(filtered);
+      setCurrentCerticatePage(1); // Reset to the first page on search
     }
-    setCurrentPage(1); // Reset to the first page on search
   }, [searchTerm, certificates]);
 
   // Handle form submission for new certificate
@@ -127,7 +137,7 @@ const Certificates = () => {
   };
 
   // Pagination logic
-  const indexOfLastCertificate = currentPage * certificatesPerPage;
+  const indexOfLastCertificate = currentCerticatePage * certificatesPerPage;
   const indexOfFirstCertificate = indexOfLastCertificate - certificatesPerPage;
   const currentCertificates = filteredCertificates.slice(
     indexOfFirstCertificate,
@@ -138,9 +148,10 @@ const Certificates = () => {
     filteredCertificates.length / certificatesPerPage
   );
 
-  const handlePageChange = (pageNumber) => {
-    if (pageNumber < 1 || pageNumber > totalPages) return;
-    setCurrentPage(pageNumber);
+  // Function to handle page change and scroll to top
+  const handlePageChange = (newPage) => {
+    setCurrentCerticatePage(newPage);
+    window.scrollTo(0, 0); // Scroll to the top of the page
   };
 
   const handlePasswordSubmit = (e) => {
@@ -270,8 +281,8 @@ const Certificates = () => {
       {/* Pagination Controls */}
       <div className="flex justify-between items-center mt-6">
         <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
+          onClick={() => handlePageChange(currentCerticatePage - 1)}
+          disabled={currentCerticatePage === 1}
           className={`p-2 rounded ${
             isDarkMode
               ? "bg-gray-700 text-white hover:bg-gray-600"
@@ -281,11 +292,11 @@ const Certificates = () => {
           Previous
         </button>
         <span className={`${isDarkMode ? "text-white" : "text-black"}`}>
-          Page {currentPage} of {totalPages}
+          Page {currentCerticatePage} of {totalPages}
         </span>
         <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
+          onClick={() => handlePageChange(currentCerticatePage + 1)}
+          disabled={currentCerticatePage === totalPages}
           className={`p-2 rounded ${
             isDarkMode
               ? "bg-gray-700 text-white hover:bg-gray-600"
