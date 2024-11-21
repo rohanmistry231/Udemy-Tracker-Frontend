@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { useTheme } from "../../context/ThemeContext";
-import { getCoursesFromLocalStorage } from "../../dataService";
+import { getCoursesFromLocalStorage, getCoursesFromBackend } from "../../dataService";
 import './Home.css';
 
 import {
@@ -32,6 +32,7 @@ const Home = () => {
   useEffect(() => {
     // Function to fetch courses from localStorage
     const fetchCourses = () => {
+      setIsLoading(true);
       try {
         // Get courses from localStorage
         const storedCourses = getCoursesFromLocalStorage();
@@ -59,6 +60,51 @@ const Home = () => {
     };
 
     fetchCourses(); // Call fetchCourses to load data from localStorage
+  }, []);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      setIsLoading(true);
+      try {
+        // Check if courses are already in localStorage
+        const storedCourses = localStorage.getItem("courses");
+
+        if (storedCourses) {
+          // If courses are found in localStorage, use them
+          setCourses(JSON.parse(storedCourses));
+        } else {
+          // If no courses in localStorage, fetch from backend
+          const data = await getCoursesFromBackend();
+
+          // Sort courses by the 'no' field
+          const sortedCourses = data.sort((a, b) => a.no - b.no);
+
+          // Store the fetched courses in localStorage
+          localStorage.setItem("courses", JSON.stringify(sortedCourses));
+
+          // Set the courses in state
+          setCourses(sortedCourses);
+
+          const hours = sortedCourses.reduce(
+            (acc, course) => acc + course.durationInHours,
+            0
+          );
+          setTotalHours(hours);
+
+          // Count completed courses
+          const completedCount = sortedCourses.filter(
+            (course) => course.status === "Completed"
+          ).length;
+          setCompletedCoursesCount(completedCount);
+        }
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCourses();
   }, []);
 
   const groupBy = (array, key) => {
@@ -148,15 +194,6 @@ const Home = () => {
         </div>
       ) : (
         <>
-          <div className={`h-10 rounded-md relative overflow-hidden ${
-        isDarkMode ? "bg-gray-800 text-white" : "bg-gray-200 text-black"} p-2 mb-4`}>
-  <div
-    className="absolute whitespace-nowrap animate-slide-text"
-    style={{ animationDuration: "10s" }}
-  >
-    ⚠️ Load Whole Website Data First Then Use It ⚠️
-  </div>
-</div>
           <div className="flex flex-col items-center">
 
           <h1 className="text-2xl font-bold text-center mb-2 lg:mb-4">
