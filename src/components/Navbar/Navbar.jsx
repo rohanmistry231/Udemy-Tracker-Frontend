@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../../context/ThemeContext';
 import './Navbar.css';
 
 const Navbar = () => {
@@ -105,7 +105,7 @@ const Navbar = () => {
             to={path}
             className={`block ${
               location.pathname === path ? 'text-purple-500' : getLinkClass(path)
-            } text-lg py-2 ml-2`}
+            } text-lg py-2`}
             onClick={toggleMenu}
             style={{
               animation: isOpen

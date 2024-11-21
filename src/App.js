@@ -1,7 +1,7 @@
 // src/App.js
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
+import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer";
 import Courses from "./pages/Courses/Courses";
 import AddCourse from "./pages/Courses/AddCourse";
