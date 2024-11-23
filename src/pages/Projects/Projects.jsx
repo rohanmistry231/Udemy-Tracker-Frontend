@@ -161,7 +161,7 @@ const deleteProject = async (id) => {
 
   return (
     <div
-      className={`container mx-auto px-4 py-10 mt-8 ${isDarkMode ? "bg-gray-900 text-gray-100" : "bg-white text-gray-800"}`}
+      className={`container mx-auto px-4 py-10 pb-6 mt-8 ${isDarkMode ? "bg-gray-900 text-gray-100" : "bg-white text-gray-800"}`}
     >
       <h2 className="text-3xl font-semibold mb-6 text-center">💼 Projects 💼</h2>
 
@@ -265,7 +265,7 @@ const deleteProject = async (id) => {
 
               {/* Description */}
               <p className="text-md mb-3">
-                <strong>Description:</strong> {project.description}
+                {project.description}
               </p>
 
               {/* Tech Stack */}
