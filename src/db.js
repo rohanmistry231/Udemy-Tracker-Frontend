@@ -163,7 +163,7 @@ export const targetGoals = {
     "Eye",
     "Yoga",
   ],
-  "Language": ["English", "Test", "German"],
+  "Language": ["English", "Test", "German","French"],
   "Operating System": [
     "Linux",
     "Network & Security",
