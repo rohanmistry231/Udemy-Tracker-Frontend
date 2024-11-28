@@ -6,7 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "../../context/ThemeContext";
 import jsPDF from "jspdf"; // Import jsPDF
 import { fetchNoteById } from "../../dataService";
-import html2canvas from 'html2canvas';
+import html2canvas from "html2canvas";
 
 const ViewNote = () => {
   const correctPassword = "12345";
@@ -23,9 +23,9 @@ const ViewNote = () => {
         const data = await fetchNoteById(id); // Call the service function
         setNote(data.note); // Set the note details from the response
         const storedPassword = localStorage.getItem("password");
-    if (storedPassword === correctPassword) {
-      setIsAuthorized(true);
-    }
+        if (storedPassword === correctPassword) {
+          setIsAuthorized(true);
+        }
       } catch (error) {
         console.error("Error fetching note:", error);
         toast.error("Error fetching note details");
@@ -35,14 +35,14 @@ const ViewNote = () => {
     fetchNoteDetails(); // Fetch the note details when the component mounts or id changes
   }, [id]);
 
-const saveAsPDF = () => {
-  // Create a container for the HTML content we want to capture
-  const container = document.createElement("div");
-  container.style.position = "absolute";
-  container.style.top = "-9999px";
-  container.style.fontFamily = "Arial, sans-serif";
-  container.style.lineHeight = "1.6";
-  container.innerHTML = `
+  const saveAsPDF = () => {
+    // Create a container for the HTML content we want to capture
+    const container = document.createElement("div");
+    container.style.position = "absolute";
+    container.style.top = "-9999px";
+    container.style.fontFamily = "Arial, sans-serif";
+    container.style.lineHeight = "1.6";
+    container.innerHTML = `
     <div style="font-size: 14px; padding: 10px; width: 180mm; color: black;">
       <h1 style="font-size: 18px;">Note Details</h1>
       <p><strong>Question:</strong> ${note.question}</p>
@@ -52,24 +52,24 @@ const saveAsPDF = () => {
       <h2 style="font-size: 16px;">Answer:</h2>
       <div>${note.answer}</div>
     </div>
-  `;  document.body.appendChild(container);
+  `;
+    document.body.appendChild(container);
 
-  // Render the content with html2canvas at a higher scale for better clarity
-  html2canvas(container, { scale: 3 }).then((canvas) => {
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    // Render the content with html2canvas at a higher scale for better clarity
+    html2canvas(container, { scale: 3 }).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-    // Adjust the image size and margins for better output
-    pdf.addImage(imgData, "PNG", 10, 10, pdfWidth - 20, pdfHeight - 10);
-    pdf.save(`note_${note._id}.pdf`);
+      // Adjust the image size and margins for better output
+      pdf.addImage(imgData, "PNG", 10, 10, pdfWidth - 20, pdfHeight - 10);
+      pdf.save(`note_${note._id}.pdf`);
 
-    // Clean up by removing the temporary container
-    document.body.removeChild(container);
-  });
-};
-
+      // Clean up by removing the temporary container
+      document.body.removeChild(container);
+    });
+  };
 
   const handlePasswordSubmit = (e) => {
     e.preventDefault();
@@ -118,55 +118,53 @@ const saveAsPDF = () => {
         </form>
       ) : (
         <>
-      <div
-        className={`shadow-md rounded-lg p-6 ${
-          isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
-        }`}
-      >
-        <h2 className="text-3xl font-bold mb-4">Note Details</h2>
-        <div className="mb-4">
-          <h3 className="font-semibold text-lg">Question:</h3>
-          <p className="mt-2">{note.question}</p>
-        </div>
-        <div className="mb-4">
-          <h3 className="font-semibold text-lg">Answer:</h3>
-          <div dangerouslySetInnerHTML={{ __html: note.answer }} />
-        </div>
-        <div className="mb-4">
-          <h3 className="font-semibold text-lg">Main Target Category:</h3>
-          <p className="mt-2">{note.mainTargetCategory}</p>
-        </div>
-        <div className="mb-4">
-          <h3 className="font-semibold text-lg">Main Target Goal:</h3>
-          <p className="mt-2">{note.mainTargetGoal}</p>
-        </div>
-        <div className="mb-4">
-          <h3 className="font-semibold text-lg">Sub Target Goal:</h3>
-          <p className="mt-2">{note.subTargetGoal}</p>
-        </div>
+          <div
+            className={`shadow-md rounded-lg p-6 ${
+              isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+            }`}
+          >
+            <h2 className="text-3xl font-bold mb-4">Note Details</h2>
+            <div className="mb-4">
+              <h3 className="font-semibold text-lg">Question:</h3>
+              <p className="mt-2">{note.question}</p>
+            </div>
+            <div className="mb-4">
+              <h3 className="font-semibold text-lg">Answer:</h3>
+              <div dangerouslySetInnerHTML={{ __html: note.answer }} />
+            </div>
+            <div className="mb-4">
+              <h3 className="font-semibold text-lg">Main Target Category:</h3>
+              <p className="mt-2">{note.mainTargetCategory}</p>
+            </div>
+            <div className="mb-4">
+              <h3 className="font-semibold text-lg">Main Target Goal:</h3>
+              <p className="mt-2">{note.mainTargetGoal}</p>
+            </div>
+            <div className="mb-4">
+              <h3 className="font-semibold text-lg">Sub Target Goal:</h3>
+              <p className="mt-2">{note.subTargetGoal}</p>
+            </div>
 
-        <div className="flex items-center justify-between mt-6">
-          <Link
-            to={`/notes/${id}/edit`}
-            className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
-          >
-            Edit Note
-          </Link>
-          <Link
-            to="/notes"
-            className="text-gray-600 hover:underline"
-          >
-            Back to Notes
-          </Link>
-          <button
-            onClick={saveAsPDF}
-            className="bg-green-500 text-white p-2 rounded hover:bg-green-600"
-          >
-            Save as PDF
-          </button>
-        </div>
-      </div>
-      </>)}
+            <div className="flex items-center justify-between mt-6">
+              <Link
+                to={`/notes/${id}/edit`}
+                className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+              >
+                Edit Note
+              </Link>
+              <Link to="/notes" className="text-gray-600 hover:underline">
+                Back to Notes
+              </Link>
+              <button
+                onClick={saveAsPDF}
+                className="bg-green-500 text-white p-2 rounded hover:bg-green-600"
+              >
+                Save as PDF
+              </button>
+            </div>
+          </div>
+        </>
+      )}
       <ToastContainer />
     </div>
   );

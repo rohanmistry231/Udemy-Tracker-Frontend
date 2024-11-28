@@ -31,7 +31,7 @@ const Progress = () => {
   const [password, setPassword] = useState("");
   const [isAuthorized, setIsAuthorized] = useState(false);
 
-   // Fetch data from backend
+  // Fetch data from backend
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -736,13 +736,16 @@ const Progress = () => {
                         type="checkbox"
                         checked={checkedMainCategories[category.name]}
                         onChange={() => {
-                          const storedPassword = localStorage.getItem("password");
+                          const storedPassword =
+                            localStorage.getItem("password");
                           const correctPassword = "12345";
 
                           if (storedPassword === correctPassword) {
                             toggleMainCategory(category.name);
                           } else {
-                            alert("⚠️ Access Denied: You lack authorization to perform this action. ⚠️");
+                            alert(
+                              "⚠️ Access Denied: You lack authorization to perform this action. ⚠️"
+                            );
                           }
                         }}
                         className="mr-2 cursor-pointer"
@@ -765,7 +768,9 @@ const Progress = () => {
                         if (storedPassword === correctPassword) {
                           deleteMainCategory(category._id);
                         } else {
-                          alert("⚠️ Access Denied: You lack authorization to perform this action. ⚠️");
+                          alert(
+                            "⚠️ Access Denied: You lack authorization to perform this action. ⚠️"
+                          );
                         }
                       }}
                     >
@@ -784,15 +789,13 @@ const Progress = () => {
                   </div>
                   <div className="flex flex-row">
                     <div className="relative w-full h-4 mt-2 bg-gray-200 rounded overflow-hidden">
-                    <div
-  className="absolute top-0 left-0 h-full bg-gradient-to-r from-purple-400 via-violet-500 to-blue-600"
-  style={{
-    width: `${mainGoalsProgress}%`,
-    transition: "width 0.5s ease-in-out",
-  }}
-></div>
-
-
+                      <div
+                        className="absolute top-0 left-0 h-full bg-gradient-to-r from-purple-400 via-violet-500 to-blue-600"
+                        style={{
+                          width: `${mainGoalsProgress}%`,
+                          transition: "width 0.5s ease-in-out",
+                        }}
+                      ></div>
                     </div>
                     <p className="text-sm mt-1 ml-2">
                       {Math.round(mainGoalsProgress)}%
@@ -812,15 +815,20 @@ const Progress = () => {
                               <div className="flex items-center">
                                 <input
                                   type="checkbox"
-                                  checked={checkedMainGoals[category.name]?.[goal.name]}
+                                  checked={
+                                    checkedMainGoals[category.name]?.[goal.name]
+                                  }
                                   onChange={() => {
-                                    const storedPassword = localStorage.getItem("password");
+                                    const storedPassword =
+                                      localStorage.getItem("password");
                                     const correctPassword = "12345";
 
                                     if (storedPassword === correctPassword) {
                                       toggleMainGoal(category.name, goal.name);
                                     } else {
-                                      alert("⚠️ Access Denied: You lack authorization to perform this action. ⚠️");
+                                      alert(
+                                        "⚠️ Access Denied: You lack authorization to perform this action. ⚠️"
+                                      );
                                     }
                                   }}
                                   className="mr-2 cursor-pointer"
@@ -839,13 +847,16 @@ const Progress = () => {
                               <button
                                 className="delete-btn text-red-600 ml-auto mr-3"
                                 onClick={() => {
-                                  const storedPassword = localStorage.getItem("password");
+                                  const storedPassword =
+                                    localStorage.getItem("password");
                                   const correctPassword = "12345"; // Replace with your actual correct password
 
                                   if (storedPassword === correctPassword) {
                                     deleteMainGoal(category._id, goal._id);
                                   } else {
-                                    alert("⚠️ Access Denied: You lack authorization to perform this action. ⚠️");
+                                    alert(
+                                      "⚠️ Access Denied: You lack authorization to perform this action. ⚠️"
+                                    );
                                   }
                                 }}
                               >
@@ -891,16 +902,27 @@ const Progress = () => {
                                     <input
                                       type="checkbox"
                                       checked={
-                                        checkedSubGoals[category.name]?.[goal.name]?.[subGoal.name]
+                                        checkedSubGoals[category.name]?.[
+                                          goal.name
+                                        ]?.[subGoal.name]
                                       }
                                       onChange={() => {
-                                        const storedPassword = localStorage.getItem("password");
+                                        const storedPassword =
+                                          localStorage.getItem("password");
                                         const correctPassword = "12345";
 
-                                        if (storedPassword === correctPassword) {
-                                          toggleSubGoal(category.name, goal.name, subGoal.name);
+                                        if (
+                                          storedPassword === correctPassword
+                                        ) {
+                                          toggleSubGoal(
+                                            category.name,
+                                            goal.name,
+                                            subGoal.name
+                                          );
                                         } else {
-                                          alert("⚠️ Access Denied: You lack authorization to perform this action. ⚠️");
+                                          alert(
+                                            "⚠️ Access Denied: You lack authorization to perform this action. ⚠️"
+                                          );
                                         }
                                       }}
                                       className="mr-2 cursor-pointer"
@@ -917,13 +939,22 @@ const Progress = () => {
                                     <button
                                       className="delete-btn text-red-600 ml-auto mr-7"
                                       onClick={() => {
-                                        const storedPassword = localStorage.getItem("password");
+                                        const storedPassword =
+                                          localStorage.getItem("password");
                                         const correctPassword = "12345"; // Replace with your actual correct password
 
-                                        if (storedPassword === correctPassword) {
-                                          deleteSubGoal(category._id, goal._id, subGoal._id);
+                                        if (
+                                          storedPassword === correctPassword
+                                        ) {
+                                          deleteSubGoal(
+                                            category._id,
+                                            goal._id,
+                                            subGoal._id
+                                          );
                                         } else {
-                                          alert("⚠️ Access Denied: You lack authorization to perform this action. ⚠️");
+                                          alert(
+                                            "⚠️ Access Denied: You lack authorization to perform this action. ⚠️"
+                                          );
                                         }
                                       }}
                                     >

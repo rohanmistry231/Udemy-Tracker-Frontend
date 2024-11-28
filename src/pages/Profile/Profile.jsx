@@ -100,7 +100,7 @@ const Profile = () => {
         setIsLoading(false);
       }
     };
-  
+
     fetchUserData();
   }, []);
 
@@ -196,7 +196,9 @@ const Profile = () => {
                   }`}
                 >
                   <h4 className="text-lg font-medium">Certificates</h4>
-                  <p className="text-2xl font-semibold mt-2">{completedCoursesCount}</p>
+                  <p className="text-2xl font-semibold mt-2">
+                    {completedCoursesCount}
+                  </p>
                 </div>
               </div>
             </div>

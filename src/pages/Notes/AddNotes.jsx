@@ -214,12 +214,22 @@ const AddNotes = () => {
                   init={{
                     plugins: [
                       // Core editing features
-                      'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 
-                      'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 
-                      'wordcount'
+                      "anchor",
+                      "autolink",
+                      "charmap",
+                      "codesample",
+                      "emoticons",
+                      "image",
+                      "link",
+                      "lists",
+                      "media",
+                      "searchreplace",
+                      "table",
+                      "visualblocks",
+                      "wordcount",
                     ],
-                    toolbar: 
-                      'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+                    toolbar:
+                      "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
                     placeholder: "Answer...",
                     skin: isDarkMode ? "oxide-dark" : "oxide",
                     content_css: isDarkMode ? "dark" : "default",

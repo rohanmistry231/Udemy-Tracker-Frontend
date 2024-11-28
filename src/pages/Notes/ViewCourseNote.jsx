@@ -20,7 +20,6 @@ const ViewCourseNote = () => {
   const [password, setPassword] = useState("");
   const [isAuthorized, setIsAuthorized] = useState(false);
 
-
   useEffect(() => {
     const fetchNote = async () => {
       try {
@@ -43,9 +42,9 @@ const ViewCourseNote = () => {
         setMainTargetGoal(data.note.mainTargetGoal || "");
         setSubTargetGoal(data.note.subTargetGoal || "");
         const storedPassword = localStorage.getItem("password");
-    if (storedPassword === correctPassword) {
-      setIsAuthorized(true);
-    }
+        if (storedPassword === correctPassword) {
+          setIsAuthorized(true);
+        }
       } catch (error) {
         console.error("Error fetching note:", error);
         toast.error("Error fetching note details");
@@ -151,130 +150,143 @@ const ViewCourseNote = () => {
         </form>
       ) : (
         <>
-      <div
-        className={`shadow-md rounded-lg p-6 ${
-          isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
-        }`}
-      >
-        <h2 className="text-3xl font-bold mb-4">Note Details</h2>
+          <div
+            className={`shadow-md rounded-lg p-6 ${
+              isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+            }`}
+          >
+            <h2 className="text-3xl font-bold mb-4">Note Details</h2>
 
-        {editingNote ? (
-          <form onSubmit={handleUpdate} className="space-y-4">
-            <div>
-              <label className="font-semibold">Question:</label>
-              <input
-                type="text"
-                value={question}
-                onChange={(e) => setQuestion(e.target.value)}
-                className={`w-full p-2 rounded border ${
-                  isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
-                }`}
-                required
-              />
-            </div>
-            <div>
-              <label className="font-semibold">Answer:</label>
-              <textarea
-                value={answer}
-                onChange={(e) => setAnswer(e.target.value)}
-                className={`w-full p-2 rounded border ${
-                  isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
-                }`}
-                required
-              ></textarea>
-            </div>
-            <div>
-              <label className="font-semibold">Main Target Category:</label>
-              <input
-                type="text"
-                value={mainTargetCategory}
-                onChange={(e) => setMainTargetCategory(e.target.value)}
-                className={`w-full p-2 rounded border ${
-                  isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
-                }`}
-                required
-              />
-            </div>
-            <div>
-              <label className="font-semibold">Main Target Goal:</label>
-              <input
-                type="text"
-                value={mainTargetGoal}
-                onChange={(e) => setMainTargetGoal(e.target.value)}
-                className={`w-full p-2 rounded border ${
-                  isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
-                }`}
-              />
-            </div>
-            <div>
-              <label className="font-semibold">Sub Target Goal:</label>
-              <input
-                type="text"
-                value={subTargetGoal}
-                onChange={(e) => setSubTargetGoal(e.target.value)}
-                className={`w-full p-2 rounded border ${
-                  isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
-                }`}
-              />
-            </div>
-            <div className="flex space-x-4 mt-4">
-              <button
-                type="submit"
-                className={`p-2 rounded ${
-                  isDarkMode
-                    ? "bg-blue-700 hover:bg-blue-800"
-                    : "bg-blue-500 hover:bg-blue-600"
-                } text-white`}
-              >
-                Save
-              </button>
-              <button
-                type="button"
-                onClick={() => setEditingNote(false)}
-                className="text-red-500"
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
-        ) : (
-          <>
-            <div className="mb-4">
-              <h3 className="font-semibold text-lg">Question:</h3>
-              <p className="mt-2">{note.question}</p>
-            </div>
-            <div className="mb-4">
-              <h3 className="font-semibold text-lg">Answer:</h3>
-              <div dangerouslySetInnerHTML={{ __html: note.answer }} />
-            </div>
-            <div className="mb-4">
-              <h3 className="font-semibold text-lg">Main Target Category:</h3>
-              <p className="mt-2">{note.mainTargetCategory}</p>
-            </div>
-            <div className="mb-4">
-              <h3 className="font-semibold text-lg">Main Target Goal:</h3>
-              <p className="mt-2">{note.mainTargetGoal}</p>
-            </div>
-            <div className="mb-4">
-              <h3 className="font-semibold text-lg">Sub Target Goal:</h3>
-              <p className="mt-2">{note.subTargetGoal}</p>
-            </div>
-            <button
-              onClick={() => handleEditClick(note)}
-              className={`bg-blue-500 text-white p-2 rounded hover:bg-blue-600 mt-4`}
-            >
-              Edit Note
-            </button>
-            <Link
-              to={`/courses/${courseid}/view`}
-              className="text-gray-600 hover:underline ml-4"
-            >
-              Back to Course
-            </Link>
-          </>
-        )}
-      </div>
-      </>)}
+            {editingNote ? (
+              <form onSubmit={handleUpdate} className="space-y-4">
+                <div>
+                  <label className="font-semibold">Question:</label>
+                  <input
+                    type="text"
+                    value={question}
+                    onChange={(e) => setQuestion(e.target.value)}
+                    className={`w-full p-2 rounded border ${
+                      isDarkMode
+                        ? "bg-gray-700 text-white"
+                        : "bg-white text-black"
+                    }`}
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="font-semibold">Answer:</label>
+                  <textarea
+                    value={answer}
+                    onChange={(e) => setAnswer(e.target.value)}
+                    className={`w-full p-2 rounded border ${
+                      isDarkMode
+                        ? "bg-gray-700 text-white"
+                        : "bg-white text-black"
+                    }`}
+                    required
+                  ></textarea>
+                </div>
+                <div>
+                  <label className="font-semibold">Main Target Category:</label>
+                  <input
+                    type="text"
+                    value={mainTargetCategory}
+                    onChange={(e) => setMainTargetCategory(e.target.value)}
+                    className={`w-full p-2 rounded border ${
+                      isDarkMode
+                        ? "bg-gray-700 text-white"
+                        : "bg-white text-black"
+                    }`}
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="font-semibold">Main Target Goal:</label>
+                  <input
+                    type="text"
+                    value={mainTargetGoal}
+                    onChange={(e) => setMainTargetGoal(e.target.value)}
+                    className={`w-full p-2 rounded border ${
+                      isDarkMode
+                        ? "bg-gray-700 text-white"
+                        : "bg-white text-black"
+                    }`}
+                  />
+                </div>
+                <div>
+                  <label className="font-semibold">Sub Target Goal:</label>
+                  <input
+                    type="text"
+                    value={subTargetGoal}
+                    onChange={(e) => setSubTargetGoal(e.target.value)}
+                    className={`w-full p-2 rounded border ${
+                      isDarkMode
+                        ? "bg-gray-700 text-white"
+                        : "bg-white text-black"
+                    }`}
+                  />
+                </div>
+                <div className="flex space-x-4 mt-4">
+                  <button
+                    type="submit"
+                    className={`p-2 rounded ${
+                      isDarkMode
+                        ? "bg-blue-700 hover:bg-blue-800"
+                        : "bg-blue-500 hover:bg-blue-600"
+                    } text-white`}
+                  >
+                    Save
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEditingNote(false)}
+                    className="text-red-500"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <>
+                <div className="mb-4">
+                  <h3 className="font-semibold text-lg">Question:</h3>
+                  <p className="mt-2">{note.question}</p>
+                </div>
+                <div className="mb-4">
+                  <h3 className="font-semibold text-lg">Answer:</h3>
+                  <div dangerouslySetInnerHTML={{ __html: note.answer }} />
+                </div>
+                <div className="mb-4">
+                  <h3 className="font-semibold text-lg">
+                    Main Target Category:
+                  </h3>
+                  <p className="mt-2">{note.mainTargetCategory}</p>
+                </div>
+                <div className="mb-4">
+                  <h3 className="font-semibold text-lg">Main Target Goal:</h3>
+                  <p className="mt-2">{note.mainTargetGoal}</p>
+                </div>
+                <div className="mb-4">
+                  <h3 className="font-semibold text-lg">Sub Target Goal:</h3>
+                  <p className="mt-2">{note.subTargetGoal}</p>
+                </div>
+                <button
+                  onClick={() => handleEditClick(note)}
+                  className={`bg-blue-500 text-white p-2 rounded hover:bg-blue-600 mt-4`}
+                >
+                  Edit Note
+                </button>
+                <Link
+                  to={`/courses/${courseid}/view`}
+                  className="text-gray-600 hover:underline ml-4"
+                >
+                  Back to Course
+                </Link>
+              </>
+            )}
+          </div>
+        </>
+      )}
       <ToastContainer />
     </div>
   );

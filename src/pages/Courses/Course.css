@@ -18,7 +18,7 @@
   .hide-on-large {
     display: flex; /* Ensure the button is visible */
   }
-  .hide-on-small{
+  .hide-on-small {
     display: none;
   }
 }

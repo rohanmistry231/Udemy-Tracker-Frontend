@@ -36,7 +36,7 @@ export const targetGoals = {
     "Web App",
     "Mathematics",
   ],
-  "Database": [
+  Database: [
     "DBMS",
     "MySQL",
     "NoSQL",
@@ -76,7 +76,7 @@ export const targetGoals = {
     "Wordpress",
     "UIUX",
   ],
-  "Business": [
+  Business: [
     "Business Strategy",
     "Communication",
     "Consultant",
@@ -97,7 +97,7 @@ export const targetGoals = {
     "Trading",
     "No Code Development",
   ],
-  "Filmmaking": ["Photography & Video", "Budgeting", "After Effects"],
+  Filmmaking: ["Photography & Video", "Budgeting", "After Effects"],
   "Graphics Design": [
     "Adobe Captivate",
     "Adobe Illustrator",
@@ -112,7 +112,7 @@ export const targetGoals = {
     "Blender",
     "After Effects",
   ],
-  "Marketing": [
+  Marketing: [
     "Content Marketing",
     "Digital Marketing",
     "Test",
@@ -124,8 +124,8 @@ export const targetGoals = {
     "Microsoft",
     "Other Office Productivity",
   ],
-  "Music": ["Drum", "Audio Production", "Song Writing", "Piano", "Guitar"],
-  "Cloud": [
+  Music: ["Drum", "Audio Production", "Song Writing", "Piano", "Guitar"],
+  Cloud: [
     "AWS",
     "Azure",
     "Cloud",
@@ -139,7 +139,7 @@ export const targetGoals = {
     "Microservices",
     "Data Build Tool",
   ],
-  "DevOps": [
+  DevOps: [
     "Ansible",
     "Azure",
     "DevOps",
@@ -163,7 +163,7 @@ export const targetGoals = {
     "Eye",
     "Yoga",
   ],
-  "Language": ["English", "Test", "German","French"],
+  Language: ["English", "Test", "German", "French"],
   "Operating System": [
     "Linux",
     "Network & Security",
@@ -193,7 +193,7 @@ export const targetGoals = {
 };
 
 export const subGoals = {
-  "Algorithms": [
+  Algorithms: [
     "Introduction to Algorithms",
     "Algorithm Analysis and Complexity",
     "Sorting Algorithms (Bubble, Selection, Insertion)",
@@ -238,7 +238,7 @@ export const subGoals = {
     "Big Data Security and Privacy",
     "Big Data Analytics and Visualization",
   ],
-  "Career": [
+  Career: [
     "Career Paths in Data Science",
     "Building a Data Science Portfolio",
     "Essential Skills for Data Scientists",
@@ -268,7 +268,7 @@ export const subGoals = {
     "Data Quality Assurance",
     "Data Storytelling and Reporting",
   ],
-  "ETL": [
+  ETL: [
     "Introduction to ETL",
     "ETL Process Overview",
     "Data Extraction Techniques",
@@ -298,7 +298,7 @@ export const subGoals = {
     "Computer Vision in ML",
     "Model Deployment and Monitoring",
   ],
-  "Math": [
+  Math: [
     "Fundamentals of Math for Data Science",
     "Probability and Statistics",
     "Linear Algebra Basics",
@@ -358,7 +358,7 @@ export const subGoals = {
     "Leadership in Data Science",
     "Building a Growth Mindset",
   ],
-  "Software": [
+  Software: [
     "Introduction to Data Science Software",
     "Software for Data Analysis (Python, R)",
     "Software for Data Visualization (Tableau, PowerBI)",
@@ -388,7 +388,7 @@ export const subGoals = {
     "Security in Web Apps",
     "Performance Optimization for Data Apps",
   ],
-  "Mathematics": [
+  Mathematics: [
     "Mathematics Fundamentals for Data Science",
     "Probability and Statistics",
     "Linear Algebra",
@@ -403,7 +403,7 @@ export const subGoals = {
     "Advanced Statistics",
     "Mathematics for Deep Learning",
   ],
-  "DBMS": [
+  DBMS: [
     "Introduction to DBMS",
     "Database System Architecture",
     "Types of Databases (Relational, NoSQL, etc.)",
@@ -418,7 +418,7 @@ export const subGoals = {
     "Backup and Recovery Techniques",
     "Distributed DBMS",
   ],
-  "MySQL": [
+  MySQL: [
     "Introduction to MySQL",
     "MySQL Installation and Setup",
     "Basic SQL Queries in MySQL",
@@ -433,7 +433,7 @@ export const subGoals = {
     "MySQL Performance Optimization",
     "Advanced MySQL Features",
   ],
-  "NoSQL": [
+  NoSQL: [
     "Introduction to NoSQL Databases",
     "Types of NoSQL Databases (Document, Key-Value, Column-Family, Graph)",
     "Advantages and Disadvantages of NoSQL",
@@ -448,7 +448,7 @@ export const subGoals = {
     "Data Consistency in NoSQL",
     "NoSQL vs Relational Databases",
   ],
-  "SQL": [
+  SQL: [
     "Introduction to SQL",
     "Basic SQL Syntax and Queries",
     "SQL Data Types",
@@ -478,7 +478,7 @@ export const subGoals = {
     "Database Scalability and Performance",
     "Use Cases for SQL and NoSQL Databases",
   ],
-  "SupaBase": [
+  SupaBase: [
     "Introduction to Supabase",
     "Setting up Supabase Project",
     "Supabase Authentication and Authorization",
@@ -493,7 +493,7 @@ export const subGoals = {
     "Integrating Supabase with Frontend Applications",
     "Supabase Security Best Practices",
   ],
-  "API": [
+  API: [
     "Introduction to APIs",
     "RESTful API Basics",
     "HTTP Methods (GET, POST, PUT, DELETE)",
@@ -525,7 +525,7 @@ export const subGoals = {
     "Data Governance in BI",
     "AI and Machine Learning in Business Intelligence",
   ],
-  "CEO": [
+  CEO: [
     "Role and Responsibilities of a CEO",
     "Leadership Skills for CEOs",
     "Strategic Planning and Vision",
@@ -540,7 +540,7 @@ export const subGoals = {
     "Innovation and Business Growth",
     "CEO Succession Planning",
   ],
-  "IOT": [
+  IOT: [
     "Introduction to Internet of Things (IoT)",
     "IoT Architecture and Components",
     "Sensors and Actuators in IoT",
@@ -603,7 +603,7 @@ export const subGoals = {
     "Continuous Testing in CI/CD",
   ],
 
-  "Windows": [
+  Windows: [
     "Introduction to Windows Operating System",
     "Windows Installation and Configuration",
     "File System Management (NTFS, FAT)",
@@ -633,7 +633,7 @@ export const subGoals = {
     "Capacity Planning and Estimation",
     "Security Considerations in System Design",
   ],
-  'CTO': [
+  CTO: [
     "Role and Responsibilities of a CTO",
     "Technology Strategy and Leadership",
     "Managing Technical Teams",
@@ -648,7 +648,7 @@ export const subGoals = {
     "Leading Digital Transformation",
     "Collaborating with CEOs and Other Executives",
   ],
-  "Hardware": [
+  Hardware: [
     "Introduction to Computer Hardware",
     "Basic Computer Components (CPU, RAM, HDD, etc.)",
     "Motherboard and Peripheral Devices",
@@ -664,7 +664,7 @@ export const subGoals = {
     "Embedded Systems and Microcontrollers",
   ],
 
-  "Backend": [
+  Backend: [
     "Introduction to Backend Development",
     "Server-Side Languages (Node.js, Python, Ruby, PHP)",
     "Working with Databases (SQL, NoSQL)",
@@ -679,7 +679,7 @@ export const subGoals = {
     "Server Deployment and Management (Nginx, Apache)",
     "Testing and Debugging Backend Code",
   ],
-  "Dialogflow": [
+  Dialogflow: [
     "Introduction to Dialogflow",
     "Setting Up Dialogflow Agent",
     "Understanding Intents and Entities",
@@ -693,7 +693,7 @@ export const subGoals = {
     "Multilingual Support in Dialogflow",
     "Dialogflow Security and Access Control",
   ],
-  "Frontend": [
+  Frontend: [
     "Introduction to Frontend Development",
     "HTML5 and CSS3 Basics",
     "CSS Layouts (Flexbox, Grid)",
@@ -723,7 +723,7 @@ export const subGoals = {
     "Full Stack Development Best Practices",
     "DevOps for Full Stack Developers (CI/CD, Docker)",
   ],
-  "MERN": [
+  MERN: [
     "Introduction to MERN Stack",
     "MongoDB: NoSQL Database Basics",
     "Express.js: Setting Up and Building RESTful APIs",
@@ -738,7 +738,7 @@ export const subGoals = {
     "Testing MERN Applications (Jest, Supertest)",
     "Real-Time Features in MERN (WebSockets, Socket.io)",
   ],
-  "NGINX": [
+  NGINX: [
     "Introduction to NGINX",
     "NGINX as a Reverse Proxy Server",
     "NGINX Configuration Files and Syntax",
@@ -792,7 +792,7 @@ export const subGoals = {
     "Scraping APIs and Data Extraction",
     "Scheduling and Automating Web Scraping Tasks",
   ],
-  "WordPress": [
+  WordPress: [
     "Introduction to WordPress",
     "Installing and Setting Up WordPress",
     "Choosing and Installing Themes",
@@ -806,7 +806,7 @@ export const subGoals = {
     "WordPress Performance Optimization",
     "E-commerce with WooCommerce",
   ],
-  "UIUX": [
+  UIUX: [
     "Introduction to UI/UX Design",
     "UI vs UX: Key Differences",
     "User Research and Personas",
@@ -835,7 +835,7 @@ export const subGoals = {
     "Measuring and Monitoring Business Performance",
     "Crisis Management and Business Continuity",
   ],
-  "Communication": [
+  Communication: [
     "Introduction to Business Communication",
     "Verbal vs Non-Verbal Communication",
     "Effective Business Writing (Emails, Reports, Proposals)",
@@ -848,7 +848,7 @@ export const subGoals = {
     "Public Speaking and Media Relations",
     "Digital Communication (Social Media, Blogging)",
   ],
-  "Consultant": [
+  Consultant: [
     "Introduction to Consulting",
     "Consulting Process and Methodologies",
     "Client Relationship Management",
@@ -892,7 +892,7 @@ export const subGoals = {
     "Security and Fraud Prevention",
     "Global E-Commerce and Cross-Border Selling",
   ],
-  "Entrepreneurship": [
+  Entrepreneurship: [
     "Introduction to Entrepreneurship",
     "Identifying Business Opportunities",
     "Building a Business Plan",
@@ -907,7 +907,7 @@ export const subGoals = {
     "Leadership for Entrepreneurs",
     "Exit Strategies for Entrepreneurs",
   ],
-  "Finance": [
+  Finance: [
     "Introduction to Business Finance",
     "Financial Statements (Income Statement, Balance Sheet)",
     "Budgeting and Forecasting",
@@ -922,7 +922,7 @@ export const subGoals = {
     "Financial Analysis and Decision Making",
     "Using Financial Tools (Excel, QuickBooks)",
   ],
-  "Leadership": [
+  Leadership: [
     "Introduction to Leadership",
     "Leadership Styles (Transformational, Transactional)",
     "Team Management and Motivation",
@@ -937,7 +937,7 @@ export const subGoals = {
     "Coaching and Mentorship",
     "Ethical Leadership",
   ],
-  "Management": [
+  Management: [
     "Introduction to Management",
     "Functions of Management (Planning, Organizing, Leading, Controlling)",
     "Organizational Structure and Design",
@@ -952,7 +952,7 @@ export const subGoals = {
     "Managing Remote Teams",
     "Management Theories and Practices",
   ],
-  "MBA": [
+  MBA: [
     "Introduction to MBA Programs",
     "Core MBA Courses (Marketing, Finance, HR, Operations)",
     "Global Business Environment",
@@ -966,7 +966,7 @@ export const subGoals = {
     "MBA Admissions Process",
     "Benefits of an MBA for Career Growth",
   ],
-  "Operation": [
+  Operation: [
     "Introduction to Operations Management",
     "Supply Chain Management",
     "Inventory Management",
@@ -981,7 +981,7 @@ export const subGoals = {
     "Sustainability and Green Operations",
     "Risk Management in Operations",
   ],
-  "Photography": [
+  Photography: [
     "Introduction to Photography",
     "Understanding Exposure (ISO, Shutter Speed, Aperture)",
     "Composition and Framing in Photography",
@@ -995,7 +995,7 @@ export const subGoals = {
     "Marketing and Selling Photography",
     "Photography Business Strategies",
   ],
-  "Productivity": [
+  Productivity: [
     "Introduction to Productivity",
     "Time Management Techniques (Pomodoro, Eisenhower Matrix)",
     "Setting and Achieving Goals",
@@ -1009,7 +1009,7 @@ export const subGoals = {
     "Developing Productive Habits",
     "Maximizing Efficiency with Automation",
   ],
-  "Sales": [
+  Sales: [
     "Introduction to Sales",
     "Sales Process (Lead Generation, Qualification, Closing)",
     "Sales Techniques and Methodologies (SPIN, Solution Selling)",
@@ -1052,7 +1052,7 @@ export const subGoals = {
     "Risks and Challenges of Bitcoin Investments",
     "Bitcoin Futures and Derivatives",
   ],
-  "Trading": [
+  Trading: [
     "Introduction to Trading",
     "Stock Market Basics",
     "Types of Trading (Day Trading, Swing Trading, Long-Term Investing)",
@@ -1094,7 +1094,7 @@ export const subGoals = {
     "Using Camera Equipment (DSLR, Mirrorless, Cinema Cameras)",
     "Building a Photography & Video Portfolio",
   ],
-  "Budgeting": [
+  Budgeting: [
     "Introduction to Film Budgeting",
     "Understanding Pre-Production Costs",
     "Cost Breakdown (Crew, Cast, Equipment)",
@@ -1204,7 +1204,7 @@ export const subGoals = {
     "Portfolio Building and Presentation",
     "Exploring New Design Trends",
   ],
-  "Canva": [
+  Canva: [
     "Introduction to Canva and Interface",
     "Creating Social Media Graphics",
     "Using Templates and Customizing Designs",
@@ -1215,7 +1215,7 @@ export const subGoals = {
     "Advanced Design Tips for Canva",
     "Building a Portfolio with Canva",
   ],
-  "CorelDraw": [
+  CorelDraw: [
     "Getting Started with CorelDraw",
     "Creating Vector Graphics",
     "Working with Text and Typography",
@@ -1225,7 +1225,7 @@ export const subGoals = {
     "Advanced Illustration and Effects",
     "Exporting and Printing Graphics",
   ],
-  "Blender": [
+  Blender: [
     "Introduction to Blender Interface",
     "3D Modeling Basics",
     "Texturing and Material Setup",
@@ -1271,7 +1271,7 @@ export const subGoals = {
     "Advanced Marketing Strategy",
     "Global Marketing Strategies",
   ],
-  "Calendar": [
+  Calendar: [
     "Introduction to Digital Calendars",
     "Setting Up Events and Reminders",
     "Using Shared Calendars",
@@ -1283,7 +1283,7 @@ export const subGoals = {
     "Advanced Calendar Management",
     "Productivity Hacks with Calendar Use",
   ],
-  "Google": [
+  Google: [
     "Overview of Google Workspace",
     "Google Docs Basics",
     "Google Sheets Basics",
@@ -1296,7 +1296,7 @@ export const subGoals = {
     "Google Workspace Security and Management",
     "Productivity Tips for Google Apps",
   ],
-  "Microsoft": [
+  Microsoft: [
     "Introduction to Microsoft 365",
     "Microsoft Word Basics",
     "Microsoft Excel Basics",
@@ -1321,7 +1321,7 @@ export const subGoals = {
     "Productivity with Personal Kanban",
     "Integrating Office Tools for Workflow",
   ],
-  "Drum": [
+  Drum: [
     "Introduction to Drumming",
     "Basic Drum Patterns and Techniques",
     "Reading Drum Notation",
@@ -1360,7 +1360,7 @@ export const subGoals = {
     "Intermediate Songwriting Techniques",
     "Polishing and Finalizing Songs",
   ],
-  "Piano": [
+  Piano: [
     "Introduction to Piano",
     "Basic Finger Exercises and Posture",
     "Reading Sheet Music",
@@ -1373,7 +1373,7 @@ export const subGoals = {
     "Advanced Chord Progressions",
     "Advanced Techniques and Styles (Jazz, Classical)",
   ],
-  "Guitar": [
+  Guitar: [
     "Introduction to Guitar",
     "Basic Chords and Strumming Patterns",
     "Finger Placement and Basic Scales",
@@ -1386,7 +1386,7 @@ export const subGoals = {
     "Advanced Techniques (Tapping, Sweeping)",
     "Genre-Based Guitar Styles (Blues, Rock, Jazz)",
   ],
-  "AWS": [
+  AWS: [
     "Introduction to AWS",
     "Core AWS Services (EC2, S3, RDS, VPC)",
     "IAM and Security Fundamentals",
@@ -1399,7 +1399,7 @@ export const subGoals = {
     "Architecting Solutions on AWS",
     "AWS Certified Solutions Architect Preparation",
   ],
-  "Azure": [
+  Azure: [
     "Introduction to Microsoft Azure",
     "Core Azure Services (VMs, Blob Storage, SQL Database)",
     "Azure Active Directory and Security",
@@ -1412,7 +1412,7 @@ export const subGoals = {
     "Architecting Solutions on Azure",
     "Azure Certification Preparation",
   ],
-  "Cloud": [
+  Cloud: [
     "Introduction to Cloud Computing",
     "Understanding IaaS, PaaS, and SaaS",
     "Virtualization and Containers Basics",
@@ -1425,7 +1425,7 @@ export const subGoals = {
     "Cloud Solution Architecture",
     "Future Trends in Cloud Computing",
   ],
-  "ElasticSearch": [
+  ElasticSearch: [
     "Introduction to ElasticSearch",
     "Understanding Indexing and Search",
     "Setting Up ElasticSearch",
@@ -1451,7 +1451,7 @@ export const subGoals = {
     "Architecting Solutions on GCP",
     "GCP Certification Preparation",
   ],
-  "Linode": [
+  Linode: [
     "Introduction to Linode",
     "Creating and Managing Virtual Servers",
     "Setting Up Storage and Networking",
@@ -1478,7 +1478,7 @@ export const subGoals = {
     "Scaling Serverless Applications",
     "Best Practices and Security in Serverless",
   ],
-  "Terraform": [
+  Terraform: [
     "Introduction to Infrastructure as Code (IaC)",
     "Getting Started with Terraform",
     "Terraform Syntax and Configuration",
@@ -1491,7 +1491,7 @@ export const subGoals = {
     "Security and Compliance in IaC",
     "Best Practices for Terraform Usage",
   ],
-  "Microservices": [
+  Microservices: [
     "Introduction to Microservices Architecture",
     "Designing Microservices for Scalability",
     "Implementing Service Communication (REST, gRPC)",
@@ -1517,7 +1517,7 @@ export const subGoals = {
     "CI/CD Integration with DBT",
     "Best Practices in Data Engineering with DBT",
   ],
-  "Ansible": [
+  Ansible: [
     "Introduction to Ansible and Configuration Management",
     "Installing and Setting Up Ansible",
     "Understanding YAML and Inventory Files",
@@ -1531,7 +1531,7 @@ export const subGoals = {
     "Ansible for Infrastructure as Code",
   ],
 
-  "DevOps": [
+  DevOps: [
     "Introduction to DevOps Principles and Practices",
     "Understanding Agile and Lean in DevOps",
     "CI/CD Concepts and Pipelines",
@@ -1544,7 +1544,7 @@ export const subGoals = {
     "DevOps Tools and Technologies Overview",
     "Advanced DevOps Practices and Metrics",
   ],
-  "DevSecOps": [
+  DevSecOps: [
     "Introduction to DevSecOps",
     "Securing the CI/CD Pipeline",
     "Security Scanning in DevOps (SAST, DAST, SCA)",
@@ -1557,7 +1557,7 @@ export const subGoals = {
     "Best Practices for Secure DevOps",
     "Implementing DevSecOps in Enterprise",
   ],
-  "Docker": [
+  Docker: [
     "Introduction to Containerization and Docker",
     "Installing and Configuring Docker",
     "Creating and Managing Docker Images",
@@ -1583,7 +1583,7 @@ export const subGoals = {
     "Advanced Workflow Automation",
     "Best Practices and Optimization",
   ],
-  "Jenkins": [
+  Jenkins: [
     "Introduction to Jenkins and CI/CD",
     "Setting Up Jenkins and Managing Plugins",
     "Creating and Configuring Pipelines",
@@ -1596,7 +1596,7 @@ export const subGoals = {
     "Jenkins Security Best Practices",
     "Advanced CI/CD Pipelines with Jenkins",
   ],
-  "Kubernetes": [
+  Kubernetes: [
     "Introduction to Kubernetes and Container Orchestration",
     "Setting Up and Configuring a Kubernetes Cluster",
     "Understanding Pods, Deployments, and Services",
@@ -1610,7 +1610,7 @@ export const subGoals = {
     "Kubernetes Certification Preparation",
   ],
 
-  "YAML": [
+  YAML: [
     "Introduction to YAML Syntax and Structure",
     "YAML Basics (Data Types, Lists, Dictionaries)",
     "Working with Nested Data in YAML",
@@ -1623,7 +1623,7 @@ export const subGoals = {
     "YAML in Kubernetes Configurations",
     "Best Practices and Common Pitfalls",
   ],
-  "Diet": [
+  Diet: [
     "Introduction to Diet and Nutrition Basics",
     "Macronutrients and Micronutrients Overview",
     "Creating a Balanced Diet Plan",
@@ -1675,7 +1675,7 @@ export const subGoals = {
     "Advanced Nutrition (Genetics and Nutritional Biochemistry)",
     "Nutritional Research and Trends (Intermittent Fasting, etc.)",
   ],
-  "Dog": [
+  Dog: [
     "Introduction to Canine Health and Nutrition",
     "Understanding Dog Diets and Nutritional Needs",
     "Basic Exercise for Dogs (Breeds and Requirements)",
@@ -1688,7 +1688,7 @@ export const subGoals = {
     "Senior Dog Care and Health Adjustments",
     "Holistic Approaches to Dog Health (Ayurveda, Supplements)",
   ],
-  "Ayurveda": [
+  Ayurveda: [
     "Introduction to Ayurveda Principles",
     "Understanding Doshas (Vata, Pitta, Kapha)",
     "Ayurvedic Diet and Nutrition Basics",
@@ -1714,7 +1714,7 @@ export const subGoals = {
     "Mixed Martial Arts (MMA) Basics",
     "Advanced Techniques and Competition Preparation",
   ],
-  "Eye": [
+  Eye: [
     "Understanding Eye Health and Common Issues",
     "Nutrition for Eye Health (Vitamins A, C, E, Zinc)",
     "Basic Eye Exercises and Relaxation Techniques",
@@ -1727,7 +1727,7 @@ export const subGoals = {
     "Vision Training for Athletes",
     "Natural Methods for Maintaining Eye Health",
   ],
-  "Yoga": [
+  Yoga: [
     "Introduction to Yoga Philosophy and Principles",
     "Basic Yoga Poses and Postures (Asanas)",
     "Breathing Techniques (Pranayama) for Relaxation",
@@ -1740,7 +1740,7 @@ export const subGoals = {
     "Therapeutic Yoga Practices for Health Issues",
     "Spiritual Aspects and Advanced Yoga Practices",
   ],
-  "English": [
+  English: [
     "Basic Vocabulary",
     "Grammar Fundamentals",
     "Pronunciation and Phonetics",
@@ -1761,7 +1761,7 @@ export const subGoals = {
     "Advanced Listening and Comprehension",
     "Literature Analysis",
   ],
-  "German": [
+  German: [
     "Basic Vocabulary",
     "German Alphabet and Pronunciation",
     "Essential Grammar Rules",
@@ -1783,7 +1783,7 @@ export const subGoals = {
     "Specialized Vocabulary (e.g., Technical, Medical)",
   ],
 
-  "Linux": [
+  Linux: [
     "Introduction to Linux",
     "Linux File System",
     "Basic Linux Commands",
@@ -1825,7 +1825,7 @@ export const subGoals = {
     "Managing Ubuntu Servers",
   ],
 
-  "Creativity": [
+  Creativity: [
     "Understanding Creativity",
     "Fostering Creative Thinking",
     "Overcoming Creative Blocks",
@@ -1916,7 +1916,7 @@ export const subGoals = {
     "Aligning Actions with Values",
     "Celebrating Small Wins",
   ],
-  "Numerology": [
+  Numerology: [
     "Introduction to Numerology",
     "Understanding Life Path Numbers",
     "Numerology and Personality Analysis",
@@ -1934,7 +1934,7 @@ export const subGoals = {
     "Numerology in Ancient Cultures",
     "Numerology and the Law of Attraction",
   ],
-  "Happiness": [
+  Happiness: [
     "Understanding Happiness",
     "Building a Positive Mindset",
     "Practicing Gratitude and Positivity",
@@ -1952,7 +1952,7 @@ export const subGoals = {
     "Spiritual Practices for Happiness",
     "Happiness and Work-Life Balance",
   ],
-  "Typing": [
+  Typing: [
     "Introduction to Typing",
     "Typing Speed and Accuracy",
     "Touch Typing Techniques",
@@ -1970,7 +1970,7 @@ export const subGoals = {
     "Building Typing Confidence",
     "Typing for Remote Work",
   ],
-  "Influence": [
+  Influence: [
     "Understanding Influence and Persuasion",
     "Principles of Influence (Cialdini's 6 Principles)",
     "Building Personal Influence",
@@ -2025,27 +2025,25 @@ export const subGoals = {
     "GitHub Pages for Hosting Static Sites",
     "Security Best Practices for Git and GitHub",
   ],
-  "Test": [
-    "Test"
-  ]
+  Test: ["Test"],
 };
 
 export const categoryPriorities = {
-    "Data Science": "High priority",
-    "Database": "High priority",
-    "IT & Software": "High priority",
-    "Web Development": "High priority",
-    "Business": "Low priority",
-    "Filmmaking": "Low priority",
-    "Graphics Design": "Low priority",
-    "Marketing": "Low priority",
-    "Office Productivity": "Low priority",
-    "Music": "Low priority",
-    "Cloud": "Medium priority",
-    "DevOps": "Medium priority",
-    "Health & Fitness": "Parallel priority",
-    "Language": "Parallel priority",
-    "Operating System": "Parallel priority",
-    "Personal Development": "Parallel priority",
-    "Version Control": "Parallel priority",
+  "Data Science": "High priority",
+  Database: "High priority",
+  "IT & Software": "High priority",
+  "Web Development": "High priority",
+  Business: "Low priority",
+  Filmmaking: "Low priority",
+  "Graphics Design": "Low priority",
+  Marketing: "Low priority",
+  "Office Productivity": "Low priority",
+  Music: "Low priority",
+  Cloud: "Medium priority",
+  DevOps: "Medium priority",
+  "Health & Fitness": "Parallel priority",
+  Language: "Parallel priority",
+  "Operating System": "Parallel priority",
+  "Personal Development": "Parallel priority",
+  "Version Control": "Parallel priority",
 };

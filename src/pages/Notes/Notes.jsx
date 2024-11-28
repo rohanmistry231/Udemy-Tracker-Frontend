@@ -101,50 +101,52 @@ const Notes = () => {
     // Retrieve password from localStorage
     const storedPassword = localStorage.getItem("password");
 
-     // Check if the stored password matches the correct password
-     if (storedPassword === correctPassword) {
-    // Show confirmation dialog
-    const isConfirmed = window.confirm(
-      "Are you sure you want to delete this note?"
-    );
-    if (!isConfirmed) return; // If the user cancels, exit the function
-
-    try {
-      const response = await fetch(
-        `https://udemy-tracker.vercel.app/notes/deleteByNoteId/${noteId}`,
-        {
-          method: "DELETE",
-        }
+    // Check if the stored password matches the correct password
+    if (storedPassword === correctPassword) {
+      // Show confirmation dialog
+      const isConfirmed = window.confirm(
+        "Are you sure you want to delete this note?"
       );
-      if (response.ok) {
-        // Update the state by removing the deleted note from the list
-        setNotes((prevNotes) =>
-          prevNotes.filter((note) => note._id !== noteId)
+      if (!isConfirmed) return; // If the user cancels, exit the function
+
+      try {
+        const response = await fetch(
+          `https://udemy-tracker.vercel.app/notes/deleteByNoteId/${noteId}`,
+          {
+            method: "DELETE",
+          }
         );
-      } else {
-        console.error("Failed to delete the note.");
+        if (response.ok) {
+          // Update the state by removing the deleted note from the list
+          setNotes((prevNotes) =>
+            prevNotes.filter((note) => note._id !== noteId)
+          );
+        } else {
+          console.error("Failed to delete the note.");
+        }
+      } catch (error) {
+        console.error("Error deleting the note:", error);
       }
-    } catch (error) {
-      console.error("Error deleting the note:", error);
+    } else {
+      alert(
+        "⚠️ Access Denied: You lack authorization to perform this action. ⚠️"
+      );
     }
-    }else {
-      alert("⚠️ Access Denied: You lack authorization to perform this action. ⚠️");
-  }
   };
-  
+
   const saveNoteAsPDF = (note) => {
     // Retrieve password from localStorage
     const storedPassword = localStorage.getItem("password");
 
-     // Check if the stored password matches the correct password
-     if (storedPassword === correctPassword) {
-    // Create a container for the HTML content we want to capture
-    const container = document.createElement("div");
-    container.style.position = "absolute";
-    container.style.top = "-9999px";
-    container.style.fontFamily = "Arial, sans-serif";
-    container.style.lineHeight = "1.6";
-    container.innerHTML = `
+    // Check if the stored password matches the correct password
+    if (storedPassword === correctPassword) {
+      // Create a container for the HTML content we want to capture
+      const container = document.createElement("div");
+      container.style.position = "absolute";
+      container.style.top = "-9999px";
+      container.style.fontFamily = "Arial, sans-serif";
+      container.style.lineHeight = "1.6";
+      container.innerHTML = `
       <div style="font-size: 14px; padding: 10px; width: 180mm; color: black;">
         <h1 style="font-size: 18px;">Note Details</h1>
         <p><strong>Question:</strong> ${note.question}</p>
@@ -155,27 +157,27 @@ const Notes = () => {
         <div>${note.answer}</div>
       </div>
     `;
-    document.body.appendChild(container);
-  
-    // Render the content with html2canvas at a higher scale
-    html2canvas(container, { scale: 2 }).then((canvas) => {
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-  
-      // Positioning and scaling adjustments for a more readable output
-      pdf.addImage(imgData, "PNG", 10, 10, pdfWidth - 20, pdfHeight - 10);
-      pdf.save(`note_${note._id}.pdf`);
-  
-      document.body.removeChild(container); // Clean up
-    });
-  }else {
-    alert("⚠️ Access Denied: You lack authorization to perform this action. ⚠️");
-}
-  };
-  
+      document.body.appendChild(container);
 
+      // Render the content with html2canvas at a higher scale
+      html2canvas(container, { scale: 2 }).then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF("p", "mm", "a4");
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+        // Positioning and scaling adjustments for a more readable output
+        pdf.addImage(imgData, "PNG", 10, 10, pdfWidth - 20, pdfHeight - 10);
+        pdf.save(`note_${note._id}.pdf`);
+
+        document.body.removeChild(container); // Clean up
+      });
+    } else {
+      alert(
+        "⚠️ Access Denied: You lack authorization to perform this action. ⚠️"
+      );
+    }
+  };
 
   const getTargetGoals = () => {
     return mainGoalFilter ? targetGoals[mainGoalFilter] || [] : [];
@@ -224,36 +226,40 @@ const Notes = () => {
 
       <div className="flex flex-col sm:flex-row justify-between items-center mb-4 space-y-4 sm:space-y-0">
         <div className="w-full flex flex-row lg:w-1/4">
-        <input
-          type="text"
-          placeholder="Search notes by title or content..."
-          className={`border p-2 rounded-md md:w-full lg:w-full w-full sm:w-full h-10 ${
-            isDarkMode ? "bg-gray-800 text-white border-gray-700" : "bg-white text-black border-gray-300"
-          }`}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <button
-        onClick={handleSyncClick}
-        disabled={isSyncing}
-        className={`hide-on-large rounded-md h-10 w-1/3 lg:ml-auto ml-2 sm:w-32 transition duration-200 flex items-center justify-center ${
-          isDarkMode
-            ? "bg-gray-600 hover:bg-gray-700 text-white"
-            : "bg-gray-500 hover:bg-gray-600 text-white"
-        } ${isSyncing ? "cursor-not-allowed opacity-50" : ""}`}
-      >
-        {isSyncing ? (
-          <span>Syncing...</span>
-        ) : syncMessage ? (
-          <span>{syncMessage}</span>
-        ) : (
-          <span>Sync</span>
-        )}
-      </button>
+          <input
+            type="text"
+            placeholder="Search notes by title or content..."
+            className={`border p-2 rounded-md md:w-full lg:w-full w-full sm:w-full h-10 ${
+              isDarkMode
+                ? "bg-gray-800 text-white border-gray-700"
+                : "bg-white text-black border-gray-300"
+            }`}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <button
+            onClick={handleSyncClick}
+            disabled={isSyncing}
+            className={`hide-on-large rounded-md h-10 w-1/3 lg:ml-auto ml-2 sm:w-32 transition duration-200 flex items-center justify-center ${
+              isDarkMode
+                ? "bg-gray-600 hover:bg-gray-700 text-white"
+                : "bg-gray-500 hover:bg-gray-600 text-white"
+            } ${isSyncing ? "cursor-not-allowed opacity-50" : ""}`}
+          >
+            {isSyncing ? (
+              <span>Syncing...</span>
+            ) : syncMessage ? (
+              <span>{syncMessage}</span>
+            ) : (
+              <span>Sync</span>
+            )}
+          </button>
         </div>
         <select
           className={`border p-2 rounded-md w-full sm:w-1/6 h-10 ${
-            isDarkMode ? "bg-gray-800 text-white border-gray-700" : "bg-white text-black border-gray-300"
+            isDarkMode
+              ? "bg-gray-800 text-white border-gray-700"
+              : "bg-white text-black border-gray-300"
           }`}
           value={mainGoalFilter}
           onChange={(e) => {
@@ -271,7 +277,9 @@ const Notes = () => {
         </select>
         <select
           className={`border p-2 rounded-md w-full sm:w-1/6 h-10 ${
-            isDarkMode ? "bg-gray-800 text-white border-gray-700" : "bg-white text-black border-gray-300"
+            isDarkMode
+              ? "bg-gray-800 text-white border-gray-700"
+              : "bg-white text-black border-gray-300"
           }`}
           value={targetGoalFilter}
           onChange={(e) => {
@@ -289,7 +297,9 @@ const Notes = () => {
         </select>
         <select
           className={`border p-2 rounded-md w-full sm:w-1/6 h-10 ${
-            isDarkMode ? "bg-gray-800 text-white border-gray-700" : "bg-white text-black border-gray-300"
+            isDarkMode
+              ? "bg-gray-800 text-white border-gray-700"
+              : "bg-white text-black border-gray-300"
           }`}
           value={subTargetGoalFilter}
           onChange={(e) => setSubTargetGoalFilter(e.target.value)}
@@ -302,7 +312,7 @@ const Notes = () => {
             </option>
           ))}
         </select>
-        
+
         <Link to="/add-note" className="w-full sm:w-auto">
           <button
             className={`rounded-md h-10 w-full sm:w-32 transition duration-200 flex items-center justify-center ${
@@ -316,23 +326,22 @@ const Notes = () => {
         </Link>
 
         <button
-        onClick={handleSyncClick}
-        disabled={isSyncing}
-        className={`hide-on-small rounded-md h-10 w-full sm:w-32 transition duration-200 flex items-center justify-center ${
-          isDarkMode
-            ? "bg-gray-600 hover:bg-gray-700 text-white"
-            : "bg-gray-500 hover:bg-gray-600 text-white"
-        } ${isSyncing ? "cursor-not-allowed opacity-50" : ""}`}
-      >
-        {isSyncing ? (
-          <span>Syncing...</span>
-        ) : syncMessage ? (
-          <span>{syncMessage}</span>
-        ) : (
-          <span>Sync</span>
-        )}
-      </button>
-
+          onClick={handleSyncClick}
+          disabled={isSyncing}
+          className={`hide-on-small rounded-md h-10 w-full sm:w-32 transition duration-200 flex items-center justify-center ${
+            isDarkMode
+              ? "bg-gray-600 hover:bg-gray-700 text-white"
+              : "bg-gray-500 hover:bg-gray-600 text-white"
+          } ${isSyncing ? "cursor-not-allowed opacity-50" : ""}`}
+        >
+          {isSyncing ? (
+            <span>Syncing...</span>
+          ) : syncMessage ? (
+            <span>{syncMessage}</span>
+          ) : (
+            <span>Sync</span>
+          )}
+        </button>
       </div>
 
       {loading ? (

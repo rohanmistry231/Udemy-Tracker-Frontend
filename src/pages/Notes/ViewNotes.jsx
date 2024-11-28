@@ -295,21 +295,20 @@ const ViewNotes = () => {
     );
   };
 
+  const saveAsPDF = async (note) => {
+    const pdf = new jsPDF();
+    let yPosition = 20;
 
-const saveAsPDF = async (note) => {
-  const pdf = new jsPDF();
-  let yPosition = 20;
+    pdf.setFontSize(20);
+    pdf.text("Note Details", 10, 10);
 
-  pdf.setFontSize(20);
-  pdf.text("Note Details", 10, 10);
-
-  // Create a temporary container for the answer's HTML content
-  const container = document.createElement("div");
-  container.style.position = "absolute";
-  container.style.top = "-9999px";
-  container.style.fontFamily = "Arial, sans-serif";
-  container.style.lineHeight = "1.6";
-  container.innerHTML = `
+    // Create a temporary container for the answer's HTML content
+    const container = document.createElement("div");
+    container.style.position = "absolute";
+    container.style.top = "-9999px";
+    container.style.fontFamily = "Arial, sans-serif";
+    container.style.lineHeight = "1.6";
+    container.innerHTML = `
     <div style="font-size: 14px; padding: 10px; width: 180mm; color: black;">
       <h1 style="font-size: 18px;">Note Details</h1>
       <p><strong>Question:</strong> ${note.question}</p>
@@ -321,22 +320,21 @@ const saveAsPDF = async (note) => {
     </div>
   `;
 
-  document.body.appendChild(container);
+    document.body.appendChild(container);
 
-  // Capture the container content as an image using html2canvas
-  const canvas = await html2canvas(container, { scale: 2 });
-  const imgData = canvas.toDataURL("image/png");
-  const imgWidth = 180; // A4 width in mm with padding
-  const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    // Capture the container content as an image using html2canvas
+    const canvas = await html2canvas(container, { scale: 2 });
+    const imgData = canvas.toDataURL("image/png");
+    const imgWidth = 180; // A4 width in mm with padding
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-  // Add image to PDF
-  pdf.addImage(imgData, "PNG", 10, yPosition, imgWidth, imgHeight);
+    // Add image to PDF
+    pdf.addImage(imgData, "PNG", 10, yPosition, imgWidth, imgHeight);
 
-  document.body.removeChild(container); // Clean up
+    document.body.removeChild(container); // Clean up
 
-  pdf.save(`note_${note._id}.pdf`);
-};
-
+    pdf.save(`note_${note._id}.pdf`);
+  };
 
   const [filterSubTargetGoal, setFilterSubTargetGoal] = useState(""); // For filtering
   const [subTargetGoalOptions, setSubTargetGoalOptions] = useState([]); // Store unique subTargetGoals
@@ -443,12 +441,22 @@ const saveAsPDF = async (note) => {
                           init={{
                             plugins: [
                               // Core editing features
-                              'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 
-                              'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 
-                              'wordcount'
+                              "anchor",
+                              "autolink",
+                              "charmap",
+                              "codesample",
+                              "emoticons",
+                              "image",
+                              "link",
+                              "lists",
+                              "media",
+                              "searchreplace",
+                              "table",
+                              "visualblocks",
+                              "wordcount",
                             ],
-                            toolbar: 
-                              'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+                            toolbar:
+                              "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
                             placeholder: "Answer...",
                             skin: isDarkMode ? "oxide-dark" : "oxide",
                             content_css: isDarkMode ? "dark" : "default",

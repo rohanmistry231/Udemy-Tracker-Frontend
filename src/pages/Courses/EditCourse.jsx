@@ -5,7 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "../../context/ThemeContext";
 import { updateCourse } from "../../dataService";
-import { categories, targetGoals as subCategories } from '../../db';
+import { categories, targetGoals as subCategories } from "../../db";
 
 const EditCourse = () => {
   const correctPassword = "12345";
@@ -54,9 +54,9 @@ const EditCourse = () => {
           storedCourses.push(data);
           localStorage.setItem("courses", JSON.stringify(storedCourses));
           const storedPassword = localStorage.getItem("password");
-    if (storedPassword === correctPassword) {
-      setIsAuthorized(true);
-    }
+          if (storedPassword === correctPassword) {
+            setIsAuthorized(true);
+          }
         } catch (error) {
           console.error("Error fetching course:", error);
           toast.error("Error fetching course data");

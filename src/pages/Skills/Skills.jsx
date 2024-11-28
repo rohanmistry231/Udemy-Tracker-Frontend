@@ -15,12 +15,19 @@ const Skills = () => {
   const [skills, setSkills] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [currentSkill, setCurrentSkill] = useState(null); // For editing
-  const [formData, setFormData] = useState({ name: "", description: "", level: "", icon: "" });
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+    level: "",
+    icon: "",
+  });
 
   useEffect(() => {
     const fetchSkills = async () => {
       try {
-        const response = await axios.get("https://udemy-tracker.vercel.app/skill");
+        const response = await axios.get(
+          "https://udemy-tracker.vercel.app/skill"
+        );
         setSkills(response.data);
       } catch (err) {
         console.error("Error fetching skills data");
@@ -35,7 +42,11 @@ const Skills = () => {
   // Dynamically render the icon component based on the icon name
   const renderIcon = (iconName) => {
     let IconComponent = FaIcons[iconName] || SiIcons[iconName];
-    return IconComponent ? <IconComponent size={40} /> : <span className="text-gray-400">(No Icon)</span>;
+    return IconComponent ? (
+      <IconComponent size={40} />
+    ) : (
+      <span className="text-gray-400">(No Icon)</span>
+    );
   };
 
   // Handle form input changes
@@ -48,13 +59,21 @@ const Skills = () => {
     try {
       if (currentSkill) {
         // Update skill
-        await axios.put(`https://udemy-tracker.vercel.app/skill/${currentSkill._id}`, formData);
+        await axios.put(
+          `https://udemy-tracker.vercel.app/skill/${currentSkill._id}`,
+          formData
+        );
         setSkills((prevSkills) =>
-          prevSkills.map((skill) => (skill._id === currentSkill._id ? { ...skill, ...formData } : skill))
+          prevSkills.map((skill) =>
+            skill._id === currentSkill._id ? { ...skill, ...formData } : skill
+          )
         );
       } else {
         // Add skill
-        const response = await axios.post("https://udemy-tracker.vercel.app/skill", formData);
+        const response = await axios.post(
+          "https://udemy-tracker.vercel.app/skill",
+          formData
+        );
         setSkills([...skills, response.data]);
       }
       setShowModal(false);
@@ -70,19 +89,21 @@ const Skills = () => {
     // Retrieve password from localStorage
     const storedPassword = localStorage.getItem("password");
 
-     // Check if the stored password matches the correct password
-     if (storedPassword === correctPassword) {
-    if (window.confirm("Are you sure you want to delete this skill?")) {
-      try {
-        await axios.delete(`https://udemy-tracker.vercel.app/skill/${id}`);
-        setSkills(skills.filter((skill) => skill._id !== id));
-      } catch (err) {
-        alert("Error deleting skill. Please try again.");
+    // Check if the stored password matches the correct password
+    if (storedPassword === correctPassword) {
+      if (window.confirm("Are you sure you want to delete this skill?")) {
+        try {
+          await axios.delete(`https://udemy-tracker.vercel.app/skill/${id}`);
+          setSkills(skills.filter((skill) => skill._id !== id));
+        } catch (err) {
+          alert("Error deleting skill. Please try again.");
+        }
       }
+    } else {
+      alert(
+        "⚠️ Access Denied: You lack authorization to perform this action. ⚠️"
+      );
     }
-    }else {
-      alert("⚠️ Access Denied: You lack authorization to perform this action. ⚠️");
-  }
   };
 
   // Open modal for adding or editing skill
@@ -90,14 +111,16 @@ const Skills = () => {
     // Retrieve password from localStorage
     const storedPassword = localStorage.getItem("password");
 
-     // Check if the stored password matches the correct password
-     if (storedPassword === correctPassword) {
-    setCurrentSkill(skill);
-    setFormData(skill || { name: "", description: "", level: "", icon: "" });
-    setShowModal(true);
-     }else {
-      alert("⚠️ Access Denied: You lack authorization to perform this action. ⚠️");
-  }
+    // Check if the stored password matches the correct password
+    if (storedPassword === correctPassword) {
+      setCurrentSkill(skill);
+      setFormData(skill || { name: "", description: "", level: "", icon: "" });
+      setShowModal(true);
+    } else {
+      alert(
+        "⚠️ Access Denied: You lack authorization to perform this action. ⚠️"
+      );
+    }
   };
 
   return (
@@ -127,56 +150,59 @@ const Skills = () => {
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
         </div>
       ) : (
-      <>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-        {skills.map((skill) => (
-          <div
-            key={skill._id}
-            className={`relative p-4 ${
-              isDarkMode ? "bg-gray-800" : "bg-gray-100"
-            } rounded-lg shadow-md text-center`}
-          >
-            {/* Delete button */}
-            <button
-              className={`absolute top-2 left-2 text-gray-500`}
-              onClick={() => handleDelete(skill._id)}
-            >
-              <AiOutlineDelete size={20} />
-            </button>
+        <>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+            {skills.map((skill) => (
+              <div
+                key={skill._id}
+                className={`relative p-4 ${
+                  isDarkMode ? "bg-gray-800" : "bg-gray-100"
+                } rounded-lg shadow-md text-center`}
+              >
+                {/* Delete button */}
+                <button
+                  className={`absolute top-2 left-2 text-gray-500`}
+                  onClick={() => handleDelete(skill._id)}
+                >
+                  <AiOutlineDelete size={20} />
+                </button>
 
-            {/* Update button */}
-            <button
-              className={`absolute top-2 right-2 text-gray-500`}
-              onClick={() => openModal(skill)}
-            >
-              <FiEdit size={20} />
-            </button>
+                {/* Update button */}
+                <button
+                  className={`absolute top-2 right-2 text-gray-500`}
+                  onClick={() => openModal(skill)}
+                >
+                  <FiEdit size={20} />
+                </button>
 
-            <div
-              className={`flex justify-center items-center mb-4 ${
-                isDarkMode ? "text-purple-400" : "text-purple-600"
-              }`}
-            >
-              {renderIcon(skill.icon)}
-            </div>
-            <h3 className="font-semibold text-xl">{skill.name}</h3>
-            <p className="text-gray-600 text-sm mt-2">{skill.description}</p>
-            <div className="mt-4">
-              <span className="font-semibold">{skill.level}</span>
-            </div>
+                <div
+                  className={`flex justify-center items-center mb-4 ${
+                    isDarkMode ? "text-purple-400" : "text-purple-600"
+                  }`}
+                >
+                  {renderIcon(skill.icon)}
+                </div>
+                <h3 className="font-semibold text-xl">{skill.name}</h3>
+                <p className="text-gray-600 text-sm mt-2">
+                  {skill.description}
+                </p>
+                <div className="mt-4">
+                  <span className="font-semibold">{skill.level}</span>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      </>
+        </>
       )}
-
 
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div
             className={`p-6 w-full max-w-lg ${
-              isDarkMode ? "bg-gray-800 text-gray-100" : "bg-white text-gray-800"
+              isDarkMode
+                ? "bg-gray-800 text-gray-100"
+                : "bg-white text-gray-800"
             } rounded-lg shadow-lg`}
           >
             <h2 className="text-2xl font-semibold mb-4">
@@ -190,7 +216,9 @@ const Skills = () => {
                 value={formData.name}
                 onChange={handleChange}
                 className={`w-full p-2 rounded-md ${
-                  isDarkMode ? "bg-gray-700 text-white" : "bg-gray-200 text-black"
+                  isDarkMode
+                    ? "bg-gray-700 text-white"
+                    : "bg-gray-200 text-black"
                 }`}
               />
             </div>
@@ -201,7 +229,9 @@ const Skills = () => {
                 value={formData.description}
                 onChange={handleChange}
                 className={`w-full p-2 rounded-md ${
-                  isDarkMode ? "bg-gray-700 text-white" : "bg-gray-200 text-black"
+                  isDarkMode
+                    ? "bg-gray-700 text-white"
+                    : "bg-gray-200 text-black"
                 }`}
               />
             </div>
@@ -213,7 +243,9 @@ const Skills = () => {
                 value={formData.level}
                 onChange={handleChange}
                 className={`w-full p-2 rounded-md ${
-                  isDarkMode ? "bg-gray-700 text-white" : "bg-gray-200 text-black"
+                  isDarkMode
+                    ? "bg-gray-700 text-white"
+                    : "bg-gray-200 text-black"
                 }`}
               />
             </div>
@@ -225,7 +257,9 @@ const Skills = () => {
                 value={formData.icon}
                 onChange={handleChange}
                 className={`w-full p-2 rounded-md ${
-                  isDarkMode ? "bg-gray-700 text-white" : "bg-gray-200 text-black"
+                  isDarkMode
+                    ? "bg-gray-700 text-white"
+                    : "bg-gray-200 text-black"
                 }`}
               />
             </div>

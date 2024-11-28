@@ -6,7 +6,11 @@ import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "../../context/ThemeContext"; // Import theme context
 import { createCourse } from "../../dataService";
-import { categories, categoryPriorities, targetGoals as subCategories } from '../../db';
+import {
+  categories,
+  categoryPriorities,
+  targetGoals as subCategories,
+} from "../../db";
 
 const AddCourse = ({ onAdd }) => {
   const navigate = useNavigate();
@@ -109,7 +113,7 @@ const AddCourse = ({ onAdd }) => {
         subLearningSkillsSet: [],
         learningSkillsSet: "",
       });
-      navigate('/courses/');
+      navigate("/courses/");
     } catch (error) {
       // If there is an error, show the error toast
       console.error("Error adding course:", error);
@@ -353,17 +357,17 @@ const AddCourse = ({ onAdd }) => {
               />
             </div>
             <div className="flex justify-between">
-            <button
-              type="submit"
-              className="bg-blue-500 text-white p-2 rounded"
-            >
-              Add Course
-            </button>
-          <div className="mt-2">
-              <Link to={`/courses/`} className="text-gray-500">
-                Cancel
-              </Link>
-            </div>
+              <button
+                type="submit"
+                className="bg-blue-500 text-white p-2 rounded"
+              >
+                Add Course
+              </button>
+              <div className="mt-2">
+                <Link to={`/courses/`} className="text-gray-500">
+                  Cancel
+                </Link>
+              </div>
             </div>
           </form>
           <ToastContainer />

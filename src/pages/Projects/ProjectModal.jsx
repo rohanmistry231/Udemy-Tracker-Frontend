@@ -3,10 +3,26 @@ import { useTheme } from "../../context/ThemeContext"; // Importing the useTheme
 
 // Dummy data for categories and subcategories
 const projectCategories = [
-  { name: "Data Science", subcategories: ["Machine Learning", "Artificial Intelligence", "Deep Learning"] },
-  { name: "Web Development", subcategories: ["Frontend", "Backend", "Full Stack"] },
-  { name: "Mobile Development", subcategories: ["Android", "iOS", "React Native"] },
-  { name: "DevOps", subcategories: ["CI/CD", "Cloud Computing", "Infrastructure Automation"] },
+  {
+    name: "Data Science",
+    subcategories: [
+      "Machine Learning",
+      "Artificial Intelligence",
+      "Deep Learning",
+    ],
+  },
+  {
+    name: "Web Development",
+    subcategories: ["Frontend", "Backend", "Full Stack"],
+  },
+  {
+    name: "Mobile Development",
+    subcategories: ["Android", "iOS", "React Native"],
+  },
+  {
+    name: "DevOps",
+    subcategories: ["CI/CD", "Cloud Computing", "Infrastructure Automation"],
+  },
 ];
 
 const ProjectModal = ({ project = {}, onClose, onSubmit }) => {
@@ -27,7 +43,9 @@ const ProjectModal = ({ project = {}, onClose, onSubmit }) => {
 
   useEffect(() => {
     // Set subcategories based on selected category
-    const categoryData = projectCategories.find(cat => cat.name === formData.category);
+    const categoryData = projectCategories.find(
+      (cat) => cat.name === formData.category
+    );
     if (categoryData) {
       setSubCategories(categoryData.subcategories);
     } else {
@@ -52,14 +70,25 @@ const ProjectModal = ({ project = {}, onClose, onSubmit }) => {
 
   return (
     <div
-      className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 ${isDarkMode ? "bg-gray-900" : "bg-gray-100"}`}
+      className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 ${
+        isDarkMode ? "bg-gray-900" : "bg-gray-100"
+      }`}
     >
       <div
-        className={`w-full max-w-md p-6 rounded-lg shadow-lg relative ${isDarkMode ? "bg-gray-800 text-gray-100" : "bg-white text-gray-800"} overflow-hidden`}
+        className={`w-full max-w-md p-6 rounded-lg shadow-lg relative ${
+          isDarkMode ? "bg-gray-800 text-gray-100" : "bg-white text-gray-800"
+        } overflow-hidden`}
       >
-        <h3 className="text-2xl font-semibold mb-4">{project._id ? "Update Project" : "Add Project"}</h3>
+        <h3 className="text-2xl font-semibold mb-4">
+          {project._id ? "Update Project" : "Add Project"}
+        </h3>
 
-        <form onSubmit={handleFormSubmit} className="overflow-y-auto max-h-[75vh]"> {/* Scrollable form content */}
+        <form
+          onSubmit={handleFormSubmit}
+          className="overflow-y-auto max-h-[75vh]"
+        >
+          {" "}
+          {/* Scrollable form content */}
           <div className="mb-4">
             <label htmlFor="title" className="block text-sm font-medium mb-2">
               Project Title
@@ -70,13 +99,19 @@ const ProjectModal = ({ project = {}, onClose, onSubmit }) => {
               name="title"
               value={formData.title}
               onChange={handleInputChange}
-              className={`w-full p-3 rounded ${isDarkMode ? "bg-gray-700 text-gray-100" : "bg-gray-100 text-gray-800"} focus:outline-none focus:ring-2`}
+              className={`w-full p-3 rounded ${
+                isDarkMode
+                  ? "bg-gray-700 text-gray-100"
+                  : "bg-gray-100 text-gray-800"
+              } focus:outline-none focus:ring-2`}
               required
             />
           </div>
-
           <div className="mb-4">
-            <label htmlFor="description" className="block text-sm font-medium mb-2">
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium mb-2"
+            >
               Description
             </label>
             <textarea
@@ -84,15 +119,21 @@ const ProjectModal = ({ project = {}, onClose, onSubmit }) => {
               name="description"
               value={formData.description}
               onChange={handleInputChange}
-              className={`w-full p-3 rounded ${isDarkMode ? "bg-gray-700 text-gray-100" : "bg-gray-100 text-gray-800"} focus:outline-none focus:ring-2`}
+              className={`w-full p-3 rounded ${
+                isDarkMode
+                  ? "bg-gray-700 text-gray-100"
+                  : "bg-gray-100 text-gray-800"
+              } focus:outline-none focus:ring-2`}
               rows="4"
               required
             />
           </div>
-
           {/* Category Dropdown */}
           <div className="mb-4">
-            <label htmlFor="category" className="block text-sm font-medium mb-2">
+            <label
+              htmlFor="category"
+              className="block text-sm font-medium mb-2"
+            >
               Category
             </label>
             <select
@@ -100,7 +141,11 @@ const ProjectModal = ({ project = {}, onClose, onSubmit }) => {
               name="category"
               value={formData.category}
               onChange={handleInputChange}
-              className={`w-full p-3 rounded ${isDarkMode ? "bg-gray-700 text-gray-100" : "bg-gray-100 text-gray-800"} focus:outline-none focus:ring-2`}
+              className={`w-full p-3 rounded ${
+                isDarkMode
+                  ? "bg-gray-700 text-gray-100"
+                  : "bg-gray-100 text-gray-800"
+              } focus:outline-none focus:ring-2`}
               required
             >
               <option value="">Select Category</option>
@@ -111,11 +156,13 @@ const ProjectModal = ({ project = {}, onClose, onSubmit }) => {
               ))}
             </select>
           </div>
-
           {/* Subcategory Dropdown */}
           {formData.category && (
             <div className="mb-4">
-              <label htmlFor="subCategory" className="block text-sm font-medium mb-2">
+              <label
+                htmlFor="subCategory"
+                className="block text-sm font-medium mb-2"
+              >
                 Subcategory
               </label>
               <select
@@ -123,7 +170,11 @@ const ProjectModal = ({ project = {}, onClose, onSubmit }) => {
                 name="subCategory"
                 value={formData.subCategory}
                 onChange={handleInputChange}
-                className={`w-full p-3 rounded ${isDarkMode ? "bg-gray-700 text-gray-100" : "bg-gray-100 text-gray-800"} focus:outline-none focus:ring-2`}
+                className={`w-full p-3 rounded ${
+                  isDarkMode
+                    ? "bg-gray-700 text-gray-100"
+                    : "bg-gray-100 text-gray-800"
+                } focus:outline-none focus:ring-2`}
                 required
               >
                 <option value="">Select Subcategory</option>
@@ -135,7 +186,6 @@ const ProjectModal = ({ project = {}, onClose, onSubmit }) => {
               </select>
             </div>
           )}
-
           <div className="mb-4">
             <label htmlFor="tech" className="block text-sm font-medium mb-2">
               Tech Stack (comma separated)
@@ -146,11 +196,14 @@ const ProjectModal = ({ project = {}, onClose, onSubmit }) => {
               name="tech"
               value={formData.tech}
               onChange={handleInputChange}
-              className={`w-full p-3 rounded ${isDarkMode ? "bg-gray-700 text-gray-100" : "bg-gray-100 text-gray-800"} focus:outline-none focus:ring-2`}
+              className={`w-full p-3 rounded ${
+                isDarkMode
+                  ? "bg-gray-700 text-gray-100"
+                  : "bg-gray-100 text-gray-800"
+              } focus:outline-none focus:ring-2`}
               required
             />
           </div>
-
           <div className="mb-4">
             <label htmlFor="link" className="block text-sm font-medium mb-2">
               GitHub Link
@@ -161,13 +214,19 @@ const ProjectModal = ({ project = {}, onClose, onSubmit }) => {
               name="link"
               value={formData.link}
               onChange={handleInputChange}
-              className={`w-full p-3 rounded ${isDarkMode ? "bg-gray-700 text-gray-100" : "bg-gray-100 text-gray-800"} focus:outline-none focus:ring-2`}
+              className={`w-full p-3 rounded ${
+                isDarkMode
+                  ? "bg-gray-700 text-gray-100"
+                  : "bg-gray-100 text-gray-800"
+              } focus:outline-none focus:ring-2`}
               required
             />
           </div>
-
           <div className="mb-4">
-            <label htmlFor="liveDemo" className="block text-sm font-medium mb-2">
+            <label
+              htmlFor="liveDemo"
+              className="block text-sm font-medium mb-2"
+            >
               Live Demo Link
             </label>
             <input
@@ -176,10 +235,13 @@ const ProjectModal = ({ project = {}, onClose, onSubmit }) => {
               name="liveDemo"
               value={formData.liveDemo}
               onChange={handleInputChange}
-              className={`w-full p-3 rounded ${isDarkMode ? "bg-gray-700 text-gray-100" : "bg-gray-100 text-gray-800"} focus:outline-none focus:ring-2`}
+              className={`w-full p-3 rounded ${
+                isDarkMode
+                  ? "bg-gray-700 text-gray-100"
+                  : "bg-gray-100 text-gray-800"
+              } focus:outline-none focus:ring-2`}
             />
           </div>
-
           <div className="flex justify-between items-center mt-6">
             <button
               type="button"

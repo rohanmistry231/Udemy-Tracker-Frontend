@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { useTheme } from "../../context/ThemeContext";
-import { getCoursesFromLocalStorage, getCoursesFromBackend } from "../../dataService";
-import './Home.css';
+import {
+  getCoursesFromLocalStorage,
+  getCoursesFromBackend,
+} from "../../dataService";
+import "./Home.css";
 
 import {
   Chart as ChartJS,
@@ -195,26 +198,52 @@ const Home = () => {
       ) : (
         <>
           <div className="flex flex-col items-center">
-
-          <h1 className="text-2xl font-bold text-center mb-2 lg:mb-4">
+            <h1 className="text-2xl font-bold text-center mb-2 lg:mb-4">
               Udemy Courses Analysis
             </h1>
             <div>
-            <div className="grid grid-cols-2 gap-4 p-4 rounded-md sm:hidden">
-              <Link to={"/courses"}><button className="w-full p-2 bg-blue-500 text-white rounded-md">📚 Courses 📚</button></Link>
-              <Link to={"/notes"}><button className="w-full p-2 bg-green-500 text-white rounded-md">📝 Notes 📝</button></Link>
-              <Link to={"/skills"}><button className="w-full  p-2 bg-red-500 text-white rounded-md">👨🏻‍💻 Skills 👨🏻‍💻</button></Link>
-              <Link to={"/projects"}><button className="w-full  p-2 bg-yellow-500 text-white rounded-md">💼 Projects 💼</button></Link>
-              <Link to={"/progress"}><button className="w-full  p-2 bg-purple-500 text-white rounded-md">📈 Progress 📈</button></Link>
-              <Link to={"/profile"}><button className="w-full  p-2 bg-pink-500 text-white rounded-md">🙎‍♂️ Profile 🙎‍♂️</button></Link>
+              <div className="grid grid-cols-2 gap-4 p-4 rounded-md sm:hidden">
+                <Link to={"/courses"}>
+                  <button className="w-full p-2 bg-blue-500 text-white rounded-md">
+                    📚 Courses 📚
+                  </button>
+                </Link>
+                <Link to={"/notes"}>
+                  <button className="w-full p-2 bg-green-500 text-white rounded-md">
+                    📝 Notes 📝
+                  </button>
+                </Link>
+                <Link to={"/skills"}>
+                  <button className="w-full  p-2 bg-red-500 text-white rounded-md">
+                    👨🏻‍💻 Skills 👨🏻‍💻
+                  </button>
+                </Link>
+                <Link to={"/projects"}>
+                  <button className="w-full  p-2 bg-yellow-500 text-white rounded-md">
+                    💼 Projects 💼
+                  </button>
+                </Link>
+                <Link to={"/progress"}>
+                  <button className="w-full  p-2 bg-purple-500 text-white rounded-md">
+                    📈 Progress 📈
+                  </button>
+                </Link>
+                <Link to={"/profile"}>
+                  <button className="w-full  p-2 bg-pink-500 text-white rounded-md">
+                    🙎‍♂️ Profile 🙎‍♂️
+                  </button>
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 p-4 pt-0  mt-1 rounded-md sm:hidden mb-4 w-full">
+                <Link to={"/certificate"}>
+                  <button className="w-full p-2 bg-indigo-500 text-white rounded-md">
+                    🏆 Certificates 🏆
+                  </button>
+                </Link>
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 p-4 pt-0  mt-1 rounded-md sm:hidden mb-4 w-full">
-              <Link to={"/certificate"}><button className="w-full p-2 bg-indigo-500 text-white rounded-md">🏆 Certificates 🏆</button></Link>
-            </div>
-            </div>
-
-            
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-2">
               <div
                 className={`p-4 rounded-md shadow-md ${
@@ -246,8 +275,6 @@ const Home = () => {
               </div>
             </div>
           </div>
-
-          
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
             <div className="flex flex-col">

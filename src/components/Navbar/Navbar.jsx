@@ -1,69 +1,108 @@
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { useTheme } from '../../context/ThemeContext';
-import './Navbar.css';
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useTheme } from "../../context/ThemeContext";
+import "./Navbar.css";
 
 const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
-  const location = useLocation();  // Use useLocation hook to track current path
+  const location = useLocation(); // Use useLocation hook to track current path
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
-  const isDarkMode = theme === 'dark';
+  const isDarkMode = theme === "dark";
 
   const getLinkClass = (path) => {
     const isActive = location.pathname === path;
     return isActive
-      ? 'text-purple-500'  // Active link in purple
-      : `${isDarkMode ? 'text-gray-300' : 'text-gray-800'} hover:text-purple-500`;  // Default link style
+      ? "text-purple-500" // Active link in purple
+      : `${
+          isDarkMode ? "text-gray-300" : "text-gray-800"
+        } hover:text-purple-500`; // Default link style
   };
 
   return (
-    <nav className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} shadow-md fixed w-full top-0 z-50`}>
+    <nav
+      className={`${
+        isDarkMode ? "bg-gray-800" : "bg-white"
+      } shadow-md fixed w-full top-0 z-50`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-14">
           <div className="flex-shrink-0">
-            <Link to="/" className={`${isDarkMode ? 'text-purple-400' : 'text-purple-600'} text-3xl font-bold`}>
+            <Link
+              to="/"
+              className={`${
+                isDarkMode ? "text-purple-400" : "text-purple-600"
+              } text-3xl font-bold`}
+            >
               Udemy Tracker
             </Link>
           </div>
 
           <div className="hidden md:flex space-x-6 items-center">
-            <Link to="/" className={`transition duration-150 ${getLinkClass('/')}`}>
+            <Link
+              to="/"
+              className={`transition duration-150 ${getLinkClass("/")}`}
+            >
               Home
             </Link>
-            <Link to="/courses" className={`transition duration-150 ${getLinkClass('/courses')}`}>
+            <Link
+              to="/courses"
+              className={`transition duration-150 ${getLinkClass("/courses")}`}
+            >
               Courses
             </Link>
-            <Link to="/notes" className={`transition duration-150 ${getLinkClass('/notes')}`}>
+            <Link
+              to="/notes"
+              className={`transition duration-150 ${getLinkClass("/notes")}`}
+            >
               Notes
             </Link>
-            <Link to="/skills" className={`transition duration-150 ${getLinkClass('/skills')}`}>
+            <Link
+              to="/skills"
+              className={`transition duration-150 ${getLinkClass("/skills")}`}
+            >
               Skills
             </Link>
-            <Link to="/projects" className={`transition duration-150 ${getLinkClass('/projects')}`}>
+            <Link
+              to="/projects"
+              className={`transition duration-150 ${getLinkClass("/projects")}`}
+            >
               Projects
             </Link>
-            <Link to="/progress" className={`transition duration-150 ${getLinkClass('/progress')}`}>
+            <Link
+              to="/progress"
+              className={`transition duration-150 ${getLinkClass("/progress")}`}
+            >
               Progress
             </Link>
-            <Link to="/certificate" className={`transition duration-150 ${getLinkClass('/certificate')}`}>
+            <Link
+              to="/certificate"
+              className={`transition duration-150 ${getLinkClass(
+                "/certificate"
+              )}`}
+            >
               Certificates
             </Link>
-            <Link to="/profile" className={`transition duration-150 ${getLinkClass('/profile')}`}>
+            <Link
+              to="/profile"
+              className={`transition duration-150 ${getLinkClass("/profile")}`}
+            >
               Profile
             </Link>
             <button
               onClick={toggleTheme}
               className={`px-3 py-1.5 rounded-lg shadow-md border focus:outline-none transition duration-300 ${
-                isDarkMode ? 'bg-gray-900 text-white border-gray-700' : 'bg-gray-100 text-gray-800 border-gray-300'
+                isDarkMode
+                  ? "bg-gray-900 text-white border-gray-700"
+                  : "bg-gray-100 text-gray-800 border-gray-300"
               }`}
-              style={{ width: '100px' }}
+              style={{ width: "100px" }}
             >
-              {isDarkMode ? '☀️ Light' : '🌙 Dark'}
+              {isDarkMode ? "☀️ Light" : "🌙 Dark"}
             </button>
           </div>
 
@@ -71,20 +110,49 @@ const Navbar = () => {
             <button
               onClick={toggleTheme}
               className={`mr-2 px-2 py-1 rounded-lg shadow-md border focus:outline-none transition duration-300 ${
-                isDarkMode ? 'bg-gray-900 text-white border-gray-700' : 'bg-gray-100 text-gray-800 border-gray-300'
+                isDarkMode
+                  ? "bg-gray-900 text-white border-gray-700"
+                  : "bg-gray-100 text-gray-800 border-gray-300"
               }`}
-              style={{ width: '50px' }}
+              style={{ width: "50px" }}
             >
-              {isDarkMode ? '☀️' : '🌙'}
+              {isDarkMode ? "☀️" : "🌙"}
             </button>
-            <button onClick={toggleMenu} className={`${isDarkMode ? 'text-gray-300' : 'text-gray-800'} focus:outline-none`}>
+            <button
+              onClick={toggleMenu}
+              className={`${
+                isDarkMode ? "text-gray-300" : "text-gray-800"
+              } focus:outline-none`}
+            >
               {isOpen ? (
-                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               ) : (
-                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
                 </svg>
               )}
             </button>
@@ -94,26 +162,39 @@ const Navbar = () => {
 
       <div
         className={`md:hidden ${
-          isDarkMode ? 'bg-gray-800' : 'bg-white'
+          isDarkMode ? "bg-gray-800" : "bg-white"
         } shadow-lg space-y-4 px-6 pt-4 pb-6 transition-transform duration-300 ease-in-out transform ${
-          isOpen ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
+          isOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
         } fixed top-14 right-0 h-screen w-64 overflow-y-auto z-40`}
       >
-        {['/', '/courses', '/notes', '/skills', '/projects', '/progress', '/certificate', '/profile'].map((path, index) => (
+        {[
+          "/",
+          "/courses",
+          "/notes",
+          "/skills",
+          "/projects",
+          "/progress",
+          "/certificate",
+          "/profile",
+        ].map((path, index) => (
           <Link
             key={path}
             to={path}
             className={`block ${
-              location.pathname === path ? 'text-purple-500' : getLinkClass(path)
+              location.pathname === path
+                ? "text-purple-500"
+                : getLinkClass(path)
             } text-lg py-2`}
             onClick={toggleMenu}
             style={{
               animation: isOpen
                 ? `slideOpacityBloom 0.6s ease-in-out forwards`
-                : 'none', // Delay increases for each item
+                : "none", // Delay increases for each item
             }}
           >
-            {path === '/' ? 'Home' : path.replace('/', '').charAt(0).toUpperCase() + path.slice(2)}
+            {path === "/"
+              ? "Home"
+              : path.replace("/", "").charAt(0).toUpperCase() + path.slice(2)}
           </Link>
         ))}
       </div>

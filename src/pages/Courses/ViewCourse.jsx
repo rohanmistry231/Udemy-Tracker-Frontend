@@ -255,23 +255,33 @@ const ViewCourse = () => {
                         required
                       />
                       <Editor
-                  value={answer}
-                  onEditorChange={(content) => setAnswer(content)}
-                  apiKey="tbfczm3qaa8n4zsi2ru3iiemt1loveg07jq70ahk7isz17zx"
-                  init={{
-                    plugins: [
-                      // Core editing features
-                      'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 
-                      'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 
-                      'wordcount'
-                    ],
-                    toolbar: 
-                      'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-                    placeholder: "Answer...",
-                    skin: isDarkMode ? "oxide-dark" : "oxide",
-                    content_css: isDarkMode ? "dark" : "default",
-                  }}
-                />
+                        value={answer}
+                        onEditorChange={(content) => setAnswer(content)}
+                        apiKey="tbfczm3qaa8n4zsi2ru3iiemt1loveg07jq70ahk7isz17zx"
+                        init={{
+                          plugins: [
+                            // Core editing features
+                            "anchor",
+                            "autolink",
+                            "charmap",
+                            "codesample",
+                            "emoticons",
+                            "image",
+                            "link",
+                            "lists",
+                            "media",
+                            "searchreplace",
+                            "table",
+                            "visualblocks",
+                            "wordcount",
+                          ],
+                          toolbar:
+                            "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
+                          placeholder: "Answer...",
+                          skin: isDarkMode ? "oxide-dark" : "oxide",
+                          content_css: isDarkMode ? "dark" : "default",
+                        }}
+                      />
                       <input
                         type="text"
                         value={mainTargetCategory}
@@ -332,8 +342,11 @@ const ViewCourse = () => {
                           <p>
                             <strong>Question:</strong> {note.question}
                           </p>
-                            <strong>Answer:</strong>
-                          <div className="text-ellipsis overflow-hidden line-clamp-2" dangerouslySetInnerHTML={{ __html: note.answer }} />
+                          <strong>Answer:</strong>
+                          <div
+                            className="text-ellipsis overflow-hidden line-clamp-2"
+                            dangerouslySetInnerHTML={{ __html: note.answer }}
+                          />
                           <p>
                             <strong>Sub Target Goal:</strong>{" "}
                             {note.subTargetGoal}

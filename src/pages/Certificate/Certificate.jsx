@@ -61,7 +61,6 @@ const Certificates = () => {
     return () => {
       window.removeEventListener("beforeunload", handlePageReload);
     };
-
   }, [currentCerticatePage]);
 
   // Filter certificates based on search term
@@ -106,12 +105,11 @@ const Certificates = () => {
 
   // Handle Delete Function
   const handleDelete = async (certificateId) => {
-
     // Retrieve password from localStorage
     const storedPassword = localStorage.getItem("password");
 
-     // Check if the stored password matches the correct password
-     if (storedPassword === correctPassword) {
+    // Check if the stored password matches the correct password
+    if (storedPassword === correctPassword) {
       if (window.confirm("Are you sure you want to delete this certificate?")) {
         try {
           // API call to delete the certificate
@@ -131,9 +129,11 @@ const Certificates = () => {
           console.error("Error deleting certificate:", error);
         }
       }
-    }else {
-      alert("⚠️ Access Denied: You lack authorization to perform this action. ⚠️");
-  }  
+    } else {
+      alert(
+        "⚠️ Access Denied: You lack authorization to perform this action. ⚠️"
+      );
+    }
   };
 
   // Pagination logic
