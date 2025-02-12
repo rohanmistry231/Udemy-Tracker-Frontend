@@ -109,14 +109,21 @@ const Courses = () => {
   };
 
   // Filter and sort courses based on search term and selected filters
+  const matchWordsInAnyOrder = (text, query) => {
+    if (typeof text !== "string") return false; // Ensure text is a string
+    const queryWords = query.toLowerCase().split(/\s+/);
+    return queryWords.every(word => text.toLowerCase().includes(word));
+  };
+  
   const filteredCourses = courses
     .filter(
       (course) =>
-        (course.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          course.no.toString().includes(searchTerm)) && // Multi-search by name or 'no'
+        (matchWordsInAnyOrder(course.name, searchTerm) || // Allow shuffled word searches
+         matchWordsInAnyOrder(course.subLearningSkillsSet, searchTerm) ||
+         matchWordsInAnyOrder(course.learningSkillsSet, searchTerm) ||
+         course.no.toString().includes(searchTerm)) && // Multi-search by name, skills, or 'no'
         (statusFilter === "" || course.status === statusFilter) &&
-        (importantFilter === "" ||
-          course.importantStatus === importantFilter) &&
+        (importantFilter === "" || course.importantStatus === importantFilter) &&
         (categoryFilter === "" || course.category === categoryFilter) &&
         (subCategoryFilter === "" || course.subCategory === subCategoryFilter)
     )
@@ -127,7 +134,7 @@ const Courses = () => {
         return b.durationInHours - a.durationInHours; // Sort from high to low
       }
       return 0; // No sorting
-    });
+    });  
 
   // Handle course deletion
   const handleDelete = async (id) => {
