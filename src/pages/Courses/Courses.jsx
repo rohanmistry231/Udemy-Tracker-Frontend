@@ -11,22 +11,22 @@ import "./Course.css";
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(localStorage.getItem("searchTerm") || "");
   const [loading, setLoading] = useState(true); // Loading state
-  const [statusFilter, setStatusFilter] = useState(""); // Filter by course status
-  const [importantFilter, setImportantFilter] = useState(""); // Filter by important status
-  const [sortOrder, setSortOrder] = useState(""); // Sorting order
+  const [statusFilter, setStatusFilter] = useState(localStorage.getItem("statusFilter") || ""); 
+  const [importantFilter, setImportantFilter] = useState(localStorage.getItem("importantFilter") || "");
+  const [sortOrder, setSortOrder] = useState(localStorage.getItem("sortOrder") || "");
   const [currentPage, setCurrentPage] = useState(
     parseInt(localStorage.getItem("currentPage")) || 1
   );
-  const [categoryFilter, setCategoryFilter] = useState(""); // Filter by category
-  const [subCategoryFilter, setSubCategoryFilter] = useState(""); // Filter by sub-category
+  const [categoryFilter, setCategoryFilter] = useState(localStorage.getItem("categoryFilter") || "");
+  const [subCategoryFilter, setSubCategoryFilter] = useState(localStorage.getItem("subCategoryFilter") || "");
   const coursesPerPage = 12; // Number of courses to display per page
   const [isPasswordPromptVisible, setPasswordPromptVisible] = useState(false);
   const [password, setPassword] = useState("");
   const [courseToDelete, setCourseToDelete] = useState(null); // Store the course ID to delete
   const [isSyncing, setIsSyncing] = useState(false);
-  const [syncStatus, setSyncStatus] = useState(null);
+  const [syncStatus, setSyncStatus] = useState(null);  
 
   const navigate = useNavigate();
   const { theme } = useTheme(); // Use theme context
@@ -38,47 +38,59 @@ const Courses = () => {
       try {
         // Check if courses are already in localStorage
         const storedCourses = localStorage.getItem("courses");
-
+  
         if (storedCourses) {
           // If courses are found in localStorage, use them
           setCourses(JSON.parse(storedCourses));
         } else {
           // If no courses in localStorage, fetch from backend
           const data = await getCoursesFromBackend();
-
+  
           // Sort courses by the 'no' field
           const sortedCourses = data.sort((a, b) => a.no - b.no);
-
+  
           // Store the fetched courses in localStorage
           localStorage.setItem("courses", JSON.stringify(sortedCourses));
-
+  
           // Set the courses in state
           setCourses(sortedCourses);
         }
-
-        // Store the currentPage in localStorage
-        localStorage.setItem("currentPage", currentPage);
       } catch (error) {
         console.error("Error fetching courses:", error);
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchCourses();
-
-    // Clear currentPage from localStorage on page reload
+  
+    // Store search & filter values in localStorage whenever they change
+    localStorage.setItem("searchTerm", searchTerm);
+    localStorage.setItem("statusFilter", statusFilter);
+    localStorage.setItem("importantFilter", importantFilter);
+    localStorage.setItem("sortOrder", sortOrder);
+    localStorage.setItem("categoryFilter", categoryFilter);
+    localStorage.setItem("subCategoryFilter", subCategoryFilter);
+    localStorage.setItem("currentPage", currentPage);
+  
+    // Clear currentPage from localStorage only on full page reload
     const handlePageReload = () => {
       localStorage.removeItem("currentPage");
+      localStorage.removeItem("searchTerm");
+      localStorage.removeItem("statusFilter");
+      localStorage.removeItem("importantFilter");
+      localStorage.removeItem("sortOrder");
+      localStorage.removeItem("categoryFilter");
+      localStorage.removeItem("subCategoryFilter");
     };
-
+  
     window.addEventListener("beforeunload", handlePageReload);
-
+  
     // Cleanup event listener on component unmount
     return () => {
       window.removeEventListener("beforeunload", handlePageReload);
     };
-  }, [currentPage]);
+  }, [currentPage, searchTerm, statusFilter, importantFilter, sortOrder, categoryFilter, subCategoryFilter]);  
 
   // Handle the sync click event
   const handleSyncClick = async () => {
