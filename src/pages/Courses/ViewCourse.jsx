@@ -15,14 +15,18 @@ const ViewCourse = () => {
   const [mainTargetCategory, setMainTargetCategory] = useState("");
   const [mainTargetGoal, setMainTargetGoal] = useState("");
   const [subTargetGoal, setSubTargetGoal] = useState("");
+  const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
     const fetchCourse = async () => {
+      setLoading(true);
       try {
         const data = await getCourseById(id);
         setCourse(data);
       } catch (error) {
         console.error("Error fetching course:", error);
+      } finally{
+        setLoading(false);
       }
     };
 
@@ -144,6 +148,13 @@ const ViewCourse = () => {
         isDarkMode ? "bg-gray-900 text-white" : "bg-white text-black"
       }`}
     >
+          {/* Loading Spinner */}
+          {loading ? (
+        <div className="flex justify-center items-center md:min-h-screen lg:min-h-screen max-h-screen mt-10 mb-10">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
+        </div>
+      ) : (
+        <>
       <div
         className={`rounded-lg shadow-lg p-6 ${
           isDarkMode ? "bg-gray-800" : "bg-gray-50"
@@ -436,6 +447,7 @@ const ViewCourse = () => {
           </Link>
         </div>
       </div>
+      </>)}
     </div>
   );
 };
