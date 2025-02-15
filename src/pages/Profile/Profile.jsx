@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useTheme } from "../../context/ThemeContext";
 import { Link } from "react-router-dom";
 import { getCoursesFromLocalStorage } from "../../dataService";
+import { FaGlobe, FaLinkedin, FaGithub, FaMedium } from "react-icons/fa";
 
 const Profile = () => {
   const { theme } = useTheme();
@@ -19,6 +20,7 @@ const Profile = () => {
       portfolio: "", // Default empty string to avoid undefined errors
       linkedin: "",
       github: "",
+      medium: "",
     },
   });
 
@@ -87,6 +89,7 @@ const Profile = () => {
               portfolio: "https://irohanportfolio.netlify.app",
               linkedin: "https://linkedin.com/in/rohan-mistry-493987202",
               github: "https://github.com/rohanmistry231",
+              medium: "https://medium.com/@rohanmistry231",
             },
           };
 
@@ -188,54 +191,48 @@ const Profile = () => {
                     {completedCoursesCount}
                   </p>
                 </div>
-
-                {/* Certificates Card */}
-                <div
-                  className={`p-4 rounded-md shadow-md ${
-                    isDarkMode ? "bg-gray-700" : "bg-white"
-                  }`}
-                >
-                  <h4 className="text-lg font-medium">Certificates</h4>
-                  <p className="text-2xl font-semibold mt-2">
-                    {completedCoursesCount}
-                  </p>
-                </div>
               </div>
             </div>
 
             {/* Social Media Links */}
-            <div className="mt-6 space-y-4">
+            <div className="mt-6">
               <h3 className="text-lg font-medium">Social Media Links</h3>
-              <div className="space-x-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
                 <a
                   href={user.socialLinks.portfolio || "#"}
-                  className={`text-xl ${
-                    isDarkMode ? "text-blue-300" : "text-blue-600"
-                  }`}
+                  className={`text-xl text-center flex flex-col items-center ${isDarkMode ? "text-blue-300" : "text-blue-600"}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
+                  <FaGlobe className="w-6 h-6 mb-2" />
                   Portfolio
                 </a>
                 <a
                   href={user.socialLinks.linkedin || "#"}
-                  className={`text-xl ${
-                    isDarkMode ? "text-blue-300" : "text-blue-600"
-                  }`}
+                  className={`text-xl text-center flex flex-col items-center ${isDarkMode ? "text-blue-300" : "text-blue-600"}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
+                  <FaLinkedin className="w-6 h-6 mb-2" />
                   LinkedIn
                 </a>
                 <a
                   href={user.socialLinks.github || "#"}
-                  className={`text-xl ${
-                    isDarkMode ? "text-blue-300" : "text-blue-600"
-                  }`}
+                  className={`text-xl text-center flex flex-col items-center ${isDarkMode ? "text-blue-300" : "text-blue-600"}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
+                  <FaGithub className="w-6 h-6 mb-2" />
                   GitHub
+                </a>
+                <a
+                  href={user.socialLinks.medium || "#"}
+                  className={`text-xl text-center flex flex-col items-center ${isDarkMode ? "text-blue-300" : "text-blue-600"}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FaMedium className="w-6 h-6 mb-2" />
+                  Medium
                 </a>
               </div>
             </div>
