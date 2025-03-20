@@ -24,7 +24,6 @@ const Home = () => {
   const isDarkMode = theme === "dark";
 
   const [courses, setCourses] = useState([]);
-  const [totalHours, setTotalHours] = useState(0);
   const [completedCoursesCount, setCompletedCoursesCount] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedSubCategory, setSelectedSubCategory] = useState("");
@@ -43,11 +42,6 @@ const Home = () => {
         if (storedCourses) {
           // If courses are in localStorage, use them
           setCourses(storedCourses);
-          const hours = storedCourses.reduce(
-            (acc, course) => acc + course.durationInHours,
-            0
-          );
-          setTotalHours(hours);
 
           // Count completed courses
           const completedCount = storedCourses.filter(
@@ -87,12 +81,6 @@ const Home = () => {
 
           // Set the courses in state
           setCourses(sortedCourses);
-
-          const hours = sortedCourses.reduce(
-            (acc, course) => acc + course.durationInHours,
-            0
-          );
-          setTotalHours(hours);
 
           // Count completed courses
           const completedCount = sortedCourses.filter(
