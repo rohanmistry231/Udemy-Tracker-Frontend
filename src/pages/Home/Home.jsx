@@ -244,7 +244,7 @@ const Home = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-2">
               <div
                 className={`p-4 rounded-md shadow-md ${
                   isDarkMode ? "bg-gray-800" : "bg-white"
@@ -252,16 +252,6 @@ const Home = () => {
               >
                 <h2 className="text-lg font-medium">Total Courses</h2>
                 <p className="text-3xl font-semibold mt-2">{courses.length}</p>
-              </div>
-              <div
-                className={`p-4 rounded-md shadow-md ${
-                  isDarkMode ? "bg-gray-800" : "bg-white"
-                }`}
-              >
-                <h2 className="text-lg font-medium">Total Learning Hours</h2>
-                <p className="text-3xl font-semibold mt-2">
-                  {totalHours.toFixed(2)} hrs
-                </p>
               </div>
               <div
                 className={`p-4 rounded-md shadow-md ${
