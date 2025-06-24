@@ -187,7 +187,7 @@ const Home = () => {
         <>
           <div className="flex flex-col items-center">
             <h1 className="text-2xl font-bold text-center mb-2 lg:mb-4">
-              Udemy Courses Analysis
+              Udemy Courses Analysis - Getting Start
             </h1>
             <div>
               <div className="grid grid-cols-2 gap-4 p-4 rounded-md sm:hidden">
